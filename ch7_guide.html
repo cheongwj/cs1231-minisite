@@ -577,9 +577,9 @@ function simPrev(){
 function init(){
   if(!window.renderMathInElement){setTimeout(init,80);return;}
   renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
-  initSim();
   document.getElementById('loading').style.display='none';
   document.getElementById('wr').style.display='flex';
+  try{initSim();}catch(e){console.error('initSim:',e);}
 }
 init();
 </script>

@@ -34,8 +34,12 @@ function tog(id) {
   var isOpen = el.classList.contains('open');
   el.classList.toggle('open');
   var btn = el.previousElementSibling;
-  if (btn && btn.classList.contains('togbtn'))
-    btn.textContent = isOpen ? 'Show solution \u25be' : 'Hide solution \u25b4';
+  if (btn && btn.classList.contains('togbtn')) {
+    var t = btn.textContent.trim();
+    btn.textContent = isOpen
+      ? t.replace(/^Hide/, 'Show').replace('\u25b4', '\u25be')
+      : t.replace(/^Show/, 'Hide').replace('\u25be', '\u25b4');
+  }
   if (!isOpen) rerender(el);
 }
 
@@ -101,3 +105,14 @@ function answer(qi, oi) {
 
   document.getElementById('scv').textContent = qScore + '/' + qTotal;
 }
+
+/* --- Fallback: force-show content if KaTeX hasn't loaded within 8s --- */
+setTimeout(function() {
+  var wr = document.getElementById('wr');
+  var loading = document.getElementById('loading');
+  if (wr && wr.style.display !== 'flex') {
+    wr.style.display = 'flex';
+    if (loading) loading.style.display = 'none';
+    console.warn('CS1231: KaTeX timeout — showing page without rendered equations.');
+  }
+}, 8000);

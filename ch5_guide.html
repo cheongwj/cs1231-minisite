@@ -684,13 +684,14 @@ function hiPascal(n,r,val){
   document.getElementById('ptri-res').textContent='C('+n+','+r+') = '+val;
 }
 
+var LT='<',GT='>';  /* needed by buildPascal */
 function init(){
   if(!window.renderMathInElement){setTimeout(init,80);return;}
   renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
-  buildPascal();
-  buildQuiz();
   document.getElementById('loading').style.display='none';
   document.getElementById('wr').style.display='flex';
+  try{buildPascal();}catch(e){console.error('buildPascal:',e);}
+  try{buildQuiz();}catch(e){console.error('buildQuiz:',e);}
 }
 init();
 </script>
