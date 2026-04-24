@@ -601,35 +601,6 @@ var QUIZ=[
    exp:'Inclusion\u2013exclusion: \(30+20-8=42\).'}
 ];
 
-function pickOpt(qi,oi){
-  var d=quizData[qi];
-  var box=document.getElementById('qb'+qi);
-  if(box.getAttribute('data-done')) return;
-  box.setAttribute('data-done','1');
-  quizAnswered++;
-  var correct=(oi===d.ans);
-  if(correct) quizScore++;
-  for(var j=0;j<d.opts.length;j++){
-    var el=document.getElementById('opt_'+qi+'_'+j);
-    if(j===d.ans) el.className='opt cor';
-    else if(j===oi && !correct) el.className='opt wrg';
-  }
-  var expl=document.getElementById('expl'+qi);
-  expl.style.display='block';
-  rerender(expl);
-  document.getElementById('sc-val').textContent=quizScore+'/'+quizAnswered;
-  document.getElementById('sc-sub').textContent=quizAnswered<quizData.length?'in progress':'complete';
-  if(quizAnswered===quizData.length){
-    var done=document.getElementById('qz-done');
-    done.style.display='block';
-    done.textContent='Quiz complete! Final score: '+quizScore+'/'+quizData.length;
-    if(quizScore>=8) done.style.color='#2a6e2a';
-    else if(quizScore>=5) done.style.color='#7a5500';
-    else done.style.color='#8a1a1a';
-  }
-}
-
-}
 
 function bigC(n,r){
   if(r<0||r>n) return 0;

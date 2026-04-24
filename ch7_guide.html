@@ -427,6 +427,80 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <script src="nav.js"></script>
 <script>
+
+function answerQ(qn,chosen,correct,expId){
+  var btns=document.querySelectorAll('[data-q="'+qn+'"]');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(btns[i].dataset.opt===correct) btns[i].classList.add('sel-right');
+    else if(btns[i].dataset.opt===chosen&&chosen!==correct) btns[i].classList.add('sel-wrong');
+  }
+  var exp=document.getElementById(expId);
+  if(exp){ exp.classList.add('open'); rerender(exp); }
+  var firstBtn=document.querySelector('[data-q="'+qn+'"]');
+  if(firstBtn){ var cont=firstBtn.closest('.qz'); if(cont) cont.classList.add(chosen===correct?'right':'wrong'); }
+  if(chosen===correct) qScore++;
+  qAnswered++;
+  document.getElementById('scv').textContent=qScore+'/'+qAnswered;
+}
+
+function calcMary(){
+  var m=parseInt(document.getElementById('mVal').value);
+  var kt=document.getElementById('knownType').value;
+  var kv=parseInt(document.getElementById('knownVal').value);
+  var res=document.getElementById('maryResult');
+  if(isNaN(m)||m<2||isNaN(kv)||kv<1){res.innerHTML='<span style="color:var(--color-text-danger)">Invalid input.</span>';return;}
+  var n,ii,l;
+  if(kt==='i'){ii=kv;n=m*ii+1;l=(m-1)*ii+1;}
+  else if(kt==='n'){n=kv;if((n-1)%m!==0){res.innerHTML='<span style="color:var(--color-text-danger)">(n&#x2212;1) must be divisible by m.</span>';return;}ii=(n-1)/m;l=(m-1)*ii+1;}
+  else{l=kv;if((l-1)%(m-1)!==0){res.innerHTML='<span style="color:var(--color-text-danger)">(&ell;&#x2212;1) must be divisible by (m&#x2212;1).</span>';return;}ii=(l-1)/(m-1);n=m*ii+1;}
+  res.innerHTML='<table><tr><th>Property</th><th>Value</th></tr><tr><td>Arity (m)</td><td>'+m+'</td></tr><tr><td>Total vertices (n)</td><td>'+n+'</td></tr><tr><td>Internal vertices (i)</td><td>'+ii+'</td></tr><tr><td>Leaves (&ell;)</td><td>'+l+'</td></tr><tr><td>Edges (n&#x2212;1)</td><td>'+(n-1)+'</td></tr></table>';
+}
+
+function BSTNode(v){this.val=v;this.left=null;this.right=null;this.x=0;this.y=0;}
+function bstInsert(root,val){if(!root) return new BSTNode(val);if(val<root.val) root.left=bstInsert(root.left,val);else if(val>root.val) root.right=bstInsert(root.right,val);return root;}
+var ixCtr={n:0};
+function assignX(node){if(!node) return;assignX(node.left);node.x=ixCtr.n*62+40;ixCtr.n++;assignX(node.right);}
+function assignY(node,d){if(!node) return;node.y=d*65+35;assignY(node.left,d+1);assignY(node.right,d+1);}
+function treeW(node){if(!node) return 0;return treeW(node.left)+1+treeW(node.right);}
+function treeHt(node){if(!node) return 0;return 1+Math.max(treeHt(node.left),treeHt(node.right));}
+function svgEdges(node){if(!node) return '';var s='';if(node.left){s+='<line x1="'+node.x+'" y1="'+node.y+'" x2="'+node.left.x+'" y2="'+node.left.y+'" stroke="var(--color-border-secondary)" stroke-width="1"/>';s+=svgEdges(node.left);}if(node.right){s+='<line x1="'+node.x+'" y1="'+node.y+'" x2="'+node.right.x+'" y2="'+node.right.y+'" stroke="var(--color-border-secondary)" stroke-width="1"/>';s+=svgEdges(node.right);}return s;}
+function svgNodes(node){if(!node) return '';var s=svgNodes(node.left)+svgNodes(node.right);var lbl=node.val.length>6?node.val.substring(0,6):node.val;s+='<circle cx="'+node.x+'" cy="'+node.y+'" r="20" fill="var(--color-background-info)" stroke="var(--color-border-info)" stroke-width="0.8"/>';s+='<text x="'+node.x+'" y="'+(node.y+4)+'" text-anchor="middle" font-size="8" font-family="sans-serif" fill="var(--color-text-info)">'+lbl+'</text>';return s;}
+function buildBST(){
+  var raw=document.getElementById('bstInput').value;
+  var parts=raw.split(','),vals=[];
+  for(var i=0;i<parts.length;i++){var v=parts[i].trim();if(v) vals.push(v);}
+  if(!vals.length) return;
+  var root=null;
+  for(var j=0;j<vals.length;j++) root=bstInsert(root,vals[j]);
+  ixCtr.n=0;assignX(root);assignY(root,0);
+  var w=treeW(root)*62+30,h=treeHt(root)*65+20;
+  var svg='<svg width="'+w+'" height="'+h+'" xmlns="http://www.w3.org/2000/svg">';
+  svg+=svgEdges(root)+svgNodes(root)+'</svg>';
+  document.getElementById('bstViz').innerHTML=svg;
+}
+
+var simGraph={'a':['b','e'],'b':['a','f'],'c':['d','g'],'d':['c','g'],'e':['a','f','g'],'f':['b','e','g'],'g':['c','d','e','f']};
+var simSteps=[],simIdx=0;
+
+function copySnap(vis,lab,ted){var v2={},l2={},t2={};for(var k in vis) v2[k]=vis[k];for(var k in lab) l2[k]=lab[k];for(var k in ted) t2[k]=ted[k];return{visited:v2,labels:l2,treeEdges:t2,desc:''};}
+
+function buildDFSSteps(){
+  var steps=[],visited={},labels={},treeEdges={},cnt=1;
+  function dfsV(v){
+    visited[v]=true;labels[v]=cnt++;
+    var sn=copySnap(visited,labels,treeEdges);
+    sn.desc='DFS: visit '+v+' \u2192 label '+labels[v];
+    steps.push(sn);
+    var nb=simGraph[v].slice().sort();
+    for(var k=0;k<nb.length;k++){
+      var u=nb[k];
+      if(!visited[u]){
+        var ea=v<u?v:u,eb=v<u?u:v;
+        treeEdges[ea+'-'+eb]=true;
+        dfsV(u);
+      }
+    }
   }
   dfsV('a');
   return steps;
@@ -498,24 +572,6 @@ function simPrev(){
   simIdx--;
   if(simIdx===0){drawSimState(null);document.getElementById('simDesc').textContent='Press Next to start.';document.getElementById('simStep').textContent='0 / '+simSteps.length;}
   else{var state=simSteps[simIdx-1];drawSimState(state);document.getElementById('simDesc').textContent=state.desc;document.getElementById('simStep').textContent=simIdx+' / '+simSteps.length;}
-}
-
-var qScore=0,qAnswered=0;
-
-function answerQ(qn,chosen,correct,expId){
-  var btns=document.querySelectorAll('[data-q="'+qn+'"]');
-  for(var i=0;i<btns.length;i++){
-    btns[i].disabled=true;
-    if(btns[i].dataset.opt===correct) btns[i].classList.add('sel-right');
-    else if(btns[i].dataset.opt===chosen&&chosen!==correct) btns[i].classList.add('sel-wrong');
-  }
-  var exp=document.getElementById(expId);
-  if(exp){ exp.classList.add('open'); rerender(exp); }
-  var firstBtn=document.querySelector('[data-q="'+qn+'"]');
-  if(firstBtn){ var cont=firstBtn.closest('.qz'); if(cont) cont.classList.add(chosen===correct?'right':'wrong'); }
-  if(chosen===correct) qScore++;
-  qAnswered++;
-  document.getElementById('scv').textContent=qScore+'/'+qAnswered;
 }
 
 function init(){

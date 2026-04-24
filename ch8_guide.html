@@ -390,24 +390,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <script src="nav.js"></script>
 <script>
-    if(!hasMiddle) covers.push(strict[i]);
-  }
-  var level={},changed=true;
-  for(var i=0;i<els.length;i++) level[els[i]]=0;
-  while(changed){changed=false;for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];if(level[y]<=level[x]){level[y]=level[x]+1;changed=true;}}}
-  var byLevel={},maxLevel=0;
-  for(var i=0;i<els.length;i++){var l=level[els[i]];if(!byLevel[l]) byLevel[l]=[];byLevel[l].push(els[i]);if(l>maxLevel) maxLevel=l;}
-  var svgW=400,svgH=maxLevel*80+80,pos={};
-  for(var l=0;l<=maxLevel;l++){var lels=byLevel[l]||[],spacing=svgW/(lels.length+1);for(var i=0;i<lels.length;i++) pos[lels[i]]={x:Math.round(spacing*(i+1)),y:(maxLevel-l)*80+40};}
-  var svg='<svg width="'+svgW+'" height="'+svgH+'" xmlns="http://www.w3.org/2000/svg">';
-  for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];svg+='<line x1="'+pos[x].x+'" y1="'+pos[x].y+'" x2="'+pos[y].x+'" y2="'+pos[y].y+'" stroke="var(--color-border-secondary)" stroke-width="1.2"/>';}
-  for(var i=0;i<els.length;i++){var el=els[i],p=pos[el];svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="18" fill="var(--color-background-info)" stroke="var(--color-border-info)" stroke-width="0.8"/>';svg+='<text x="'+p.x+'" y="'+(p.y+4)+'" text-anchor="middle" font-size="12" font-family="sans-serif" fill="var(--color-text-info)">'+el+'</text>';}
-  svg+='</svg>';
-  var covStr='';for(var i=0;i<covers.length;i++) covStr+=(covStr?', ':'')+covers[i][0]+'\u2192'+covers[i][1];
-  viz.innerHTML=svg+'<p style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Cover pairs: '+covStr+'</p>';
-}
-
-var qScore=0,qAnswered=0;
 
 function answerQ(qn,chosen,correct,expId){
   var btns=document.querySelectorAll('[data-q="'+qn+'"]');
@@ -423,6 +405,64 @@ function answerQ(qn,chosen,correct,expId){
   if(chosen===correct) qScore++;
   qAnswered++;
   document.getElementById('scv').textContent=qScore+'/'+qAnswered;
+}
+
+function parseElements(s){var parts=s.split(','),els=[];for(var i=0;i<parts.length;i++){var v=parts[i].trim();if(v) els.push(v);}return els;}
+function parsePairs(s){var pairs=[],re=/\(([^,)]+),([^)]+)\)/g,m;while((m=re.exec(s))!==null) pairs.push([m[1].trim(),m[2].trim()]);return pairs;}
+function hasPair(pairs,a,b){for(var i=0;i<pairs.length;i++) if(pairs[i][0]===a&&pairs[i][1]===b) return true;return false;}
+
+function checkReflexive(els,pairs){for(var i=0;i<els.length;i++) if(!hasPair(pairs,els[i],els[i])) return{ok:false,ex:'('+els[i]+','+els[i]+') missing'};return{ok:true};}
+function checkSymmetric(els,pairs){for(var i=0;i<pairs.length;i++){var a=pairs[i][0],b=pairs[i][1];if(!hasPair(pairs,b,a)) return{ok:false,ex:'('+a+','+b+') in R but ('+b+','+a+') not'};}return{ok:true};}
+function checkAntisymmetric(els,pairs){for(var i=0;i<pairs.length;i++){var a=pairs[i][0],b=pairs[i][1];if(a!==b&&hasPair(pairs,b,a)) return{ok:false,ex:'both ('+a+','+b+') and ('+b+','+a+') present but '+a+' \u2260 '+b};}return{ok:true};}
+function checkTransitive(els,pairs){for(var i=0;i<pairs.length;i++){var a=pairs[i][0],b=pairs[i][1];for(var j=0;j<pairs.length;j++){if(pairs[j][0]===b){var c=pairs[j][1];if(!hasPair(pairs,a,c)) return{ok:false,ex:'('+a+','+b+')\u2218('+b+','+c+') but ('+a+','+c+') missing'};}}}return{ok:true};}
+
+function getEquivClasses(els,pairs){var seen={},unique=[];for(var i=0;i<els.length;i++){var a=els[i],cls=[];for(var j=0;j<pairs.length;j++) if(pairs[j][0]===a) cls.push(pairs[j][1]);cls.sort();var key=cls.join(',');if(!seen[key]){seen[key]=true;unique.push('{'+cls.join(', ')+'}');}}return unique;}
+
+function checkProps(){
+  var els=parseElements(document.getElementById('relElements').value);
+  var pairs=parsePairs(document.getElementById('relPairs').value);
+  var res=document.getElementById('propsResult');
+  if(!els.length||!pairs.length){res.innerHTML='<span style="color:var(--color-text-danger)">Enter valid elements and pairs.</span>';return;}
+  var r=checkReflexive(els,pairs),s=checkSymmetric(els,pairs),as=checkAntisymmetric(els,pairs),t=checkTransitive(els,pairs);
+  var html='<table><tr><th>Property</th><th>Holds?</th><th>Counterexample</th></tr>';
+  html+='<tr><td>Reflexive</td><td class="'+(r.ok?'prop-ok':'prop-fail')+'">'+(r.ok?'&#10003;':'&#10007;')+'</td><td>'+(r.ok?'&mdash;':r.ex)+'</td></tr>';
+  html+='<tr><td>Symmetric</td><td class="'+(s.ok?'prop-ok':'prop-fail')+'">'+(s.ok?'&#10003;':'&#10007;')+'</td><td>'+(s.ok?'&mdash;':s.ex)+'</td></tr>';
+  html+='<tr><td>Antisymmetric</td><td class="'+(as.ok?'prop-ok':'prop-fail')+'">'+(as.ok?'&#10003;':'&#10007;')+'</td><td>'+(as.ok?'&mdash;':as.ex)+'</td></tr>';
+  html+='<tr><td>Transitive</td><td class="'+(t.ok?'prop-ok':'prop-fail')+'">'+(t.ok?'&#10003;':'&#10007;')+'</td><td>'+(t.ok?'&mdash;':t.ex)+'</td></tr>';
+  html+='</table>';
+  var isEquiv=r.ok&&s.ok&&t.ok,isPO=r.ok&&as.ok&&t.ok;
+  if(isEquiv){var cls=getEquivClasses(els,pairs);html+='<div class="rmk" style="margin-top:8px"><div class="lbl">Result</div><p>R is an <strong>equivalence relation</strong>. Classes: '+cls.join(', ')+'</p></div>';}
+  else if(isPO){html+='<div class="thm" style="margin-top:8px"><div class="lbl">Result</div><p>R is a <strong>partial order</strong> (poset).</p></div>';}
+  else{html+='<div class="ex" style="margin-top:8px"><div class="lbl">Result</div><p>R is neither an equivalence relation nor a partial order.</p></div>';}
+  res.innerHTML=html;
+}
+
+function buildHasseDiagram(){
+  var els=parseElements(document.getElementById('hasseElements').value);
+  var pairs=parsePairs(document.getElementById('hassePairs').value);
+  var viz=document.getElementById('hasseViz');
+  if(!els.length||!pairs.length){viz.innerHTML='<span style="color:var(--color-text-danger)">Enter valid elements and pairs.</span>';return;}
+  var strict=[];
+  for(var i=0;i<pairs.length;i++) if(pairs[i][0]!==pairs[i][1]) strict.push(pairs[i]);
+  var covers=[];
+  for(var i=0;i<strict.length;i++){
+    var x=strict[i][0],y=strict[i][1],hasMiddle=false;
+    for(var j=0;j<els.length;j++){var z=els[j];if(z!==x&&z!==y&&hasPair(strict,x,z)&&hasPair(strict,z,y)){hasMiddle=true;break;}}
+    if(!hasMiddle) covers.push(strict[i]);
+  }
+  var level={},changed=true;
+  for(var i=0;i<els.length;i++) level[els[i]]=0;
+  while(changed){changed=false;for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];if(level[y]<=level[x]){level[y]=level[x]+1;changed=true;}}}
+  var byLevel={},maxLevel=0;
+  for(var i=0;i<els.length;i++){var l=level[els[i]];if(!byLevel[l]) byLevel[l]=[];byLevel[l].push(els[i]);if(l>maxLevel) maxLevel=l;}
+  var svgW=400,svgH=maxLevel*80+80,pos={};
+  for(var l=0;l<=maxLevel;l++){var lels=byLevel[l]||[],spacing=svgW/(lels.length+1);for(var i=0;i<lels.length;i++) pos[lels[i]]={x:Math.round(spacing*(i+1)),y:(maxLevel-l)*80+40};}
+  var svg='<svg width="'+svgW+'" height="'+svgH+'" xmlns="http://www.w3.org/2000/svg">';
+  for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];svg+='<line x1="'+pos[x].x+'" y1="'+pos[x].y+'" x2="'+pos[y].x+'" y2="'+pos[y].y+'" stroke="var(--color-border-secondary)" stroke-width="1.2"/>';}
+  for(var i=0;i<els.length;i++){var el=els[i],p=pos[el];svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="18" fill="var(--color-background-info)" stroke="var(--color-border-info)" stroke-width="0.8"/>';svg+='<text x="'+p.x+'" y="'+(p.y+4)+'" text-anchor="middle" font-size="12" font-family="sans-serif" fill="var(--color-text-info)">'+el+'</text>';}
+  svg+='</svg>';
+  var covStr='';for(var i=0;i<covers.length;i++) covStr+=(covStr?', ':'')+covers[i][0]+'\u2192'+covers[i][1];
+  viz.innerHTML=svg+'<p style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Cover pairs: '+covStr+'</p>';
 }
 
 function init(){
