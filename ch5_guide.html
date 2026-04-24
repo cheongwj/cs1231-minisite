@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 style="position:absolute;left:-9999px">CS1231 Chapter 5 Counting interactive study guide</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+
+<nav id="nv">
+<h1>Chapter 5</h1>
+  <div class="nvdiv">Lecture</div>
+  <button class="nb act" onclick="show('s1',this)">5.1 Basics</button>
+  <button class="nb" onclick="show('s3',this)">5.3 Permutations</button>
+  <button class="nb" onclick="show('s4',this)">5.4 Binomial</button>
+  <button class="nb" onclick="show('s5',this)">5.5 Generalised</button>
+  <button class="nb" onclick="show('s6',this)">5.6 Probability</button>
+  <div class="nvdiv">Tools</div>
+  <button class="nb" onclick="show('tool',this)">Interactive Tools</button>
+  <div class="nvdiv">Tutorials</div>
+  <button class="nb" onclick="show('t9',this)">Tutorial 9</button>
+  <button class="nb" onclick="show('t10',this)">Tutorial 10</button>
+  <div class="nvdiv">Practice</div>
+  <button class="nb" onclick="show('quiz',this)">Quiz</button>
+  <div id="sc">
+<p>Quiz score</p>
+<div id="scv">—</div>
+</div>
+</nav>
+
+<main id="mn">
+
+<div id="s1" class="sec on">
+<h2>5.1 Basics</h2>
+
+<div class="def">
+<strong>Product rule.</strong> If an operation has a sequence of 2 steps, the first done in \(r\) ways and the second in \(s\) ways (regardless of the first), the entire operation can be performed in \(rs\) ways. More generally:
+\[|A_1\times\cdots\times A_n|=\prod_{i=1}^{n}|A_i|\]
+</div>
+
+<div class="ex">
+<strong>Worked examples — product rule.</strong><br>
+(1) Auditorium seats labelled letter + integer \(\le100\): \(26\times100=2600\).<br>
+(2) Bit strings of length 7: \(2^7=128\).<br>
+(3) Functions \(f:A\to B\) with \(|A|=m,|B|=n\): each element of \(A\) has \(n\) image choices \(\Rightarrow n^m\) total.<br>
+(4) Injective functions \(f:A\to B\) (\(n\ge m\)): \(n(n-1)\cdots(n-m+1)\). When \(n=m\) this is \(n!\).<br>
+(5) Number of subsets of \(S\): each element is in or out \(\Rightarrow 2^{|S|}\).<br>
+(6) \(|\{1,2\}\times\{1,2,3\}|=2\times3=6\).
+</div>
+
+<div class="def">
+<strong>Sum rule.</strong> If objects have property 1 (in \(m\) ways) or property 2 (in \(n\) ways) with no overlap, the total is \(m+n\). In set form: \(|A\cup B|=|A|+|B|\) when \(A\cap B=\emptyset\).
+</div>
+
+<div class="def">
+<strong>Difference rule.</strong> \(|A-B|=|A|-|B|\) when \(B\subseteq A\).
+</div>
+
+<div class="ex">
+<strong>Worked examples — sum/difference.</strong><br>
+(1) \(n\)-letter passwords, \(1\le n\le3\): \(26+26^2+26^3=18278\).<br>
+(2) 4-char PINs (letter or digit), with repeated characters: total \(36^4=1{,}679{,}616\); distinct chars \(36\times35\times34\times33=1{,}413{,}720\); repeated \(=265{,}896\).<br>
+(3) Integers 100–999 divisible by 5: \(\lfloor999/5\rfloor-\lfloor99/5\rfloor=199-19=180\). ALT: 9×10 of the form \(xy0\) + 9×10 of the form \(xy5\) = 180.
+</div>
+
+<div class="def">
+<strong>Inclusion–exclusion (2 sets).</strong>
+\[|A\cup B|=|A|+|B|-|A\cap B|\]
+</div>
+
+<div class="def">
+<strong>Inclusion–exclusion (3 sets).</strong>
+\[|A\cup B\cup C|=|A|+|B|+|C|-|A\cap B|-|A\cap C|-|B\cap C|+|A\cap B\cap C|\]
+Proof uses Venn diagram: label the 7 disjoint regions; inclusion–exclusion ensures each is counted exactly once.
+</div>
+
+<div class="ex">
+<strong>Worked examples — inclusion–exclusion.</strong><br>
+(1) Integers 1–1000 divisible by 3 or 5: \(|A_3|=333,|A_5|=200,|A_{15}|=66\). Answer: \(333+200-66=467\).<br>
+(2) Bit strings of length 8 starting with 1 or ending with 00: \(|A|=2^7,|B|=2^6,|A\cap B|=2^5\). Answer: \(128+64-32=160\).
+</div>
+
+<div class="warn">
+<strong>Common mistake:</strong> using the sum rule when categories overlap. Always verify \(A\cap B=\emptyset\) first.
+</div>
+</div>
+
+<div id="s3" class="sec">
+<h2>5.3 Permutations &amp; Combinations</h2>
+
+<div class="def">
+<strong>Permutation.</strong> An ordering of distinct objects. An <em>r-permutation</em> of \(n\) distinct objects is an ordered selection of \(r\) elements. Notation: \(P(n,r)\). A full permutation is an \(n\)-permutation.
+</div>
+
+<div class="thm">
+<strong>Theorem.</strong> \[P(n,r)=n(n-1)\cdots(n-r+1)=\dfrac{n!}{(n-r)!}\]
+Proof: \(n\) choices for position 1, \(n-1\) for position 2, …, \(n-r+1\) for position \(r\). Product rule gives the result.
+</div>
+
+<div class="ex">
+<strong>Worked examples — permutations.</strong><br>
+(1) 6 permutations of \(\{1,2,3\}\): 123, 132, 213, 231, 312, 321.<br>
+(2) 3 of 5 letters of BYTES: \(P(5,3)=60\). With first letter B: \(4\times3=12\).<br>
+(3) Permutations of ABCDEFGH containing string ABC: treat ABC as one block \(\Rightarrow 6!=720\).
+</div>
+
+<div class="def">
+<strong>Combination.</strong> An unordered subset of \(r\) objects from \(n\). Notation: \(\binom{n}{r}\), read "\(n\) choose \(r\)".
+</div>
+
+<div class="thm">
+<strong>Theorem.</strong>
+\[\binom{n}{r}=\dfrac{P(n,r)}{r!}=\dfrac{n!}{(n-r)!\,r!}\]
+Proof: an \(r\)-permutation = choose \(r\)-combination (\(\binom{n}{r}\) ways) then permute it (\(r!\) ways). So \(P(n,r)=\binom{n}{r}\cdot r!\).
+</div>
+
+<div class="thm">
+<strong>Symmetry.</strong> \[\binom{n}{r}=\binom{n}{n-r}\]
+Proof: choosing \(r\) to include is the same as choosing \(n-r\) to exclude.
+</div>
+
+<div class="ex">
+<strong>Worked examples — combinations.</strong><br>
+(1) 8-bit strings with exactly 3 ones: \(\binom{8}{3}=56\).<br>
+(2) 5-person teams from 12: \(\binom{12}{5}=792\).<br>
+(3) A and B must both be in or both be out: \(\binom{10}{3}+\binom{10}{5}=120+252=372\).<br>
+(4) A and B cannot both be in: \(792-120=672\).<br>
+(5) 3 men from 5, 2 women from 7: \(\binom{5}{3}\binom{7}{2}=210\).<br>
+(6) At least one man (5 men + 7 women, 5-person team): \(\binom{12}{5}-\binom{7}{5}=771\).<br>
+(7) At most one man: \(\binom{5}{1}\binom{7}{4}+\binom{5}{0}\binom{7}{5}=196\).
+</div>
+
+<div class="warn">
+<strong>Key distinction:</strong> use \(P(n,r)\) when order matters, \(\binom{n}{r}\) when it does not. Complement ("at least / at most") often simplifies counting.
+</div>
+</div>
+
+<div id="s4" class="sec">
+<h2>5.4 Binomial Coefficients</h2>
+
+<div class="thm">
+<strong>Binomial theorem.</strong> For any \(n\in\mathbb{Z}^+\):
+\[(x+y)^n=\sum_{i=0}^{n}\binom{n}{i}x^{n-i}y^{i}\]
+Proof: the term \(x^{n-k}y^k\) arises by choosing \(y\) from exactly \(k\) of the \(n\) factors; there are \(\binom{n}{k}\) such choices.
+</div>
+
+<div class="ex">
+<strong>Worked examples.</strong><br>
+(1) \((x+y)^4=x^4+4x^3y+6x^2y^2+4xy^3+y^4\).<br>
+(2) Coefficient of \(x^{12}y^{13}\) in \((2x-3y)^{25}\): write as \(((2x)+(-3y))^{25}\). Term: \(\binom{25}{12}(2x)^{12}(-3y)^{13}\). Coefficient: \(\binom{25}{12}2^{12}(-3)^{13}=-\dfrac{25!\cdot2^{12}\cdot3^{13}}{13!\cdot12!}\).
+</div>
+
+<div class="thm">
+<strong>Theorem — sum of all coefficients.</strong> For \(n\in\mathbb{Z}^*\):
+\[\sum_{k=0}^{n}\binom{n}{k}=2^n\]
+Proof: set \(x=y=1\). Also proves \(|P(A)|=2^{|A|}\).
+</div>
+
+<div class="thm">
+<strong>Theorem — alternating sum.</strong> For \(n\in\mathbb{Z}^*\):
+\[\sum_{k=0}^{n}(-1)^k\binom{n}{k}=0\]
+Proof: set \(x=1,y=-1\). Consequence: even-indexed and odd-indexed coefficients sum to the same value, i.e., \(\binom{n}{0}+\binom{n}{2}+\cdots=\binom{n}{1}+\binom{n}{3}+\cdots\)
+</div>
+
+<div class="thm">
+<strong>Theorem.</strong> For \(n\in\mathbb{Z}^*\): \(\displaystyle\sum_{k=0}^{n}2^k\binom{n}{k}=3^n\).
+Proof: set \(x=1,y=2\).
+</div>
+
+<div class="thm">
+<strong>Pascal's identity.</strong> For \(n,r\in\mathbb{Z}^+\) with \(n\ge r\):
+\[\binom{n+1}{r}=\binom{n}{r-1}+\binom{n}{r}\]
+Proof: \(r\)-subsets of \(\{0,1,\ldots,n\}\) either contain 0 (\(\binom{n}{r-1}\) ways) or do not (\(\binom{n}{r}\) ways).
+</div>
+
+<div class="ex">
+<strong>Pascal's triangle</strong> (each entry = sum of the two above):
+<div style="margin:10px 0;font-size:12px;line-height:2;text-align:center">
+Row 0: 1<br>Row 1: 1 &nbsp; 1<br>Row 2: 1 &nbsp; 2 &nbsp; 1<br>Row 3: 1 &nbsp; 3 &nbsp; 3 &nbsp; 1<br>Row 4: 1 &nbsp; 4 &nbsp; 6 &nbsp; 4 &nbsp; 1<br>Row 5: 1 &nbsp; 5 &nbsp; 10 &nbsp; 10 &nbsp; 5 &nbsp; 1
+</div>
+</div>
+</div>
+
+<div id="s5" class="sec">
+<h2>5.5 Generalised Counting</h2>
+
+<h3>Permutations with repetition</h3>
+<div class="thm">
+<strong>Theorem.</strong> The number of \(r\)-permutations of \(n\) objects with repetition allowed is \(n^r\).
+</div>
+<div class="ex">Words of length \(r\) from a 26-letter alphabet: \(26^r\). (Each position has 26 independent choices.)
+</div>
+
+<h3>Permutations with indistinguishable objects</h3>
+<div class="thm">
+<strong>Theorem.</strong> If \(n\) objects contain \(n_i\) objects of type \(i\) (\(n_1+\cdots+n_k=n\)), the number of distinct permutations is
+\[\dfrac{n!}{n_1!\,n_2!\cdots n_k!}\]
+</div>
+<div class="ex">
+<strong>MISSISSIPPI</strong> (M×1, I×4, S×4, P×2):
+\[\frac{11!}{1!\,4!\,4!\,2!}=34650\]
+Two equivalent approaches: (a) choose positions for each letter type sequentially; (b) \(11!\) total divided by over-counting from identical letters.
+</div>
+
+<h3>Combinations with repetition (stars and bars)</h3>
+<div class="thm">
+<strong>Theorem.</strong> The number of \(r\)-combinations from \(n\) objects with repetition (= nonneg. integer solutions to \(x_1+\cdots+x_n=r\)) is
+\[\binom{r+n-1}{r}=\binom{n+r-1}{n-1}\]
+</div>
+<div class="ex">
+<strong>Stars-and-bars intuition.</strong> Each solution is a permutation of \(r\) stars (\(*\)) and \(n-1\) dividers (\(+\)). For \(x_1+x_2+x_3=5\): solution \((1,1,3)\leftrightarrow *+*+***\). Total: \(\dfrac{7!}{5!\,2!}=21\).
+</div>
+<div class="ex">
+<strong>Positive integer solutions</strong> to \(x_1+x_2+x_3=6\): set \(y_i=x_i-1\ge0\), giving \(y_1+y_2+y_3=3\). Answer: \(\binom{5}{2}=10\). ALT: place 6 stars in a row; choose 2 internal gaps for dividers: \(\binom{5}{2}=10\).
+</div>
+<div class="ex">
+(1) Select 15 cans from 5 drink types: \(\binom{19}{4}=3876\).<br>
+(2) Triples \((i,j,k)\) with \(1\le i\le j\le k\le n\): selecting 3 from \(\{1,\ldots,n\}\) with repetition: \(\dfrac{(n+2)!}{3!\,(n-1)!}=\dfrac{(n+2)(n+1)n}{6}\).<br>
+(3) Select 4 fruits from apples, oranges, pears (unlimited supply): \(\binom{4+3-1}{4}=\binom{6}{4}=15\).
+</div>
+
+<div class="warn">
+<strong>Four counting cases summary:</strong><br>
+Ordered, no repetition: \(P(n,r)=\dfrac{n!}{(n-r)!}\)<br>
+Unordered, no repetition: \(\binom{n}{r}=\dfrac{n!}{r!(n-r)!}\)<br>
+Ordered, repetition: \(n^r\)<br>
+Unordered, repetition: \(\binom{n+r-1}{r}\)
+</div>
+</div>
+
+<div id="s6" class="sec">
+<h2>5.6 Discrete Probability</h2>
+
+<div class="def">
+<strong>Sample space \(S\).</strong> The set of all possible outcomes of a random experiment. An <strong>event</strong> is a subset \(E\subseteq S\).
+</div>
+
+<div class="def">
+<strong>Probability.</strong> If \(S\) is a finite sample space of equally likely outcomes and \(E\) is an event:
+\[p(E)=\dfrac{|E|}{|S|}\]
+</div>
+
+<div class="ex">
+<strong>Tossing two coins.</strong> \(S=\{HH,HT,TH,TT\}\). Event \(E\)="exactly one tail"=\(\{HT,TH\}\). \(p(E)=\frac{2}{4}=\frac{1}{2}\).
+</div>
+
+<div class="ex">
+<strong>Letters of COMPUTER randomly arranged.</strong> Probability that CO appear consecutively in order: treat CO as one block \(\Rightarrow 7!\) favourable out of \(8!\) total. \(p=\dfrac{7!}{8!}=\dfrac{1}{8}\).
+</div>
+</div>
+
+<div id="tool" class="sec">
+<h2>Interactive Tools</h2>
+
+<div class="tool">
+<h3>P(n, r) and C(n, r) calculator</h3>
+<div class="row">
+  <div><label>n</label><input type="number" id="cn" value="10" min="0" max="200"></div>
+  <div><label>r</label><input type="number" id="cr" value="3" min="0" max="200"></div>
+  <button class="btn" onclick="calcPnC()">Calculate</button>
+</div>
+<div class="res" id="pnc-res"></div>
+</div>
+
+<div class="tool">
+<h3>Stars and bars — combinations with repetition</h3>
+<p style="font-size:11.5px;color:var(--color-text-secondary,#888);margin-bottom:8px">Nonneg. integer solutions to \(x_1+\cdots+x_n=r\), i.e., \(\binom{n+r-1}{r}\).</p>
+<div class="row">
+  <div><label>n (types)</label><input type="number" id="sbn" value="5" min="1" max="100"></div>
+  <div><label>r (total)</label><input type="number" id="sbr" value="15" min="0" max="100"></div>
+  <button class="btn" onclick="calcSB()">Calculate</button>
+</div>
+<div class="res" id="sb-res"></div>
+</div>
+
+<div class="tool">
+<h3>Binomial expansion — coefficient finder</h3>
+<p style="font-size:11.5px;color:var(--color-text-secondary,#888);margin-bottom:8px">Finds coefficient of \(x^a y^b\) in \((px+qy)^n\). Use negative \(q\) for subtraction.</p>
+<div class="row">
+  <div><label>n</label><input type="number" id="bn" value="25" min="0" max="50"></div>
+  <div><label>p</label><input type="number" id="bp" value="2"></div>
+  <div><label>q</label><input type="number" id="bq" value="-3"></div>
+  <div><label>a (x-power)</label><input type="number" id="ba" value="12" min="0"></div>
+  <div><label>b (y-power)</label><input type="number" id="bb" value="13" min="0"></div>
+  <button class="btn" onclick="calcBinom()">Calculate</button>
+</div>
+<div class="res" id="bn-res"></div>
+</div>
+
+<div class="tool">
+<h3>Interactive Pascal's triangle</h3>
+<p style="font-size:11.5px;color:var(--color-text-secondary,#888);margin-bottom:10px">Click any entry to see \(\binom{n}{r}\).</p>
+<div id="ptri-wrap" style="overflow-x:auto"></div>
+<div class="res" id="ptri-res" style="margin-top:8px"></div>
+</div>
+</div>
+
+<div id="t9" class="sec">
+<h2>Tutorial 9</h2>
+
+<div class="tq"><p class="qs">Q1(a). How many integers from 1000 through 9999 have distinct digits?</p>
+<button class="togbtn" onclick="tog('t9q1a')">Show solution ▾</button>
+<div id="t9q1a" class="tog">
+First digit (thousands, nonzero): 9 choices. Second: 9 (0–9 excl. first). Third: 8. Fourth: 7.
+\[\text{Answer}=9\times9\times8\times7=4536\]
+</div></div>
+
+<div class="tq"><p class="qs">Q1(b). How many odd integers from 1000 through 9999 have distinct digits?</p>
+<button class="togbtn" onclick="tog('t9q1b')">Show solution ▾</button>
+<div id="t9q1b" class="tog">
+Fix last digit first (odd: 1,3,5,7,9 → 5 choices). First digit (nonzero, ≠ last): 8. Second: 8. Third: 7.
+\[\text{Answer}=5\times8\times8\times7=2240\]
+</div></div>
+
+<div class="tq"><p class="qs">Q1(c). How many odd integers from 5000 through 9999 have distinct digits?</p>
+<button class="togbtn" onclick="tog('t9q1c')">Show solution ▾</button>
+<div id="t9q1c" class="tog">
+First digit in \(\{5,6,7,8,9\}\). Split by parity of first digit (affects count of valid last digits).<br>
+<strong>Case A — first digit odd</strong> (5,7,9 → 3 choices): last digit odd and different → 4 choices. Then: \(8\times7\).
+\[3\times4\times8\times7=672\]
+<strong>Case B — first digit even</strong> (6,8 → 2 choices): last digit any of 5 odd → 5 choices. Then: \(8\times7\).
+\[2\times5\times8\times7=560\]
+\[\text{Total}=672+560=1232\]
+</div></div>
+
+<div class="tq"><p class="qs">Q2. How many numbers from 1 to 99999 contain exactly one each of the digits 2, 3, 4 and 5?</p>
+<button class="togbtn" onclick="tog('t9q2')">Show solution ▾</button>
+<div id="t9q2" class="tog">
+The number must contain 2, 3, 4, 5 each exactly once, so it has at least 4 digits.<br><br>
+<strong>4-digit:</strong> exactly digits \(\{2,3,4,5\}\) in some order: \(4!=24\).<br>
+<strong>5-digit:</strong> one extra digit from \(\{0,1,6,7,8,9\}\) (6 choices). Choose its position (5 ways), arrange \(\{2,3,4,5\}\) in the rest (\(4!\) ways): \(5\times6\times24=720\). Subtract those with 0 as leading digit: \(1\times1\times24=24\). Valid: \(720-24=696\).
+\[\text{Total}=24+696=720\]
+</div></div>
+
+<div class="tq"><p class="qs">Q3(a). 8 people in a row; John and Jane must sit next to each other. How many ways?</p>
+<button class="togbtn" onclick="tog('t9q3a')">Show solution ▾</button>
+<div id="t9q3a" class="tog">
+Treat {John, Jane} as a block: 7 objects, \(7!\) arrangements; John/Jane can swap: \(2!\).
+\[\text{Answer}=7!\times2!=10080\]
+</div></div>
+
+<div class="tq"><p class="qs">Q3(b). 8 people in a row; John and Michael must NOT sit next to each other. How many ways?</p>
+<button class="togbtn" onclick="tog('t9q3b')">Show solution ▾</button>
+<div id="t9q3b" class="tog">
+\[\text{Total}-\text{together}=8!-7!\times2!=40320-10080=30240\]
+</div></div>
+
+<div class="tq"><p class="qs">Q4. How many ways can 10 women and 6 men sit in a row so that no two men are adjacent?</p>
+<button class="togbtn" onclick="tog('t9q4')">Show solution ▾</button>
+<div id="t9q4" class="tog">
+Arrange 10 women: \(10!\). This creates 11 gaps. Place 6 men in distinct gaps (ordered): \(P(11,6)=\frac{11!}{5!}\).
+\[\text{Answer}=10!\times\frac{11!}{5!}=3628800\times332640\approx1.207\times10^{12}\]
+</div></div>
+
+<div class="tq"><p class="qs">Q5. Strings of length \(n\) over \(\{a,b,c,d\}\). How many contain at least one pair of adjacent identical characters?</p>
+<button class="togbtn" onclick="tog('t9q5')">Show solution ▾</button>
+<div id="t9q5" class="tog">
+Complement: strings with no two adjacent identical characters. First char: 4 choices; each subsequent: 3 choices.
+\[\text{No pair}=4\times3^{n-1}\]
+\[\text{At least one pair}=4^n-4\times3^{n-1}\]
+</div></div>
+
+<div class="tq"><p class="qs">Q6. How many integers from 1 to 999999 contain each of 1, 2 and 3 at least once?</p>
+<button class="togbtn" onclick="tog('t9q6')">Show solution ▾</button>
+<div id="t9q6" class="tog">
+View as 6-digit strings 000001–999999. Let \(A_i\) = strings not containing digit \(i\). Digits available when excluding one: 9 (but 000000 not in range).
+\[|A_i|=9^6-1=531440,\quad|A_i\cap A_j|=8^6-1=262143,\quad|A_1\cap A_2\cap A_3|=7^6-1=117648\]
+\[|A_1\cup A_2\cup A_3|=3(531440)-3(262143)+117648=1594320-786429+117648=925539\]
+\[\text{Answer}=999999-925539=74460\]
+</div></div>
+
+<div class="tq"><p class="qs">Q7. How many bit strings of length 8 have no two '1' bits adjacent?</p>
+<button class="togbtn" onclick="tog('t9q7')">Show solution ▾</button>
+<div id="t9q7" class="tog">
+For \(k\) ones in 8 positions with no two adjacent: \(\binom{8-k+1}{k}=\binom{9-k}{k}\).
+\[k{=}0:\binom{9}{0}{=}1,\quad k{=}1:\binom{8}{1}{=}8,\quad k{=}2:\binom{7}{2}{=}21,\quad k{=}3:\binom{6}{3}{=}20,\quad k{=}4:\binom{5}{4}{=}5\]
+\[\text{Total}=1+8+21+20+5=55\]
+</div></div>
+
+<div class="tq"><p class="qs">Q8. Two distinct integers chosen from \(\{1,\ldots,100\}\). In how many ways is their sum (a) even? (b) odd?</p>
+<button class="togbtn" onclick="tog('t9q8')">Show solution ▾</button>
+<div id="t9q8" class="tog">
+50 even and 50 odd integers in \(\{1,\ldots,100\}\).<br>
+<strong>(a)</strong> Both even or both odd: \(\binom{50}{2}+\binom{50}{2}=1225+1225=2450\).<br>
+<strong>(b)</strong> One even, one odd: \(50\times50=2500\).
+</div></div>
+
+<div class="tq"><p class="qs">Q9. Three integers (not necessarily distinct) chosen from \(\{1,\ldots,100\}\). How many ways give an even sum?</p>
+<button class="togbtn" onclick="tog('t9q9')">Show solution ▾</button>
+<div id="t9q9" class="tog">
+Count ordered triples. Sum is even iff the count of odd addends is even (0 or 2).<br>
+All even (0 odd): \(50^3=125000\).<br>
+Exactly 2 odd: \(\binom{3}{2}\times50^3=3\times125000=375000\).<br>
+\[\text{Total}=125000+375000=500000\]
+</div></div>
+
+<div class="tq"><p class="qs">Q10. Let \(X=\{1,2,3,4,5\}\), \(Y=\{1,2,3,4\}\). How many onto functions \(f:X\to Y\)?</p>
+<button class="togbtn" onclick="tog('t9q10')">Show solution ▾</button>
+<div id="t9q10" class="tog">
+Total functions: \(4^5=1024\). Let \(A_i\)=functions missing \(i\in Y\).
+\[|A_i|=3^5=243,\quad|A_i\cap A_j|=2^5=32,\quad|A_i\cap A_j\cap A_k|=1\]
+\[|\bigcup A_i|=\binom{4}{1}243-\binom{4}{2}32+\binom{4}{3}1=972-192+4=784\]
+\[\text{Onto}=1024-784=240\]
+</div></div>
+
+<div class="tq"><p class="qs">Q11. How many ways to choose 5 integers from \(\{1,\ldots,100\}\) so that no two are consecutive?</p>
+<button class="togbtn" onclick="tog('t9q11')">Show solution ▾</button>
+<div id="t9q11" class="tog">
+Let chosen integers be \(a_1&lt;a_2&lt;a_3&lt;a_4&lt;a_5\). Set \(b_i=a_i-(i-1)\). Then \(1\le b_1&lt;b_2&lt;b_3&lt;b_4&lt;b_5\le96\) — a simple 5-subset of \(\{1,\ldots,96\}\).
+\[\text{Answer}=\binom{96}{5}\]
+</div></div>
+
+<div class="tq"><p class="qs">Q12(a). Integers 1–1000: multiples of 2 or multiples of 9?</p>
+<button class="togbtn" onclick="tog('t9q12a')">Show solution ▾</button>
+<div id="t9q12a" class="tog">
+\[|A_2|=500,\quad|A_9|=111,\quad|A_{18}|=55\]
+\[|A_2\cup A_9|=500+111-55=556\]
+</div></div>
+
+<div class="tq"><p class="qs">Q12(b). Integers 1–1000: neither multiples of 2 nor multiples of 9?</p>
+<button class="togbtn" onclick="tog('t9q12b')">Show solution ▾</button>
+<div id="t9q12b" class="tog">
+\[1000-556=444\]
+</div></div>
+</div>
+
+<div id="t10" class="sec">
+<h2>Tutorial 10</h2>
+
+<div class="tq"><p class="qs">Q1. Integers 1–2026: multiples of 6 or 7 or 9, but not multiples of 12. How many?</p>
+<button class="togbtn" onclick="tog('t10q1')">Show solution ▾</button>
+<div id="t10q1" class="tog">
+Let \(A,B,C,D\) be multiples of 6, 7, 9, 12 respectively in \([1,2026]\).
+\[|A|=337,\;|B|=289,\;|C|=225\]
+\[|A\cap B|=\lfloor2026/42\rfloor=48,\;|A\cap C|=\lfloor2026/18\rfloor=112,\;|B\cap C|=\lfloor2026/63\rfloor=32\]
+\[|A\cap B\cap C|=\lfloor2026/126\rfloor=16\]
+\[|A\cup B\cup C|=337+289+225-48-112-32+16=675\]
+Since \(D\subseteq A\): \(|D|=\lfloor2026/12\rfloor=168\). Answer \(=675-168=507\).
+</div></div>
+
+<div class="tq"><p class="qs">Q2. 3×3 board, 5 crosses, 4 zeros. (a) Total configurations. (b) \(|R_i|\) and \(|R_i\cap R_j|\). (c) \(|R_i\cap C_j|\). (d) \(|D_k|\) and \(|D_1\cap D_2|\). (f) \(|X\cap Y\cap Z|\) for any 3 sets from \(\{R_i,C_j,D_k\}\). (g) Configs with a row/column/diagonal of crosses.</p>
+<button class="togbtn" onclick="tog('t10q2')">Show solution ▾</button>
+<div id="t10q2" class="tog">
+<strong>(a)</strong> \(\binom{9}{5}=126\).<br><br>
+<strong>(b)</strong> \(|R_i|=\binom{6}{2}=15\) (fix 3 crosses in row \(i\), choose 2 more from remaining 6). \(|R_i\cap R_j|=0\): two full rows need 6 crosses, but only 5 available.<br><br>
+<strong>(c)</strong> \(|R_i\cap C_j|=1\): row \(i\) (3 cells) + col \(j\) (3 cells) share 1 cell; union has exactly 5 cells, accounting for all crosses. Similarly \(|R_i\cap D_k|=1\) and \(|C_i\cap D_k|=1\).<br><br>
+<strong>(d)</strong> \(|D_k|=\binom{6}{2}=15\). \(|D_1\cap D_2|=1\): both diagonals share cell (2,2); together cover \(3+3-1=5\) distinct cells, exactly using all 5 crosses.<br><br>
+<strong>(f)</strong> All triples give 0. Any triple forces either two disjoint sets requiring 6+ crosses, or the 5 predetermined positions from a pair do not satisfy the third constraint.<br><br>
+<strong>(g)</strong> By inclusion–exclusion over \(\{R_1,R_2,R_3,C_1,C_2,C_3,D_1,D_2\}\):<br>
+Singles: \(8\times15=120\).<br>
+Pairs with \(|{}\cap{}|=1\): Row-Col: \(9\), Row-Diag: \(6\), Col-Diag: \(6\), Diag-Diag: \(1\). Total \(=22\).<br>
+Triples: all 0.
+\[|A\cup\cdots|=120-22=98\]
+</div></div>
+
+<div class="tq"><p class="qs">Q3. Select 5 from 7 men and 6 women with at least 3 men.</p>
+<button class="togbtn" onclick="tog('t10q3')">Show solution ▾</button>
+<div id="t10q3" class="tog">
+\[\binom{7}{3}\binom{6}{2}+\binom{7}{4}\binom{6}{1}+\binom{7}{5}\binom{6}{0}=525+210+21=756\]
+</div></div>
+
+<div class="tq"><p class="qs">Q4. Integer solutions to \(x_1+x_2+x_3+x_4=30\) with \(x_i\ge2\).</p>
+<button class="togbtn" onclick="tog('t10q4')">Show solution ▾</button>
+<div id="t10q4" class="tog">
+Let \(y_i=x_i-2\ge0\). Then \(y_1+y_2+y_3+y_4=22\).
+\[\binom{22+4-1}{4-1}=\binom{25}{3}=2300\]
+</div></div>
+
+<div class="tq"><p class="qs">Q5(a). Coefficient of \(a^5b^7\) in \((a-2b)^{12}\).</p>
+<button class="togbtn" onclick="tog('t10q5a')">Show solution ▾</button>
+<div id="t10q5a" class="tog">
+\[\binom{12}{7}(a)^5(-2b)^7=\binom{12}{7}(-2)^7 a^5b^7=792\times(-128)=-101376\]
+</div></div>
+
+<div class="tq"><p class="qs">Q5(b). Coefficient of \(a^5b^2c^8\) in \((a+b+c)^{15}\).</p>
+<button class="togbtn" onclick="tog('t10q5b')">Show solution ▾</button>
+<div id="t10q5b" class="tog">
+Multinomial coefficient:
+\[\frac{15!}{5!\,2!\,8!}=135135\]
+</div></div>
+
+<div class="tq"><p class="qs">Q6. Express in closed form: \(\displaystyle\sum_{i=0}^{n}\binom{n}{i}4^i\) and \(\displaystyle\sum_{k=0}^{n}(-1)^k\binom{n}{k}3^{2n-2k}2^{2k}\).</p>
+<button class="togbtn" onclick="tog('t10q6')">Show solution ▾</button>
+<div id="t10q6" class="tog">
+<strong>First:</strong> \(\displaystyle\sum_{i=0}^{n}\binom{n}{i}4^i\cdot1^{n-i}=(1+4)^n=5^n\).<br><br>
+<strong>Second:</strong> Rewrite: \(\displaystyle\sum_{k=0}^{n}\binom{n}{k}(9)^{n-k}(-4)^k=(9-4)^n=5^n\).
+</div></div>
+
+<div class="tq"><p class="qs">Q7. Combinatorial proof: \(\displaystyle\sum_{k=1}^{n}k\binom{n}{k}=n\cdot2^{n-1}\).</p>
+<button class="togbtn" onclick="tog('t10q7')">Show solution ▾</button>
+<div id="t10q7" class="tog">
+Both sides count: select a nonempty committee from \(n\) people, then pick a leader.<br>
+<strong>LHS:</strong> sum over size \(k\): \(\binom{n}{k}\) committees × \(k\) leader choices.<br>
+<strong>RHS:</strong> pick leader first (\(n\) ways) then include each other person or not (\(2^{n-1}\) ways).
+</div></div>
+
+<div class="tq"><p class="qs">Q8. Combinatorial proof of Vandermonde's identity \(\binom{m+n}{r}=\sum_{k=0}^{r}\binom{m}{k}\binom{n}{r-k}\). Hence prove \(\binom{2n}{n}=\sum_{k=0}^{n}\binom{n}{k}^2\).</p>
+<button class="togbtn" onclick="tog('t10q8')">Show solution ▾</button>
+<div id="t10q8" class="tog">
+<strong>Vandermonde:</strong> Count \(r\)-subsets from \(m+n\) elements (split into groups of \(m\) and \(n\)). For each \(k\): choose \(k\) from the \(m\)-group and \(r-k\) from the \(n\)-group. Summing over \(k\) gives \(\binom{m+n}{r}\).<br><br>
+<strong>Corollary:</strong> Set \(m=n,r=n\):
+\[\binom{2n}{n}=\sum_{k=0}^{n}\binom{n}{k}\binom{n}{n-k}=\sum_{k=0}^{n}\binom{n}{k}^2\]
+(using \(\binom{n}{n-k}=\binom{n}{k}\)).
+</div></div>
+
+<div class="tq"><p class="qs">Q9. Tournament: first to 4 wins. A has won the first 2 games. How many ways can the tournament be completed?</p>
+<button class="togbtn" onclick="tog('t10q9')">Show solution ▾</button>
+<div id="t10q9" class="tog">
+From game 3: A needs 2 more wins, B needs 4. At most \(2+4-1=5\) more games.<br><br>
+<strong>Ways A wins</strong> (A's decisive win is game \(3+(k-1)\) for \(k=2,3,4,5\)):
+In the first \(k-1\) games, A has exactly 1 win. Count: \(\binom{k-1}{1}\).
+\[\sum_{k=2}^{5}\binom{k-1}{1}=1+2+3+4=10\]
+<strong>Ways B wins</strong> (B's 4th win on game \(3+(k-1)\) for \(k=4,5\)):
+In first \(k-1\) games, A has \(k-4\le1\) wins, B has 3.
+\[\binom{3}{3}+\binom{4}{3}=1+4=5\]
+\[\text{Total}=10+5=15\]
+</div></div>
+
+<div class="tq"><p class="qs">Q10. \(n\) numbered boxes, each white or blue, at least one white, white boxes consecutively numbered. Total ways?</p>
+<button class="togbtn" onclick="tog('t10q10')">Show solution ▾</button>
+<div id="t10q10" class="tog">
+Each valid assignment corresponds to a consecutive block \(\{i,i+1,\ldots,j\}\) with \(1\le i\le j\le n\). Number of pairs \((i,j)\):
+\[\binom{n}{2}+n=\binom{n+1}{2}=\frac{n(n+1)}{2}\]
+</div></div>
+
+<div class="tq"><p class="qs">Q11(a). 8 boys, 4 girls around a circular table; no two girls together.</p>
+<button class="togbtn" onclick="tog('t10q11a')">Show solution ▾</button>
+<div id="t10q11a" class="tog">
+Arrange 8 boys in a circle: \((8-1)!=7!\). Choose 4 of the 8 gaps for girls: \(\binom{8}{4}\). Arrange girls: \(4!\).
+\[7!\times\binom{8}{4}\times4!=5040\times70\times24=8{,}467{,}200\]
+</div></div>
+
+<div class="tq"><p class="qs">Q11(b). 6 people around a circular table; Eric NOT next to Freddy.</p>
+<button class="togbtn" onclick="tog('t10q11b')">Show solution ▾</button>
+<div id="t10q11b" class="tog">
+Total: \((6-1)!=120\). Eric and Freddy together: \((5-1)!\times2!=48\).
+\[\text{Answer}=120-48=72\]
+</div></div>
+
+<div class="tq"><p class="qs">Q11(c). \(n\) people around a circular table with \(n\) chairs.</p>
+<button class="togbtn" onclick="tog('t10q11c')">Show solution ▾</button>
+<div id="t10q11c" class="tog">
+Fix one person's position; arrange the rest: \((n-1)!\).
+</div></div>
+
+<div class="tq"><p class="qs">Q12. 15 evenly-spaced dots on a circle. Pick 3 that do NOT form an equilateral triangle.</p>
+<button class="togbtn" onclick="tog('t10q12')">Show solution ▾</button>
+<div id="t10q12" class="tog">
+Total: \(\binom{15}{3}=455\). Equilateral triangles: since \(15=3\times5\), there are exactly 5 equilateral triangles (\(\{1,6,11\},\{2,7,12\},\{3,8,13\},\{4,9,14\},\{5,10,15\}\)).
+\[\text{Answer}=455-5=450\]
+</div></div>
+</div>
+
+<div id="quiz" class="sec">
+<h2>Quiz — 10 questions</h2>
+<p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+<div id="quiz-area"></div>
+</div>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+var QUIZ=[
+  {q:'How many functions \(f:\\{1,2,3\\}\\to\\{a,b\\}\) are there?',
+   opts:['6','8','9','3'],ans:1,
+   exp:'Each of 3 domain elements has 2 image choices. By the product rule: \(2^3=8\).'},
+  {q:'Which formula gives the number of 4-letter strings (repetition allowed) from a 26-letter alphabet?',
+   opts:['\(P(26,4)\)','\(\\binom{26}{4}\)','\(26^4\)','\(4!\)'],ans:2,
+   exp:'With repetition, each position has 26 independent choices: \(26^4\) by the product rule.'},
+  {q:'\(P(8,3)\) equals:',
+   opts:['56','336','512','24'],ans:1,
+   exp:'\(P(8,3)=8\\times7\\times6=336=\\frac{8!}{5!}\).'},
+  {q:'\(\\binom{10}{3}\) equals:',
+   opts:['720','30','120','80'],ans:2,
+   exp:'\(\\binom{10}{3}=\\frac{10\\times9\\times8}{3!}=\\frac{720}{6}=120\).'},
+  {q:'The coefficient of \(x^2y^3\) in \((x+y)^5\) is:',
+   opts:['10','20','5','15'],ans:0,
+   exp:'\(\\binom{5}{3}=\\binom{5}{2}=10\). The term is \(\\binom{5}{2}x^2y^3=10x^2y^3\).'},
+  {q:'How many nonneg. integer solutions does \(x_1+x_2+x_3=10\) have?',
+   opts:['\(\\binom{10}{2}=45\)','\(\\binom{12}{2}=66\)','\(3^{10}\)','\(10^3\)'],ans:1,
+   exp:'Stars and bars: \(\\binom{10+3-1}{3-1}=\\binom{12}{2}=66\).'},
+  {q:'How many distinct arrangements does MISSISSIPPI have?',
+   opts:['\(11!\)','\(\\frac{11!}{4!2!}\)','\(\\frac{11!}{4!4!2!}\)','\(\\frac{11!}{(4!)^2}\)'],ans:2,
+   exp:'M\u00d71, I\u00d74, S\u00d74, P\u00d72. Count: \(\\frac{11!}{1!4!4!2!}=34650\).'},
+  {q:'\(\\displaystyle\\sum_{k=0}^{n}\\binom{n}{k}\) equals:',
+   opts:['\(n!\)','\(n^2\)','\(2^{n-1}\)','\(2^n\)'],ans:3,
+   exp:'Set \(x=y=1\) in the binomial theorem: \((1+1)^n=2^n\).'},
+  {q:'The number of circular arrangements of 6 distinct people is:',
+   opts:['\(6!\)','\(5!\)','\(6!/2\)','\(6\)'],ans:1,
+   exp:'Circular permutations of \(n\) objects: \((n-1)!\). For \(n=6\): \(5!=120\).'},
+  {q:'\(|A\\cup B|\) when \(|A|=30\), \(|B|=20\), \(|A\\cap B|=8\) equals:',
+   opts:['50','58','42','38'],ans:2,
+   exp:'Inclusion\u2013exclusion: \(30+20-8=42\).'}
+];
+
+function pickOpt(qi,oi){
+  var d=quizData[qi];
+  var box=document.getElementById('qb'+qi);
+  if(box.getAttribute('data-done')) return;
+  box.setAttribute('data-done','1');
+  quizAnswered++;
+  var correct=(oi===d.ans);
+  if(correct) quizScore++;
+  for(var j=0;j<d.opts.length;j++){
+    var el=document.getElementById('opt_'+qi+'_'+j);
+    if(j===d.ans) el.className='opt cor';
+    else if(j===oi && !correct) el.className='opt wrg';
+  }
+  var expl=document.getElementById('expl'+qi);
+  expl.style.display='block';
+  rerender(expl);
+  document.getElementById('sc-val').textContent=quizScore+'/'+quizAnswered;
+  document.getElementById('sc-sub').textContent=quizAnswered<quizData.length?'in progress':'complete';
+  if(quizAnswered===quizData.length){
+    var done=document.getElementById('qz-done');
+    done.style.display='block';
+    done.textContent='Quiz complete! Final score: '+quizScore+'/'+quizData.length;
+    if(quizScore>=8) done.style.color='#2a6e2a';
+    else if(quizScore>=5) done.style.color='#7a5500';
+    else done.style.color='#8a1a1a';
+  }
+}
+
+}
+
+function bigC(n,r){
+  if(r<0||r>n) return 0;
+  if(r===0||r===n) return 1;
+  r=Math.min(r,n-r);
+  var num=1,den=1;
+  for(var i=0;i<r;i++){num*=(n-i);den*=(i+1);}
+  return Math.round(num/den);
+}
+
+function factStr(n){
+  if(n<=12){
+    var r=1;for(var i=2;i<=n;i++) r*=i;
+    return r.toLocaleString();
+  }
+  return 'very large';
+}
+
+function calcPnC(){
+  var n=parseInt(document.getElementById('cn').value);
+  var r=parseInt(document.getElementById('cr').value);
+  var el=document.getElementById('pnc-res');
+  if(isNaN(n)||isNaN(r)||r<0||r>n){el.textContent='Invalid input (need 0 \u2264 r \u2264 n).';return;}
+  var cnr=bigC(n,r);
+  var pnr=cnr;
+  for(var i=0;i<r;i++) pnr=pnr/(i+1)*(r-i);
+  pnr=bigC(n,r);
+  var p=1;
+  for(var i=0;i<r;i++) p*=(n-i);
+  el.innerHTML='P('+n+','+r+') = '+p.toLocaleString()+'&nbsp;&nbsp;&nbsp;&nbsp;C('+n+','+r+') = \u221aC'+cnr.toLocaleString();
+  el.textContent='P('+n+','+r+') = '+p.toLocaleString()+'     C('+n+','+r+') = '+cnr.toLocaleString();
+}
+
+function calcSB(){
+  var n=parseInt(document.getElementById('sbn').value);
+  var r=parseInt(document.getElementById('sbr').value);
+  var el=document.getElementById('sb-res');
+  if(isNaN(n)||isNaN(r)||n<1||r<0){el.textContent='Invalid input.';return;}
+  var res=bigC(n+r-1,r);
+  el.textContent='C('+(n+r-1)+', '+r+') = '+res.toLocaleString();
+}
+
+function calcBinom(){
+  var n=parseInt(document.getElementById('bn').value);
+  var p=parseFloat(document.getElementById('bp').value);
+  var q=parseFloat(document.getElementById('bq').value);
+  var a=parseInt(document.getElementById('ba').value);
+  var b=parseInt(document.getElementById('bb').value);
+  var el=document.getElementById('bn-res');
+  if(isNaN(n)||isNaN(p)||isNaN(q)||isNaN(a)||isNaN(b)){el.textContent='Invalid input.';return;}
+  if(a+b!==n){el.textContent='Error: a+b must equal n. Got '+(a+b)+' but n='+n+'.';return;}
+  var cnb=bigC(n,b);
+  var coeff=cnb*Math.pow(p,a)*Math.pow(q,b);
+  el.textContent='C('+n+','+b+') x ('+p+')^'+a+' x ('+q+')^'+b+' = '+coeff.toLocaleString();
+}
+
+function buildPascal(){
+  var rows=9;
+  var data=[];
+  for(var i=0;i<=rows;i++){
+    data.push([]);
+    for(var j=0;j<=i;j++) data[i].push(bigC(i,j));
+  }
+  var t=LT+'table class="ptri"'+GT;
+  for(var i=0;i<=rows;i++){
+    t+=LT+'tr'+GT;
+    for(var p=0;p<rows-i;p++) t+=LT+'td style="background:none;cursor:default"'+GT+LT+'/td'+GT;
+    for(var j=0;j<=i;j++){
+      t+=LT+'td id="pt_'+i+'_'+j+'" onclick="hiPascal('+i+','+j+','+data[i][j]+')"'+GT+data[i][j]+LT+'/td'+GT;
+    }
+    t+=LT+'/tr'+GT;
+  }
+  t+=LT+'/table'+GT;
+  document.getElementById('ptri-wrap').innerHTML=t;
+}
+
+function hiPascal(n,r,val){
+  var cells=document.querySelectorAll('.ptri td');
+  for(var i=0;i<cells.length;i++) cells[i].className='';
+  document.getElementById('pt_'+n+'_'+r).className='hi';
+  document.getElementById('ptri-res').textContent='C('+n+','+r+') = '+val;
+}
+
+function init(){
+  if(!window.renderMathInElement){setTimeout(init,80);return;}
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildPascal();
+  buildQuiz();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+init();
+</script>
+</body>
+</html>

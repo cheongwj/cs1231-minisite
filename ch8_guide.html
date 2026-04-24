@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS1231 Chapter 8 &mdash; Relations</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 8 Relations — interactive study guide</h2>
+<div id="loading">Loading equations&hellip;</div>
+<div id="wr">
+<nav id="nv">
+<h1>Chapter 8</h1>
+<button class="nb act" onclick="show('s1',this)">8.1–8.2 Relations</button>
+<button class="nb" onclick="show('s2',this)">8.3 Equivalence</button>
+<button class="nb" onclick="show('s3',this)">8.3 Partitions</button>
+<button class="nb" onclick="show('s4',this)">8.4 Partial Orders</button>
+<button class="nb" onclick="show('s5',this)">8.4 Hasse &amp; Sorting</button>
+<button class="nb" onclick="show('s6',this)">Interactive Tools</button>
+<button class="nb" onclick="show('s7',this)">Quiz</button>
+<div id="sc">
+<p>Quiz score</p>
+<div id="scv">—</div>
+</div>
+</nav>
+<main id="mn">
+<div class="warn-banner"><strong>Tutorial note:</strong> t9q &amp; t10q cover Combinatorics; t11q covers Graph Theory / Trees (Ch7). <strong>No tutorial in {t9q, t10q, t11q} maps to Ch8 Relations.</strong> This guide is based solely on the 12-page Ch8 lecture notes.</div>
+
+<!-- SECTION 1 -->
+<section id="s1" class="sec on">
+<h2>8.1–8.2 Relations</h2>
+<div class="def"><div class="lbl">Definition &mdash; Relation</div>
+<p>Let \(A, B\) be sets. A <strong>relation \(R\) from \(A\) to \(B\)</strong> is a subset of \(A \times B\).</p>
+<p>We write \(x\,R\,y\) iff \((x,y) \in R\), and \(x\,\not R\,y\) iff \((x,y) \notin R\).</p>
+<p>A <strong>relation on \(A\)</strong> is a relation from \(A\) to \(A\), i.e. \(R \subseteq A \times A\).</p>
+</div>
+<div class="ex"><div class="lbl">Examples</div>
+<ul>
+<li>\(A=\{0,1,2\}\), \(B=\{1,2,3\}\), \(x\,R\,y\) iff \(x\lt y\): \(R=\{(0,1),(0,2),(0,3),(1,2),(1,3),(2,3)\}\). So \(0\,R\,1\), but \(2\,\not R\,2\).</li>
+<li>\(E=\{(x,y):x\equiv y\pmod{2}\}\) on \(\mathbb{Z}\times\mathbb{Z}\): \(2\,E\,6\), \(3\,E\,{-11}\), but \(2\,\not E\,7\).</li>
+<li>Bit strings of length 6; \(x\,R\,y\) if first 4 bits match: \(101000\,R\,101011\), but \(101111\,\not R\,101011\).</li>
+<li>For any function \(f:A\to B\), the graph \(\Gamma(f)=\{(a,f(a))\mid a\in A\}\) is a relation. Functions are special relations.</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; Domain &amp; Range</div>
+<p><strong>Domain</strong> of \(R\) \(=\{a\in A\mid\exists b\in B,\,a\,R\,b\}\).</p>
+<p><strong>Range</strong> of \(R\) \(=\{b\in B\mid\exists a\in A,\,a\,R\,b\}\).</p>
+<p>When \(R=\Gamma(f)\), domain and range of \(R\) equal those of \(f\).</p>
+</div>
+<h3 class="sub">Arrow Diagram</h3>
+<div class="def"><div class="lbl">Arrow Diagram</div>
+<p>A relation \(R\) is represented by an <strong>arrow diagram</strong>: draw an arrow from \(a\) to \(b\) whenever \((a,b)\in R\).</p>
+</div>
+<div class="ex"><div class="lbl">Example</div>
+<p>\(R=\{(1,x),(1,y),(2,x),(2,y),(2,z),(3,z),(4,z)\}\) from \(A=\{1,2,3,4\}\) to \(B=\{x,y,z\}\). In the arrow diagram, 2 has arrows to all three elements of \(B\); 1 has arrows to \(x\) and \(y\); 3 and 4 each go only to \(z\).</p>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; Inverse Relation</div>
+<p>The <strong>inverse</strong> of \(R\) is \(R^{-1}=\{(b,a)\in B\times A\mid a\,R\,b\}\).</p>
+<ul>
+<li>\(\forall a\in A\,\forall b\in B\;(a\,R\,b\Leftrightarrow b\,R^{-1}\,a)\).</li>
+<li>Arrow diagram of \(R^{-1}\) = reverse all arrows of \(R\).</li>
+<li>\((\Gamma(f))^{-1}\) is a function \(g:B\to A\) iff \(f\) is bijective, in which case \(g=f^{-1}\).</li>
+</ul>
+</div>
+</section>
+
+<!-- SECTION 2 -->
+<section id="s2" class="sec">
+<h2>8.3 Equivalence Relations</h2>
+<div class="def"><div class="lbl">Four Key Properties of Relations on \(A\)</div>
+<ul>
+<li><strong>Reflexive:</strong> \(\forall x\in A,\;(x,x)\in R\).</li>
+<li><strong>Symmetric:</strong> \(\forall x,y\in A,\;(x,y)\in R\Rightarrow(y,x)\in R\).</li>
+<li><strong>Antisymmetric:</strong> \(\forall x,y\in A,\;(x,y)\in R\text{ and }(y,x)\in R\Rightarrow x=y\). (At most one of \((x,y)\), \((y,x)\) can be in \(R\) for \(x\ne y\).)</li>
+<li><strong>Transitive:</strong> \(\forall x,y,z\in A,\;(x,y)\in R\text{ and }(y,z)\in R\Rightarrow(x,z)\in R\).</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Property Comparison Table</div>
+<table>
+<tr><th>Relation</th><th>Refl.</th><th>Sym.</th><th>Antisym.</th><th>Trans.</th></tr>
+<tr><td>Equality \(=\) on \(\mathbb{R}\)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+<tr><td>\(\le\) on \(\mathbb{R}\)</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td></tr>
+<tr><td>\(\lt\) on \(\mathbb{R}\)</td><td>&#10007;</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td></tr>
+<tr><td>\(\equiv\pmod{3}\) on \(\mathbb{Z}\)</td><td>&#10003;</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td></tr>
+<tr><td>Divides \(|\) on \(\mathbb{N}\)</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td></tr>
+<tr><td>Subset \(\subseteq\) on sets</td><td>&#10003;</td><td>&#10007;</td><td>&#10003;</td><td>&#10003;</td></tr>
+</table>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; Equivalence Relation</div>
+<p>A relation \(R\) on \(A\) is an <strong>equivalence relation</strong> if it is reflexive, symmetric, and transitive.</p>
+<p>If \((a,b)\in R\), we say \(a\) is <strong>equivalent to</strong> \(b\).</p>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; Equivalence Class</div>
+<p>The <strong>equivalence class</strong> of \(a\in A\) under equivalence relation \(R\) is:</p>
+\[[a]_R=\{x\in A\mid(a,x)\in R\}\]
+<p>The set of all equivalence classes is \(A/R=\{[a]_R\mid a\in A\}\subseteq\mathcal{P}(A)\).</p>
+</div>
+<div class="ex"><div class="lbl">Example 1 &mdash; Relation \(S\) on \(\mathbb{R}\): \((a,b)\in S\) iff \(a-b\in\mathbb{Z}\)</div>
+<button class="togbtn" onclick="tog('ex-S')">Show proof &amp; classes &#9660;</button>
+<div id="ex-S" class="tog">
+<p><strong>Reflexive:</strong> \(a-a=0\in\mathbb{Z}\). &#10003;</p>
+<p><strong>Symmetric:</strong> \(a-b\in\mathbb{Z}\Rightarrow b-a=-(a-b)\in\mathbb{Z}\). &#10003;</p>
+<p><strong>Transitive:</strong> \(a-b,b-c\in\mathbb{Z}\Rightarrow a-c=(a-b)+(b-c)\in\mathbb{Z}\). &#10003;</p>
+<p><strong>Classes:</strong> \([a]=\{n+a\mid n\in\mathbb{Z}\}\). So \(S/\mathbb{R}=\{[a]\mid 0\le a\lt1\}\) &mdash; one class per fractional part.</p>
+</div>
+</div>
+<div class="ex"><div class="lbl">Example 2 &mdash; Congruence mod \(m\): \(R=\{(a,b)\mid a\equiv b\pmod{m}\}\)</div>
+<button class="togbtn" onclick="tog('ex-congruence')">Show proof &#9660;</button>
+<div id="ex-congruence" class="tog">
+<p>Recall \(a\equiv b\pmod{m}\) iff \(m\mid(a-b)\).</p>
+<p><strong>Reflexive:</strong> \(m\mid 0\). &#10003; &nbsp;<strong>Symmetric:</strong> \(m\mid(a-b)\Rightarrow m\mid(b-a)\). &#10003; &nbsp;<strong>Transitive:</strong> \(m\mid(a-b)\) and \(m\mid(b-c)\Rightarrow m\mid(a-c)\). &#10003;</p>
+<p><strong>Classes:</strong> \([n]=\{n+km\mid k\in\mathbb{Z}\}=[r]\) where \(r=n\bmod m\). Exactly \(m\) classes: \([0],[1],\ldots,[m-1]\).</p>
+<p>\(m=2\): \([0]=\{2k\}\) (even), \([1]=\{1+2k\}\) (odd). &nbsp;\(m=3\): \([0]=\{3k\}\), \([1]=\{3k+1\}\), \([2]=\{3k+2\}\).</p>
+</div>
+</div>
+<div class="ex"><div class="lbl">Example 3 &mdash; Non-example: Divides on \(\mathbb{Z}\)</div>
+<p>The divides relation is <strong>not</strong> an equivalence relation: it is not symmetric (\(2\mid 6\) but \(6\nmid 2\)).</p>
+</div>
+<div class="ex"><div class="lbl">Example 4 &mdash; Bitstring Relation \(R_n\)</div>
+<p>Define \(R_n\) on finite bitstrings: \((s,t)\in R_n\) if \(s=t\) or both have length \(\ge n\) and their first \(n\) bits agree. Then \(R_n\) is an equivalence relation. Classes: if \(|a|\le n\), then \([a]=\{a\}\); if \(|a|\gt n\), let \(b\) = first \(n\) bits of \(a\), then \([a]=\{bx\mid x\text{ bitstring}\}\).</p>
+</div>
+</section>
+
+<!-- SECTION 3 -->
+<section id="s3" class="sec">
+<h2>8.3 Partitions</h2>
+<div class="def"><div class="lbl">Definition &mdash; Partition</div>
+<p>A collection of nonempty subsets \(A_1,A_2,\ldots\) of \(S\) is a <strong>partition</strong> of \(S\) if:</p>
+<ul>
+<li>\(A_1\cup A_2\cup\cdots=S\) (covers \(S\)); and</li>
+<li>\(A_1,A_2,\ldots\) are mutually disjoint (\(A_i\cap A_j=\emptyset\) for \(i\ne j\)).</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Examples</div>
+<ul>
+<li>\(\{\text{primes},\text{composites},\{1\}\}\) partitions \(\mathbb{N}\).</li>
+<li>\(\{1,2,3\}\) has 5 partitions: \(\{\{1\},\{2\},\{3\}\}\); \(\{\{1\},\{2,3\}\}\); \(\{\{2\},\{1,3\}\}\); \(\{\{3\},\{1,2\}\}\); \(\{\{1,2,3\}\}\).</li>
+<li>The \(m\) congruence classes \([0],[1],\ldots,[m-1]\) partition \(\mathbb{Z}\).</li>
+</ul>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Equivalence Class Characterisation</div>
+<p>For an equivalence relation \(R\) on \(A\) and \(a,b\in A\), the following are equivalent:</p>
+<p style="text-align:center">(i) \((a,b)\in R\) &nbsp;\(\Longleftrightarrow\)&nbsp; (ii) \([a]=[b]\) &nbsp;\(\Longleftrightarrow\)&nbsp; (iii) \([a]\cap[b]\ne\emptyset\)</p>
+<button class="togbtn" onclick="tog('pf-eqclass')">Show proof &#9660;</button>
+<div id="pf-eqclass" class="tog">
+<p><strong>(i)&rArr;(ii):</strong> Let \(x\in[a]\), so \((a,x)\in R\). Since \((b,a)\in R\) (symmetry) and \((a,x)\in R\), transitivity gives \((b,x)\in R\), so \(x\in[b]\). Thus \([a]\subseteq[b]\). Reversing gives \([b]\subseteq[a]\), so \([a]=[b]\).</p>
+<p><strong>(ii)&rArr;(iii):</strong> \([a]\cap[b]=[a]\ne\emptyset\) (since \(a\in[a]\) by reflexivity).</p>
+<p><strong>(iii)&rArr;(i):</strong> Let \(x\in[a]\cap[b]\). Then \((a,x)\in R\) and \((b,x)\in R\). By symmetry \((x,b)\in R\). By transitivity \((a,b)\in R\).</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Corollary &mdash; Classes are Identical or Disjoint</div>
+<p>For any \(a,b\in A\): \([a]=[b]\) or \([a]\cap[b]=\emptyset\). Equivalence classes never partially overlap.</p>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Partition Correspondence</div>
+<p>The distinct equivalence classes of an equivalence relation \(R\) on \(S\) form a partition of \(S\). Conversely, every partition of \(S\) arises from some equivalence relation.</p>
+<button class="togbtn" onclick="tog('pf-partition')">Show proof &#9660;</button>
+<div id="pf-partition" class="tog">
+<p><strong>Partition from \(R\):</strong> Every \(x\in S\) is in \([x]\) (reflexivity). Distinct classes are disjoint (corollary). So distinct classes partition \(S\).</p>
+<p><strong>Relation from partition \(\{A_i\mid i\in I\}\):</strong> Define \((x,y)\in T\) iff \(\exists i: x,y\in A_i\).</p>
+<ul>
+<li>Reflexive: \(\forall w,\;\exists k: w\in A_k\), so \((w,w)\in T\). &#10003;</li>
+<li>Symmetric: immediate from definition. &#10003;</li>
+<li>Transitive: if \(x,y\in A_i\) and \(y,z\in A_j\), then \(y\in A_i\cap A_j\), so \(i=j\) (disjoint), giving \(x,z\in A_i\). &#10003;</li>
+</ul>
+<p>Each \(x\in A_i\) has \([x]=A_i\). &#10003;</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 4 -->
+<section id="s4" class="sec">
+<h2>8.4 Partial Orders</h2>
+<div class="def"><div class="lbl">Definition &mdash; Partial Order &amp; Poset</div>
+<p>A relation \(R\) on \(A\) is a <strong>partial order</strong> if it is reflexive, antisymmetric, and transitive.</p>
+<p>We call \((A,R)\) a <strong>partially ordered set</strong> (or <strong>poset</strong>). We write \(\preceq\) for the partial order and \(a\prec b\) when \(a\preceq b\) and \(a\ne b\).</p>
+</div>
+<div class="ex"><div class="lbl">Examples of Posets</div>
+<ul>
+<li>\((A,\le)\) for any \(A\subseteq\mathbb{R}\).</li>
+<li>\((S,|)\) for \(S\subseteq\mathbb{N}\), where \(m\,R\,n\) iff \(m\mid n\).</li>
+<li>\((A,\subseteq)\) for any collection of sets.</li>
+<li>If \(R\) is a partial order on \(A\), so is \(R^{-1}\).</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Comparable &amp; Noncomparable</div>
+<p>In \((A,\preceq)\), elements \(a,b\) are <strong>comparable</strong> if \(a\preceq b\) or \(b\preceq a\); otherwise <strong>noncomparable</strong>.</p>
+<ul>
+<li>In \((\mathbb{R},\le)\): every two reals are comparable.</li>
+<li>In \((\mathcal{P}(S),\subseteq)\): \(\{a\}\) and \(\{b\}\) (\(a\ne b\)) are noncomparable.</li>
+<li>In \((\mathbb{N},|)\): 2 and 3 are noncomparable.</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Definitions &mdash; Extremal Elements</div>
+<ul>
+<li><strong>Maximal:</strong> \(a\) is maximal if \(\neg\,(\exists c: a\prec c)\) &mdash; nothing strictly above \(a\).</li>
+<li><strong>Minimal:</strong> \(a\) is minimal if \(\neg\,(\exists c: c\prec a)\) &mdash; nothing strictly below \(a\).</li>
+<li><strong>Greatest/maximum:</strong> \(a\) is greatest if \(\forall b\in A,\,b\preceq a\) &mdash; everything is below or equal to \(a\).</li>
+<li><strong>Smallest/minimum:</strong> \(a\) is smallest if \(\forall b\in A,\,a\preceq b\) &mdash; \(a\) is below or equal to everything.</li>
+</ul>
+<p><strong>Key distinction:</strong> maximal/minimal is local (no neighbour strictly beyond); greatest/smallest is global (related to every element).</p>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; \((\{1,\ldots,10\},|)\)</div>
+<p>Maximal elements: 6, 7, 8, 9, 10. No greatest element. 1 is both the smallest and the unique minimal element.</p>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Finite Posets Have Extremal Elements</div>
+<p>Every nonempty finite poset has at least one minimal element and at least one maximal element.</p>
+<button class="togbtn" onclick="tog('pf-minmax')">Show proof &#9660;</button>
+<div id="pf-minmax" class="tog">
+<p>Pick \(a_1\in S\). If not minimal, \(\exists a_2\prec a_1\). Continue to get a strictly descending chain \(a_1\succ a_2\succ\cdots\). Since \(S\) is finite and elements are distinct, the chain must terminate at a minimal element. Similarly for maximal.</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Uniqueness of Greatest/Smallest</div>
+<p>Every nonempty poset has at most one greatest element and at most one smallest element.</p>
+<button class="togbtn" onclick="tog('pf-unique-greatest')">Show proof &#9660;</button>
+<div id="pf-unique-greatest" class="tog">
+<p>Suppose \(x,y\) are both smallest. Then \(x\preceq y\) (since \(x\) is smallest) and \(y\preceq x\) (since \(y\) is smallest). Antisymmetry gives \(x=y\). Same for greatest.</p>
+</div>
+</div>
+</section>
+
+<!-- SECTION 5 -->
+<section id="s5" class="sec">
+<h2>8.4 Hasse Diagrams &amp; Sorting</h2>
+<div class="def"><div class="lbl">Definition &mdash; Hasse Diagram</div>
+<p>The <strong>Hasse diagram</strong> of poset \((A,\preceq)\): for each <em>cover</em> relation \(x\prec y\) with no \(z\) such that \(x\prec z\prec y\), place \(x\) below \(y\) and draw a line from \(x\) to \(y\). Transitively implied edges are omitted.</p>
+</div>
+<div class="rmk"><div class="lbl">Reading a Hasse Diagram</div>
+<ul>
+<li>\(x\prec y\): can travel from \(x\) to \(y\) following lines <em>upward</em>.</li>
+<li>Minimal elements: vertices with no lines going <em>downward</em>.</li>
+<li>Maximal elements: vertices with no lines going <em>upward</em>.</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; Divisors of \(\{1,2,3,5,6,10,15,30\}\)</div>
+<p>Bottom: 1. Level 1: 2, 3, 5. Level 2: 6 \((=2\cdot3)\), 10 \((=2\cdot5)\), 15 \((=3\cdot5)\). Top: 30.</p>
+<p>Edges drawn: \(1\text{-}2,1\text{-}3,1\text{-}5,2\text{-}6,2\text{-}10,3\text{-}6,3\text{-}15,5\text{-}10,5\text{-}15,6\text{-}30,10\text{-}30,15\text{-}30\). Edge \(1\text{-}6\) is <em>not</em> drawn (not a cover: \(1\prec2\prec6\)).</p>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; Power Set \(\mathcal{P}(\{a,b,c\})\) under \(\subseteq\)</div>
+<p>Top: \(\{a,b,c\}\). Level 2: \(\{a,b\},\{a,c\},\{b,c\}\). Level 1: \(\{a\},\{b\},\{c\}\). Bottom: \(\emptyset\).</p>
+</div>
+<div class="def"><div class="lbl">Total Order, Chain, Well Order</div>
+<ul>
+<li><strong>Total order:</strong> \(\preceq\) on \(P\) is total if \(\forall a,b\in P\), \(a\preceq b\) or \(b\preceq a\) &mdash; every pair comparable.</li>
+<li><strong>Chain:</strong> a subset \(Q\subseteq P\) where every two elements are comparable.</li>
+<li><strong>Well order:</strong> a total order where every nonempty subset has a smallest element. \((\mathbb{Z}^+,\le)\) is a well order; \((\mathbb{Z},\le)\) is not.</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Lexicographic vs Product Order</div>
+<ul>
+<li><strong>Lexicographic:</strong> \((x_1,\ldots,x_n)\preceq(y_1,\ldots,y_n)\) if the first differing coordinate satisfies \(x_i\prec y_i\). This is a <strong>total order</strong>.</li>
+<li><strong>Product:</strong> \((x_1,\ldots,x_n)\preceq(y_1,\ldots,y_n)\) iff \(x_i\preceq y_i\) for <em>all</em> \(i\). This is <strong>not total</strong>: e.g. \((1,2,3)\not\preceq(2,3,1)\) and vice versa. Product order \(\subseteq\) lexicographic order.</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Topological Sorting</div>
+<p>A total order \(\preceq\) is <strong>compatible</strong> with partial order \(R\) if \(a\,R\,b\Rightarrow a\preceq b\). The construction of such a total order is <strong>topological sorting</strong>.</p>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Topological Sort Exists</div>
+<p>For any finite poset \((S,R)\), a total ordering compatible with \(R\) always exists.</p>
+<button class="togbtn" onclick="tog('pf-topsort')">Show proof &#9660;</button>
+<div id="pf-topsort" class="tog">
+<p>Iteratively pick a minimal element from the remaining set: \(S_1=S\), pick minimal \(a_1\); \(S_2=S_1-\{a_1\}\), pick minimal \(a_2\); etc. Define \(a_i\prec a_j\) iff \(i\lt j\). This total order is compatible with \(R\): if \(a_i\,R\,a_j\) and \(i\gt j\), then \(a_j\) was removed before \(S_i\) was formed, but \(a_i\in S_i\) is minimal, yet \(a_j\,R^{-1}\,a_i\) (i.e., \(a_j\) above \(a_i\) in the original order) &mdash; contradiction.</p>
+</div>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; Topological Sort of \((\{1,2,3,5,6,10,15,30\},|)\)</div>
+<ol>
+<li>Minimal of \(\{1,2,3,5,6,10,15,30\}\): only 1. Pick \(a_1=1\).</li>
+<li>Minimal of \(\{2,3,5,6,10,15,30\}\): 2, 3, 5. Pick \(a_2=3\).</li>
+<li>Minimal of \(\{2,5,6,10,15,30\}\): 2, 5. Pick \(a_3=2\).</li>
+<li>Minimal of \(\{5,6,10,15,30\}\): 5. Pick \(a_4=5\).</li>
+<li>Minimal of \(\{6,10,15,30\}\): 6, 10, 15. Pick \(a_5=6\).</li>
+<li>Minimal of \(\{10,15,30\}\): 10, 15. Pick \(a_6=15\).</li>
+<li>Minimal of \(\{10,30\}\): 10. Pick \(a_7=10\).</li>
+<li>Pick \(a_8=30\).</li>
+</ol>
+<p>Compatible total order: \(1\prec3\prec2\prec5\prec6\prec15\prec10\prec30\).</p>
+</div>
+</section>
+
+<!-- SECTION 6 -->
+<section id="s6" class="sec">
+<h2>Interactive Tools</h2>
+<h3 class="sub">Tool 1: Relation Property Checker</h3>
+<div class="tool-box">
+<div style="margin:6px 0"><label style="font-size:11.5px">Elements (comma-separated):</label><br><input type="text" id="relElements" value="1,2,3"></div>
+<div style="margin:6px 0"><label style="font-size:11.5px">Relation pairs as <code>(a,b),(c,d)...</code>:</label><br><input type="text" id="relPairs" value="(1,1),(2,2),(3,3),(1,2),(2,1),(1,3),(3,1),(2,3),(3,2)"></div>
+<button class="run-btn" onclick="checkProps()">Check properties</button>
+<div id="propsResult" style="margin-top:10px"></div>
+</div>
+<h3 class="sub">Tool 2: Hasse Diagram Builder</h3>
+<div class="tool-box">
+<p style="font-size:11.5px;margin-bottom:6px">Enter a partial order. The tool strips transitively implied edges and draws the cover graph.</p>
+<div style="margin:6px 0"><label style="font-size:11.5px">Elements:</label><br><input type="text" id="hasseElements" value="1,2,3,6"></div>
+<div style="margin:6px 0"><label style="font-size:11.5px">Order pairs (include reflexive):</label><br><input type="text" id="hassePairs" value="(1,1),(2,2),(3,3),(6,6),(1,2),(1,3),(1,6),(2,6),(3,6)"></div>
+<button class="run-btn" onclick="buildHasseDiagram()">Draw Hasse diagram</button>
+<div id="hasseViz" style="margin-top:10px;overflow-x:auto"></div>
+</div>
+</section>
+
+<!-- SECTION 7 -->
+<section id="s7" class="sec">
+<h2>Quiz</h2>
+<div class="qz">
+<p class="qt">Q1. Which properties define an equivalence relation?</p>
+<button class="opt" data-q="q1" data-opt="A" onclick="answerQ('q1','A','A','qe1')">A. Reflexive, symmetric, transitive</button>
+<button class="opt" data-q="q1" data-opt="B" onclick="answerQ('q1','B','A','qe1')">B. Reflexive, antisymmetric, transitive</button>
+<button class="opt" data-q="q1" data-opt="C" onclick="answerQ('q1','C','A','qe1')">C. Symmetric and transitive only</button>
+<button class="opt" data-q="q1" data-opt="D" onclick="answerQ('q1','D','A','qe1')">D. Reflexive and symmetric only</button>
+<div id="qe1" class="exp">A. Equivalence relation = reflexive + symmetric + transitive. B defines a partial order.</div>
+</div>
+<div class="qz">
+<p class="qt">Q2. For \(R=\{(a,b):a\equiv b\pmod 3\}\) on \(\mathbb{Z}\), which is FALSE?</p>
+<button class="opt" data-q="q2" data-opt="A" onclick="answerQ('q2','A','C','qe2')">A. \(R\) is an equivalence relation.</button>
+<button class="opt" data-q="q2" data-opt="B" onclick="answerQ('q2','B','C','qe2')">B. There are exactly 3 equivalence classes.</button>
+<button class="opt" data-q="q2" data-opt="C" onclick="answerQ('q2','C','C','qe2')">C. \([0]=\{0,3,6,9,\ldots\}\)</button>
+<button class="opt" data-q="q2" data-opt="D" onclick="answerQ('q2','D','C','qe2')">D. \([2]=\{3k+2\mid k\in\mathbb{Z}\}\)</button>
+<div id="qe2" class="exp">C is false. \([0]=\{3k\mid k\in\mathbb{Z}\}\) includes negative multiples of 3 as well (\(\ldots,-6,-3,0,3,6,\ldots\)).</div>
+</div>
+<div class="qz">
+<p class="qt">Q3. \(\le\) on \(\mathbb{R}\) fails to be an equivalence relation because:</p>
+<button class="opt" data-q="q3" data-opt="A" onclick="answerQ('q3','A','C','qe3')">A. It is not reflexive.</button>
+<button class="opt" data-q="q3" data-opt="B" onclick="answerQ('q3','B','C','qe3')">B. It is not transitive.</button>
+<button class="opt" data-q="q3" data-opt="C" onclick="answerQ('q3','C','C','qe3')">C. It is not symmetric.</button>
+<button class="opt" data-q="q3" data-opt="D" onclick="answerQ('q3','D','C','qe3')">D. It is not antisymmetric.</button>
+<div id="qe3" class="exp">C. \(\le\) is reflexive and transitive, but not symmetric: \(1\le2\) does not imply \(2\le1\). It IS antisymmetric, making it a partial order instead.</div>
+</div>
+<div class="qz">
+<p class="qt">Q4. \(R=\{(1,1),(2,2),(3,3),(1,2),(2,1)\}\) on \(\{1,2,3\}\) is:</p>
+<button class="opt" data-q="q4" data-opt="A" onclick="answerQ('q4','A','A','qe4')">A. An equivalence relation.</button>
+<button class="opt" data-q="q4" data-opt="B" onclick="answerQ('q4','B','A','qe4')">B. A partial order but not equivalence.</button>
+<button class="opt" data-q="q4" data-opt="C" onclick="answerQ('q4','C','A','qe4')">C. Neither.</button>
+<button class="opt" data-q="q4" data-opt="D" onclick="answerQ('q4','D','A','qe4')">D. Transitive but not symmetric.</button>
+<div id="qe4" class="exp">A. Reflexive &#10003;; Symmetric (\((1,2)\) and \((2,1)\) both present) &#10003;; Transitive (check all compositions) &#10003;. Classes: \([1]=[2]=\{1,2\}\) and \([3]=\{3\}\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q5. For equivalence relation \(R\) on \(A\) and \(a,b\in A\), \((a,b)\in R\) iff:</p>
+<button class="opt" data-q="q5" data-opt="A" onclick="answerQ('q5','A','C','qe5')">A. \([a]\cap[b]=\emptyset\)</button>
+<button class="opt" data-q="q5" data-opt="B" onclick="answerQ('q5','B','C','qe5')">B. \([a]\ne[b]\)</button>
+<button class="opt" data-q="q5" data-opt="C" onclick="answerQ('q5','C','C','qe5')">C. \([a]=[b]\)</button>
+<button class="opt" data-q="q5" data-opt="D" onclick="answerQ('q5','D','C','qe5')">D. \((b,a)\notin R\)</button>
+<div id="qe5" class="exp">C. By the equivalence class theorem: \((a,b)\in R\Leftrightarrow[a]=[b]\Leftrightarrow[a]\cap[b]\ne\emptyset\). A and B are the opposite; D is wrong since \(R\) is symmetric.</div>
+</div>
+<div class="qz">
+<p class="qt">Q6. Which defines a partial order?</p>
+<button class="opt" data-q="q6" data-opt="A" onclick="answerQ('q6','A','B','qe6')">A. Reflexive + symmetric + antisymmetric</button>
+<button class="opt" data-q="q6" data-opt="B" onclick="answerQ('q6','B','B','qe6')">B. Reflexive + antisymmetric + transitive</button>
+<button class="opt" data-q="q6" data-opt="C" onclick="answerQ('q6','C','B','qe6')">C. Symmetric + antisymmetric + transitive</button>
+<button class="opt" data-q="q6" data-opt="D" onclick="answerQ('q6','D','B','qe6')">D. Reflexive + symmetric + transitive</button>
+<div id="qe6" class="exp">B. Partial order = reflexive + antisymmetric + transitive. D defines an equivalence relation.</div>
+</div>
+<div class="qz">
+<p class="qt">Q7. Minimal elements in a Hasse diagram are those with:</p>
+<button class="opt" data-q="q7" data-opt="A" onclick="answerQ('q7','A','A','qe7')">A. No lines going downward from them.</button>
+<button class="opt" data-q="q7" data-opt="B" onclick="answerQ('q7','B','A','qe7')">B. No lines going upward from them.</button>
+<button class="opt" data-q="q7" data-opt="C" onclick="answerQ('q7','C','A','qe7')">C. The most edges.</button>
+<button class="opt" data-q="q7" data-opt="D" onclick="answerQ('q7','D','A','qe7')">D. Connections to every other vertex.</button>
+<div id="qe7" class="exp">A. Minimal = nothing strictly below, so no downward lines. B describes maximal elements. Confusing these is a very common error.</div>
+</div>
+<div class="qz">
+<p class="qt">Q8. The divides relation \(|\) on \(\mathbb{N}\) is:</p>
+<button class="opt" data-q="q8" data-opt="A" onclick="answerQ('q8','A','B','qe8')">A. An equivalence relation.</button>
+<button class="opt" data-q="q8" data-opt="B" onclick="answerQ('q8','B','B','qe8')">B. A partial order but not total.</button>
+<button class="opt" data-q="q8" data-opt="C" onclick="answerQ('q8','C','B','qe8')">C. A total order.</button>
+<button class="opt" data-q="q8" data-opt="D" onclick="answerQ('q8','D','B','qe8')">D. Not reflexive.</button>
+<div id="qe8" class="exp">B. Reflexive (\(a\mid a\)), antisymmetric (\(a\mid b\) and \(b\mid a\Rightarrow a=b\) in \(\mathbb{N}\)), transitive &#10003;. Not total: 2 and 3 are noncomparable. Not equivalence: not symmetric.</div>
+</div>
+<div class="qz">
+<p class="qt">Q9. A total order is a well order if:</p>
+<button class="opt" data-q="q9" data-opt="A" onclick="answerQ('q9','A','C','qe9')">A. Every element is comparable to every other.</button>
+<button class="opt" data-q="q9" data-opt="B" onclick="answerQ('q9','B','C','qe9')">B. Every element has a unique successor.</button>
+<button class="opt" data-q="q9" data-opt="C" onclick="answerQ('q9','C','C','qe9')">C. Every nonempty subset has a smallest element.</button>
+<button class="opt" data-q="q9" data-opt="D" onclick="answerQ('q9','D','C','qe9')">D. There are no maximal elements.</button>
+<div id="qe9" class="exp">C. A is just total order. C is the extra requirement. \((\mathbb{Z}^+,\le)\) is a well order; \((\mathbb{Z},\le)\) is not (no smallest integer).</div>
+</div>
+<div class="qz">
+<p class="qt">Q10. Topological sorting of a finite poset \((S,R)\) produces:</p>
+<button class="opt" data-q="q10" data-opt="A" onclick="answerQ('q10','A','C','qe10')">A. An equivalence relation on \(S\).</button>
+<button class="opt" data-q="q10" data-opt="B" onclick="answerQ('q10','B','C','qe10')">B. The Hasse diagram of \((S,R)\).</button>
+<button class="opt" data-q="q10" data-opt="C" onclick="answerQ('q10','C','C','qe10')">C. A total order on \(S\) compatible with \(R\).</button>
+<button class="opt" data-q="q10" data-opt="D" onclick="answerQ('q10','D','C','qe10')">D. A partition of \(S\) into equivalence classes.</button>
+<div id="qe10" class="exp">C. Topological sorting iteratively picks minimal elements to produce a total order \(\preceq\) compatible with \(R\) (\(a\,R\,b\Rightarrow a\preceq b\)). The sort is not unique.</div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+    if(!hasMiddle) covers.push(strict[i]);
+  }
+  var level={},changed=true;
+  for(var i=0;i<els.length;i++) level[els[i]]=0;
+  while(changed){changed=false;for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];if(level[y]<=level[x]){level[y]=level[x]+1;changed=true;}}}
+  var byLevel={},maxLevel=0;
+  for(var i=0;i<els.length;i++){var l=level[els[i]];if(!byLevel[l]) byLevel[l]=[];byLevel[l].push(els[i]);if(l>maxLevel) maxLevel=l;}
+  var svgW=400,svgH=maxLevel*80+80,pos={};
+  for(var l=0;l<=maxLevel;l++){var lels=byLevel[l]||[],spacing=svgW/(lels.length+1);for(var i=0;i<lels.length;i++) pos[lels[i]]={x:Math.round(spacing*(i+1)),y:(maxLevel-l)*80+40};}
+  var svg='<svg width="'+svgW+'" height="'+svgH+'" xmlns="http://www.w3.org/2000/svg">';
+  for(var i=0;i<covers.length;i++){var x=covers[i][0],y=covers[i][1];svg+='<line x1="'+pos[x].x+'" y1="'+pos[x].y+'" x2="'+pos[y].x+'" y2="'+pos[y].y+'" stroke="var(--color-border-secondary)" stroke-width="1.2"/>';}
+  for(var i=0;i<els.length;i++){var el=els[i],p=pos[el];svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="18" fill="var(--color-background-info)" stroke="var(--color-border-info)" stroke-width="0.8"/>';svg+='<text x="'+p.x+'" y="'+(p.y+4)+'" text-anchor="middle" font-size="12" font-family="sans-serif" fill="var(--color-text-info)">'+el+'</text>';}
+  svg+='</svg>';
+  var covStr='';for(var i=0;i<covers.length;i++) covStr+=(covStr?', ':'')+covers[i][0]+'\u2192'+covers[i][1];
+  viz.innerHTML=svg+'<p style="font-size:11px;color:var(--color-text-secondary);margin-top:4px">Cover pairs: '+covStr+'</p>';
+}
+
+var qScore=0,qAnswered=0;
+
+function answerQ(qn,chosen,correct,expId){
+  var btns=document.querySelectorAll('[data-q="'+qn+'"]');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(btns[i].dataset.opt===correct) btns[i].classList.add('sel-right');
+    else if(btns[i].dataset.opt===chosen&&chosen!==correct) btns[i].classList.add('sel-wrong');
+  }
+  var exp=document.getElementById(expId);
+  if(exp){ exp.classList.add('open'); rerender(exp); }
+  var firstBtn=document.querySelector('[data-q="'+qn+'"]');
+  if(firstBtn){ var cont=firstBtn.closest('.qz'); if(cont) cont.classList.add(chosen===correct?'right':'wrong'); }
+  if(chosen===correct) qScore++;
+  qAnswered++;
+  document.getElementById('scv').textContent=qScore+'/'+qAnswered;
+}
+
+function init(){
+  if(!window.renderMathInElement){setTimeout(init,80);return;}
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+init();
+</script>
+</body>
+</html>

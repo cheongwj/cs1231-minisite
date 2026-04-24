@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS1231 Chapter 7 — Trees</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 7 Trees — interactive study guide</h2>
+<div id="loading">Loading equations&hellip;</div>
+<div id="wr">
+<nav id="nv">
+<h1>Chapter 7</h1>
+<button class="nb act" onclick="show('s1',this)">7.1 Trees</button>
+<button class="nb" onclick="show('s2',this)">7.1 Properties</button>
+<button class="nb" onclick="show('s3',this)">7.2 Applications</button>
+<button class="nb" onclick="show('s4',this)">7.3 Spanning Trees</button>
+<button class="nb" onclick="show('s5',this)">7.4 Min Spanning Trees</button>
+<button class="nb" onclick="show('s6',this)">Interactive Tools</button>
+<button class="nb" onclick="show('s7',this)">Quiz</button>
+<div id="sc">
+<p>Quiz score</p>
+<div id="scv">—</div>
+</div>
+</nav>
+<main id="mn">
+<div class="warn-banner"><strong>Tutorial note:</strong> t7q covers number theory &amp; cryptography (Ch4); t8q covers induction (Ch5); t11q covers graph theory &amp; trees (Ch7 content). This guide is based solely on the Ch7 lecture notes (15 pages).</div>
+
+<!-- SECTION 1 -->
+<section id="s1" class="sec on">
+<h2>7.1 Trees</h2>
+<div class="def"><div class="lbl">Definition &mdash; Tree</div>
+<p>A <strong>tree</strong> is a connected (undirected) graph with no cycles. Trees cannot contain loops or multiple edges (these are cycles), so trees are necessarily simple graphs.</p>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; Forest</div>
+<p>A graph is a <strong>forest</strong> if every connected component is a tree.</p>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Characterisation of Trees</div>
+<p>A graph is a tree if and only if there is a <strong>unique simple path</strong> between any two of its vertices.</p>
+<button class="togbtn" onclick="tog('pf-unique')">Show proof &#9660;</button>
+<div id="pf-unique" class="tog">
+<p><strong>(&rArr;)</strong> Let \(T\) be a tree. By connectivity every two vertices are joined by a path, reducible to a simple path. Suppose two distinct simple paths \(P_1, P_2\) connect \(a\) to \(b\). Let \(k\) be the last index where they agree and \(s,t\) the first indices after \(k\) where they meet again. The segment from \(u_k\) to \(u_s\) via \(P_1\) and back via \(P_2\) forms a cycle &mdash; contradiction.</p>
+<p><strong>(&lArr;)</strong> If every two vertices have a unique simple path, \(T\) is connected. Any cycle would give two distinct simple paths between vertices on it &mdash; contradiction. So \(T\) is acyclic, hence a tree.</p>
+</div>
+</div>
+<h3 class="sub">Rooted Trees &amp; Terminology</h3>
+<div class="def"><div class="lbl">Definition &mdash; Rooted Tree</div>
+<p>A <strong>rooted tree</strong> is a tree with one designated <strong>root</strong> vertex; all edges are directed away from the root.</p>
+<ul>
+<li><strong>Parent / Child:</strong> If edge \(\overline{uv}\) exists with \(u\) above \(v\), then \(u\) is the <em>parent</em> of \(v\); \(v\) is a <em>child</em> of \(u\).</li>
+<li><strong>Siblings:</strong> Vertices sharing the same parent.</li>
+<li><strong>Ancestor / Descendant:</strong> \(u\) is an ancestor of \(v\) (and \(v\) a descendant of \(u\)) if there is a directed path from \(u\) down to \(v\) (\(u \ne v\)).</li>
+<li><strong>Leaf:</strong> A vertex with no children. <strong>Internal vertex:</strong> A vertex that is not a leaf.</li>
+<li><strong>Subtree rooted at \(u\):</strong> \(u\) together with all its descendants.</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; \(T_2\) with root \(c\)</div>
+<ul>
+<li>Leaves: \(f, g, d, e\). Internal vertices: \(a, b, c\).</li>
+<li>\(b\) and \(d\) are children of \(a\); they are siblings; \(a\) is their parent.</li>
+<li>\(a, c\) are ancestors of \(d\); \(b, d, f, g\) are descendants of \(a\).</li>
+</ul>
+</div>
+<div class="def"><div class="lbl">Definition &mdash; \(m\)-ary Trees</div>
+<ul>
+<li><strong>\(m\)-ary tree:</strong> each internal vertex has <em>at most</em> \(m\) children.</li>
+<li><strong>Full \(m\)-ary tree:</strong> each internal vertex has <em>exactly</em> \(m\) children.</li>
+<li><strong>Binary tree:</strong> \(m = 2\). <strong>Ordered rooted tree:</strong> children of each vertex are linearly ordered (left to right).</li>
+</ul>
+</div>
+</section>
+
+<!-- SECTION 2 -->
+<section id="s2" class="sec">
+<h2>7.1 Properties</h2>
+<div class="thm"><div class="lbl">Theorem 1 &mdash; Degree-1 Vertices</div>
+<p>A tree with \(n \ge 2\) vertices has at least two vertices of degree 1.</p>
+<button class="togbtn" onclick="tog('pf-deg1')">Show proof &#9660;</button>
+<div id="pf-deg1" class="tog">
+<p>Take a maximum-length simple path \(v_0v_1\cdots v_m\). Suppose \(\deg(v_0) \gt 1\). Then \(v_0\) is adjacent to some \(x \ne v_1\). If \(x = v_i\) (\(i \ge 2\)), there is a cycle &mdash; contradiction. Otherwise \(xv_0\cdots v_m\) is longer &mdash; contradiction. So \(\deg(v_0) = 1\). Same argument gives \(\deg(v_m) = 1\). These are distinct since \(m \ge 1\).</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Theorem 2 &mdash; Removing a Leaf</div>
+<p>If \(v\) is a degree-1 vertex in a tree \(T\) with \(n \ge 2\), then \(T - v\) is also a tree.</p>
+<button class="togbtn" onclick="tog('pf-tv')">Show proof &#9660;</button>
+<div id="pf-tv" class="tog">
+<p><strong>Acyclic:</strong> Any cycle in \(T-v\) is a cycle in \(T\) &mdash; contradiction.</p>
+<p><strong>Connected:</strong> For any \(x,y \ne v\), the unique simple path in \(T\) cannot pass through \(v\) as an interior vertex (since \(\deg(v)=1\)), so it remains valid in \(T-v\).</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Theorem 3 &mdash; Edge Count</div>
+<p>A tree with \(n\) vertices has exactly \(n-1\) edges.</p>
+<button class="togbtn" onclick="tog('pf-n1')">Show proof &#9660;</button>
+<div id="pf-n1" class="tog">
+<p><strong>Induction on \(n\).</strong> Base (\(n=1\)): 0 edges = \(1-1\). &#10003;</p>
+<p>Inductive step: Assume every \(k\)-vertex tree has \(k-1\) edges. Let \(T\) have \(k+1\) vertices. By Thm 1, \(\exists\) degree-1 vertex \(v\). By Thm 2, \(T-v\) is a tree with \(k\) vertices, so it has \(k-1\) edges (IH). Adding back \(v\) and its one edge: \(T\) has \(k = (k+1)-1\) edges. &#10003;</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Theorem 4 &mdash; Full \(m\)-ary Vertex Count</div>
+<p>A full \(m\)-ary tree with \(i\) internal vertices has \(n = mi + 1\) total vertices.</p>
+<button class="togbtn" onclick="tog('pf-mary1')">Show proof &#9660;</button>
+<div id="pf-mary1" class="tog">
+<p>Every vertex except the root is a child of exactly one internal vertex. Each internal vertex has exactly \(m\) children, giving \(mi\) children total. Adding the root: \(n = mi + 1\).</p>
+</div>
+</div>
+<div class="thm"><div class="lbl">Theorem 5 &mdash; Full \(m\)-ary Formulas</div>
+<p>For a full \(m\)-ary tree with \(n\) total vertices, \(i\) internal vertices, and \(\ell\) leaves:</p>
+\[n = mi+1 = \frac{m\ell-1}{m-1},\quad i = \frac{n-1}{m} = \frac{\ell-1}{m-1},\quad \ell = \frac{(m-1)n+1}{m} = (m-1)i+1\]
+</div>
+<table>
+<tr><th>Known</th><th>Compute \(n\)</th><th>Compute \(i\)</th><th>Compute \(\ell\)</th></tr>
+<tr><td>Given \(i\)</td><td>\(mi+1\)</td><td>&mdash;</td><td>\((m-1)i+1\)</td></tr>
+<tr><td>Given \(n\)</td><td>&mdash;</td><td>\((n-1)/m\)</td><td>\(((m-1)n+1)/m\)</td></tr>
+<tr><td>Given \(\ell\)</td><td>\((m\ell-1)/(m-1)\)</td><td>\((\ell-1)/(m-1)\)</td><td>&mdash;</td></tr>
+</table>
+<div class="ex"><div class="lbl">Example &mdash; Chain Letter</div>
+<p>Each person sends to 4 others or stops. 100 people received it but did not send it on (\(\ell = 100\), \(m = 4\)):</p>
+\[n = \frac{m\ell-1}{m-1} = \frac{400-1}{3} = 133\]
+</div>
+<div class="def"><div class="lbl">Definitions &mdash; Level, Height, Balanced</div>
+<ul>
+<li><strong>Level of \(v\):</strong> length of the path from the root to \(v\). Root has level 0.</li>
+<li><strong>Height:</strong> maximum level over all vertices.</li>
+<li><strong>Balanced:</strong> all leaves are at level \(h\) or \(h-1\) (where \(h\) is the height).</li>
+</ul>
+</div>
+<div class="thm"><div class="lbl">Theorem 6 &mdash; Vertex Bound by Level</div>
+<p>In an \(m\)-ary tree there are at most \(m^k\) vertices at level \(k\), and at most \(m^h\) leaves (where \(h\) = height).</p>
+</div>
+<div class="thm"><div class="lbl">Theorem 7 &mdash; Height Lower Bound</div>
+<p>An \(m\)-ary tree with \(\ell\) leaves satisfies \(h \ge \lceil\log_m \ell\rceil\). If the tree is full and balanced, \(h = \lceil\log_m \ell\rceil\).</p>
+</div>
+</section>
+
+<!-- SECTION 3 -->
+<section id="s3" class="sec">
+<h2>7.2 Applications</h2>
+<h3 class="sub">Binary Search Trees (BST)</h3>
+<div class="def"><div class="lbl">BST Construction Algorithm</div>
+<ol>
+<li>Assign the first item to the root.</li>
+<li>To insert a new item: compare with the current node; if <em>smaller</em>, go left; if <em>larger</em>, go right.</li>
+<li>Continue until a null child is reached; place the item there.</li>
+</ol>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; Lexicographic BST</div>
+<p>Insert in order: <em>mathematics, physics, geography, zoology, meteorology, geology, psychology, chemistry</em>.</p>
+<ul>
+<li>Root: <strong>mathematics</strong></li>
+<li>physics &gt; mathematics &rarr; right: <strong>physics</strong></li>
+<li>geography &lt; mathematics &rarr; left: <strong>geography</strong></li>
+<li>zoology &gt; mathematics, &gt; physics &rarr; right of physics: <strong>zoology</strong></li>
+<li>meteorology &gt; mathematics, &lt; physics &rarr; left of physics: <strong>meteorology</strong></li>
+<li>geology &lt; mathematics, &gt; geography &rarr; right of geography: <strong>geology</strong></li>
+<li>psychology &gt; mathematics, &lt; physics, &gt; meteorology &rarr; right of meteorology: <strong>psychology</strong></li>
+<li>chemistry &lt; mathematics, &lt; geography &rarr; left of geography: <strong>chemistry</strong></li>
+</ul>
+</div>
+<div class="rmk"><div class="lbl">Remark</div>
+<p>Maximum comparisons to find an item = height of the BST. Balanced BSTs minimise search time.</p>
+</div>
+<h3 class="sub">Universal Address System</h3>
+<div class="def"><div class="lbl">Definition</div>
+<ol>
+<li>Label the root <strong>0</strong>.</li>
+<li>Label its children \(1, 2, \ldots\) left to right.</li>
+<li>A vertex at level \(n\) with label \(A\) has children \(A.1, A.2, A.3, \ldots\)</li>
+</ol>
+<p><strong>Lexicographic ordering:</strong> \(x_1.x_2\cdots.x_n \lt y_1.y_2\cdots.y_m\) if the first differing position satisfies \(x_i \lt y_i\), or if \(x\) is a proper prefix of \(y\).</p>
+</div>
+<div class="ex"><div class="lbl">Example Address Order</div>
+<p>\(0 \lt 1 \lt 1.1 \lt 1.2 \lt 1.3 \lt 2 \lt 3 \lt 3.1 \lt 3.1.1 \lt 3.1.2 \lt 3.1.2.1 \lt \cdots \lt 3.2 \lt 4 \lt 5.1 \lt 5.1.1 \lt 5.2 \lt 5.3\)</p>
+<p>Ancestors of \(3.1.2.3\) are: \(3.1.2, 3.1, 3, 0\).</p>
+</div>
+</section>
+
+<!-- SECTION 4 -->
+<section id="s4" class="sec">
+<h2>7.3 Spanning Trees</h2>
+<div class="def"><div class="lbl">Definition &mdash; Spanning Tree</div>
+<p>A <strong>spanning tree</strong> of a simple graph \(G\) is a subgraph that is a tree containing every vertex of \(G\).</p>
+</div>
+<div class="thm"><div class="lbl">Theorem &mdash; Spanning Tree Existence</div>
+<p>A simple graph is connected if and only if it contains a spanning tree.</p>
+<button class="togbtn" onclick="tog('pf-span')">Show proof &#9660;</button>
+<div id="pf-span" class="tog">
+<p><strong>(&lArr;)</strong> A spanning tree is connected and contains all vertices, so \(G\) is connected.</p>
+<p><strong>(&rArr;)</strong> If \(G\) is connected and acyclic, \(G\) itself is a spanning tree. Otherwise, remove any edge from a cycle (connectivity is preserved since the other side of the cycle remains). Repeat until acyclic. The result spans all vertices and is acyclic and connected &mdash; a spanning tree.</p>
+</div>
+</div>
+<h3 class="sub">Depth First Search (DFS)</h3>
+<div class="def"><div class="lbl">DFS Algorithm</div>
+<ul>
+<li><strong>Step 1.</strong> Choose any vertex, label it 1, add to \(T\).</li>
+<li><strong>Step 2.</strong> From vertex \(j\): choose an unlabelled neighbour, label it \(j+1\), add vertex and edge to \(T\). If all neighbours labelled, <strong>backtrack</strong> to vertex \(j-1\).</li>
+<li><strong>Stop</strong> when all vertices are labelled. \(T\) (rooted at vertex 1) is the DFS spanning tree.</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; DFS on \(G\) (edges: \(\{ab,ae,bf,cd,cg,dg,ef,eg,fg\}\))</div>
+<p><strong>Alphabetical DFS from \(a\):</strong> \(a(1) \to b(2) \to f(3) \to e(4) \to g(5) \to c(6) \to d(7)\). Tree edges: \(ab, bf, fe, eg, gc, cd\).</p>
+<p><strong>Non-alphabetical DFS from \(a\):</strong> \(a(1) \to e(2) \to f(3) \to g(4) \to d(5) \to c(6) \to b(7)\). Tree edges: \(ae, ef, fg, gd, dc, fb\).</p>
+</div>
+<h3 class="sub">Breadth First Search (BFS)</h3>
+<div class="def"><div class="lbl">BFS Algorithm</div>
+<ul>
+<li><strong>Step 1.</strong> Choose any vertex as root, label it 1, add to \(T\).</li>
+<li><strong>Step 2.</strong> Visit labelled vertices in <em>ascending</em> order. For vertex \(j\) being visited, label all unlabelled neighbours consecutively and add those edges to \(T\).</li>
+<li><strong>Stop</strong> when all vertices are labelled.</li>
+</ul>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; BFS on \(G\)</div>
+<p><strong>Alphabetical BFS from \(a\):</strong> \(a(1),b(2),e(3),f(4),g(5),c(6),d(7)\). Tree edges: \(ab, ae, bf, eg, gc, gd\).</p>
+</div>
+<div class="rmk"><div class="lbl">DFS vs BFS Comparison</div>
+<table>
+<tr><th></th><th>DFS</th><th>BFS</th></tr>
+<tr><td>Strategy</td><td>Go deep first, backtrack</td><td>Visit all neighbours first (level by level)</td></tr>
+<tr><td>Data structure</td><td>Stack (implicit recursion)</td><td>Queue</td></tr>
+<tr><td>Tree shape</td><td>Tall and thin</td><td>Short and wide</td></tr>
+</table>
+</div>
+</section>
+
+<!-- SECTION 5 -->
+<section id="s5" class="sec">
+<h2>7.4 Minimum Spanning Trees</h2>
+<div class="def"><div class="lbl">Definitions</div>
+<ul>
+<li><strong>Weighted graph:</strong> each edge \(e\) has a real-valued weight \(w(e)\). Total weight \(w(G) = \sum w(e)\).</li>
+<li><strong>Minimum spanning tree (MST):</strong> a spanning tree with the least total weight. Both algorithms below are greedy algorithms.</li>
+</ul>
+</div>
+<h3 class="sub">Prim's Algorithm</h3>
+<div class="def"><div class="lbl">Prim's Algorithm</div>
+<ol>
+<li>Choose any edge of minimum weight; add to \(T\).</li>
+<li>Among edges joining a vertex <em>in</em> \(T\) to one <em>not in</em> \(T\), choose minimum weight; add to \(T\).</li>
+<li>Stop when \(T\) has \(n-1\) edges.</li>
+</ol>
+</div>
+<h3 class="sub">Kruskal's Algorithm</h3>
+<div class="def"><div class="lbl">Kruskal's Algorithm</div>
+<ol>
+<li>Sort all edges by increasing weight. Let \(T\) = isolated vertices.</li>
+<li>Examine edges in order. Add an edge if it joins two <em>distinct connected components</em> (no cycle created). Otherwise skip it.</li>
+<li>Stop when \(T\) has \(n-1\) edges.</li>
+</ol>
+</div>
+<div class="ex"><div class="lbl">Example &mdash; 12-vertex Grid Graph</div>
+<p><strong>Prim's order:</strong> \(bf(1), ab(2), jf(2), ae(3), bc(3), cd(1), cg(2), jk(3), kl(1), lh(3), ij(3)\). Total weight = 24.</p>
+<p><strong>Kruskal's order:</strong> \(bf(1), cd(1), kl(1), ab(2), cg(2), fj(2), bc(3), ae(3), hl(3), ij(3), jk(3)\). Edge \(fg\) skipped (would create cycle). Total weight = 24.</p>
+</div>
+<div class="rmk"><div class="lbl">Prim's vs Kruskal's</div>
+<table>
+<tr><th></th><th>Prim's</th><th>Kruskal's</th></tr>
+<tr><td>Approach</td><td>Grow one tree from a vertex</td><td>Grow a forest, merging components</td></tr>
+<tr><td>Edge selection</td><td>Minimum edge crossing the cut</td><td>Globally minimum edge not creating cycle</td></tr>
+<tr><td>Skip condition</td><td>N/A (by construction, new vertex always added)</td><td>Both endpoints in same component</td></tr>
+<tr><td>Result</td><td>MST (same total weight as Kruskal's)</td><td>MST (same total weight)</td></tr>
+</table>
+</div>
+</section>
+
+<!-- SECTION 6 -->
+<section id="s6" class="sec">
+<h2>Interactive Tools</h2>
+<h3 class="sub">Tool 1: Full \(m\)-ary Tree Calculator</h3>
+<div class="tool-box">
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:8px">
+<span style="font-size:12px">\(m\) =</span>
+<input type="number" id="mVal" value="3" min="2" max="10" style="width:60px">
+<select id="knownType">
+<option value="i">Internal vertices (i)</option>
+<option value="n">Total vertices (n)</option>
+<option value="l">Leaves (&ell;)</option>
+</select>
+<span style="font-size:12px">value =</span>
+<input type="number" id="knownVal" value="4" min="1" max="999" style="width:70px">
+<button class="run-btn" onclick="calcMary()">Compute</button>
+</div>
+<div id="maryResult"></div>
+</div>
+<h3 class="sub">Tool 2: Binary Search Tree Builder</h3>
+<div class="tool-box">
+<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+<input type="text" id="bstInput" style="flex:1;min-width:180px" value="mathematics,physics,geography,zoology,meteorology,geology,psychology,chemistry">
+<button class="run-btn" onclick="buildBST()">Build BST</button>
+</div>
+<div id="bstViz" style="margin-top:10px;overflow-x:auto"></div>
+</div>
+<h3 class="sub">Tool 3: DFS / BFS Simulator</h3>
+<div class="tool-box">
+<p style="font-size:11.5px;margin-bottom:6px">Graph \(G\): \(a,b,c,d,e,f,g\). Edges: \(\{ab,ae,bf,cd,cg,dg,ef,eg,fg\}\). Alphabetical neighbour ordering from \(a\).</p>
+<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+<select id="simMode" onchange="initSim()">
+<option value="dfs">DFS</option>
+<option value="bfs">BFS</option>
+</select>
+<button class="sim-btn" onclick="initSim()">Reset</button>
+<button class="sim-btn" onclick="simPrev()">&#9664; Prev</button>
+<button class="sim-btn" onclick="simNext()">Next &#9654;</button>
+<span id="simStep" style="font-size:11px;color:var(--color-text-tertiary)">0 / 0</span>
+</div>
+<div id="simDesc" style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:6px;min-height:18px">Press Reset then Next to start.</div>
+<div style="overflow-x:auto">
+<svg id="simSvg" viewBox="0 0 520 210" width="520" height="210" xmlns="http://www.w3.org/2000/svg" style="display:block;max-width:100%">
+<line class="sim-edge" data-edge="a-b" x1="80" y1="55" x2="200" y2="55" stroke-width="1"/>
+<line class="sim-edge" data-edge="a-e" x1="80" y1="55" x2="80" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="b-f" x1="200" y1="55" x2="200" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="c-d" x1="320" y1="55" x2="440" y2="55" stroke-width="1"/>
+<line class="sim-edge" data-edge="c-g" x1="320" y1="55" x2="320" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="d-g" x1="440" y1="55" x2="320" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="e-f" x1="80" y1="155" x2="200" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="e-g" x1="80" y1="155" x2="320" y2="155" stroke-width="1"/>
+<line class="sim-edge" data-edge="f-g" x1="200" y1="155" x2="320" y2="155" stroke-width="1"/>
+<circle class="sim-node" data-node="a" cx="80" cy="55" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="b" cx="200" cy="55" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="c" cx="320" cy="55" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="d" cx="440" cy="55" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="e" cx="80" cy="155" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="f" cx="200" cy="155" r="20" stroke-width="1"/>
+<circle class="sim-node" data-node="g" cx="320" cy="155" r="20" stroke-width="1"/>
+<text class="sim-label" data-node="a" x="80" y="59" text-anchor="middle" font-size="12" font-family="sans-serif">a</text>
+<text class="sim-label" data-node="b" x="200" y="59" text-anchor="middle" font-size="12" font-family="sans-serif">b</text>
+<text class="sim-label" data-node="c" x="320" y="59" text-anchor="middle" font-size="12" font-family="sans-serif">c</text>
+<text class="sim-label" data-node="d" x="440" y="59" text-anchor="middle" font-size="12" font-family="sans-serif">d</text>
+<text class="sim-label" data-node="e" x="80" y="159" text-anchor="middle" font-size="12" font-family="sans-serif">e</text>
+<text class="sim-label" data-node="f" x="200" y="159" text-anchor="middle" font-size="12" font-family="sans-serif">f</text>
+<text class="sim-label" data-node="g" x="320" y="159" text-anchor="middle" font-size="12" font-family="sans-serif">g</text>
+</svg>
+</div>
+<div style="font-size:10.5px;color:var(--color-text-tertiary);margin-top:6px">Green = visited. Bold blue edge = spanning tree edge.</div>
+</div>
+</section>
+
+<!-- SECTION 7 -->
+<section id="s7" class="sec">
+<h2>Quiz</h2>
+<div class="qz">
+<p class="qt">Q1. A tree with \(n\) vertices has exactly how many edges?</p>
+<button class="opt" data-q="q1" data-opt="A" onclick="answerQ('q1','A','C','qe1')">A. \(n+1\)</button>
+<button class="opt" data-q="q1" data-opt="B" onclick="answerQ('q1','B','C','qe1')">B. \(n\)</button>
+<button class="opt" data-q="q1" data-opt="C" onclick="answerQ('q1','C','C','qe1')">C. \(n-1\)</button>
+<button class="opt" data-q="q1" data-opt="D" onclick="answerQ('q1','D','C','qe1')">D. \(2n-2\)</button>
+<div id="qe1" class="exp">C. By the edge-count theorem (induction using Thms 1 &amp; 2): \(|E| = |V| - 1\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q2. Which is equivalent to &ldquo;\(G\) is a tree&rdquo;?</p>
+<button class="opt" data-q="q2" data-opt="A" onclick="answerQ('q2','A','C','qe2')">A. \(G\) is connected with \(n\) edges.</button>
+<button class="opt" data-q="q2" data-opt="B" onclick="answerQ('q2','B','C','qe2')">B. \(G\) is acyclic and has at least one cycle.</button>
+<button class="opt" data-q="q2" data-opt="C" onclick="answerQ('q2','C','C','qe2')">C. There is a unique simple path between any two vertices.</button>
+<button class="opt" data-q="q2" data-opt="D" onclick="answerQ('q2','D','C','qe2')">D. \(G\) is a forest with exactly two components.</button>
+<div id="qe2" class="exp">C. The theorem states: tree &hArr; unique simple path between every pair of vertices. A should say \(n-1\) edges; B is self-contradictory; D is a forest, not a tree.</div>
+</div>
+<div class="qz">
+<p class="qt">Q3. A full 3-ary tree has \(i=4\) internal vertices. Find \(n\).</p>
+<button class="opt" data-q="q3" data-opt="A" onclick="answerQ('q3','A','B','qe3')">A. 12</button>
+<button class="opt" data-q="q3" data-opt="B" onclick="answerQ('q3','B','B','qe3')">B. 13</button>
+<button class="opt" data-q="q3" data-opt="C" onclick="answerQ('q3','C','B','qe3')">C. 9</button>
+<button class="opt" data-q="q3" data-opt="D" onclick="answerQ('q3','D','B','qe3')">D. 10</button>
+<div id="qe3" class="exp">B. \(n = mi+1 = 3(4)+1 = 13\). Leaves: \(\ell = (m-1)i+1 = 2(4)+1 = 9\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q4. A full binary tree has \(i=6\) internal vertices. How many leaves?</p>
+<button class="opt" data-q="q4" data-opt="A" onclick="answerQ('q4','A','C','qe4')">A. 5</button>
+<button class="opt" data-q="q4" data-opt="B" onclick="answerQ('q4','B','C','qe4')">B. 6</button>
+<button class="opt" data-q="q4" data-opt="C" onclick="answerQ('q4','C','C','qe4')">C. 7</button>
+<button class="opt" data-q="q4" data-opt="D" onclick="answerQ('q4','D','C','qe4')">D. 12</button>
+<div id="qe4" class="exp">C. For \(m=2\): \(\ell = (m-1)i+1 = 1\cdot6+1 = 7\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q5. Vertices sharing the same parent are called:</p>
+<button class="opt" data-q="q5" data-opt="A" onclick="answerQ('q5','A','C','qe5')">A. Ancestors</button>
+<button class="opt" data-q="q5" data-opt="B" onclick="answerQ('q5','B','C','qe5')">B. Descendants</button>
+<button class="opt" data-q="q5" data-opt="C" onclick="answerQ('q5','C','C','qe5')">C. Siblings</button>
+<button class="opt" data-q="q5" data-opt="D" onclick="answerQ('q5','D','C','qe5')">D. Internal vertices</button>
+<div id="qe5" class="exp">C. Siblings share the same parent. Ancestors are vertices above on the path to root; descendants are below.</div>
+</div>
+<div class="qz">
+<p class="qt">Q6. A full balanced binary tree with \(\ell=8\) leaves. What is its height?</p>
+<button class="opt" data-q="q6" data-opt="A" onclick="answerQ('q6','A','B','qe6')">A. 2</button>
+<button class="opt" data-q="q6" data-opt="B" onclick="answerQ('q6','B','B','qe6')">B. 3</button>
+<button class="opt" data-q="q6" data-opt="C" onclick="answerQ('q6','C','B','qe6')">C. 4</button>
+<button class="opt" data-q="q6" data-opt="D" onclick="answerQ('q6','D','B','qe6')">D. 8</button>
+<div id="qe6" class="exp">B. \(h = \lceil\log_2 8\rceil = \lceil3\rceil = 3\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q7. In DFS, when all neighbours of vertex \(j\) are already labelled, you:</p>
+<button class="opt" data-q="q7" data-opt="A" onclick="answerQ('q7','A','C','qe7')">A. Stop immediately.</button>
+<button class="opt" data-q="q7" data-opt="B" onclick="answerQ('q7','B','C','qe7')">B. Choose the minimum-weight adjacent edge.</button>
+<button class="opt" data-q="q7" data-opt="C" onclick="answerQ('q7','C','C','qe7')">C. Backtrack to vertex \(j-1\).</button>
+<button class="opt" data-q="q7" data-opt="D" onclick="answerQ('q7','D','C','qe7')">D. Add \(j\) to the BFS queue.</button>
+<div id="qe7" class="exp">C. Backtracking to \(j-1\) is the defining feature of DFS that creates the depth-first exploration.</div>
+</div>
+<div class="qz">
+<p class="qt">Q8. In Prim's algorithm, at each step you add:</p>
+<button class="opt" data-q="q8" data-opt="A" onclick="answerQ('q8','A','C','qe8')">A. Any edge not creating a cycle, in sorted order.</button>
+<button class="opt" data-q="q8" data-opt="B" onclick="answerQ('q8','B','C','qe8')">B. The globally lightest edge not in \(T\).</button>
+<button class="opt" data-q="q8" data-opt="C" onclick="answerQ('q8','C','C','qe8')">C. The minimum-weight edge joining a vertex in \(T\) to a vertex not in \(T\).</button>
+<button class="opt" data-q="q8" data-opt="D" onclick="answerQ('q8','D','C','qe8')">D. The maximum-weight edge that keeps \(G\) connected.</button>
+<div id="qe8" class="exp">C. Prim's always extends the tree by the cheapest edge crossing the cut between \(T\) and \(V \setminus T\).</div>
+</div>
+<div class="qz">
+<p class="qt">Q9. In Kruskal's, an edge is skipped when:</p>
+<button class="opt" data-q="q9" data-opt="A" onclick="answerQ('q9','A','A','qe9')">A. Both endpoints are already in the same connected component.</button>
+<button class="opt" data-q="q9" data-opt="B" onclick="answerQ('q9','B','A','qe9')">B. Its weight exceeds the current average edge weight in \(T\).</button>
+<button class="opt" data-q="q9" data-opt="C" onclick="answerQ('q9','C','A','qe9')">C. It connects non-adjacent vertices in the original graph.</button>
+<button class="opt" data-q="q9" data-opt="D" onclick="answerQ('q9','D','A','qe9')">D. It has a negative weight.</button>
+<div id="qe9" class="exp">A. Adding such an edge would create a cycle. Kruskal's only adds edges that merge two distinct components.</div>
+</div>
+<div class="qz">
+<p class="qt">Q10. A simple graph \(G\) is connected if and only if:</p>
+<button class="opt" data-q="q10" data-opt="A" onclick="answerQ('q10','A','C','qe10')">A. Every vertex of \(G\) has degree at least 2.</button>
+<button class="opt" data-q="q10" data-opt="B" onclick="answerQ('q10','B','C','qe10')">B. \(G\) has exactly \(|V|-1\) edges.</button>
+<button class="opt" data-q="q10" data-opt="C" onclick="answerQ('q10','C','C','qe10')">C. \(G\) contains a spanning tree.</button>
+<button class="opt" data-q="q10" data-opt="D" onclick="answerQ('q10','D','C','qe10')">D. \(G\) has no vertices of degree 1.</button>
+<div id="qe10" class="exp">C. Spanning tree existence theorem. A is not sufficient (a disconnected graph can have all degrees &ge; 2); B is not sufficient for general graphs.</div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+  }
+  dfsV('a');
+  return steps;
+}
+
+function buildBFSSteps(){
+  var steps=[],visited={'a':true},labels={'a':1},treeEdges={},cnt=2;
+  var sn0=copySnap(visited,labels,treeEdges);sn0.desc='BFS: start at a \u2192 label 1';steps.push(sn0);
+  var queue=['a'];
+  while(queue.length>0){
+    var v=queue.shift();
+    var nb=simGraph[v].slice().sort();
+    for(var k=0;k<nb.length;k++){
+      var u=nb[k];
+      if(!visited[u]){
+        visited[u]=true;labels[u]=cnt++;
+        var ea=v<u?v:u,eb=v<u?u:v;
+        treeEdges[ea+'-'+eb]=true;
+        var sn=copySnap(visited,labels,treeEdges);
+        sn.desc='BFS: from '+v+', visit '+u+' \u2192 label '+labels[u];
+        steps.push(sn);
+        queue.push(u);
+      }
+    }
+  }
+  return steps;
+}
+
+function drawSimState(state){
+  var svg=document.getElementById('simSvg');if(!svg) return;
+  var edges=svg.querySelectorAll('.sim-edge');
+  for(var i=0;i<edges.length;i++){
+    var id=edges[i].getAttribute('data-edge');
+    if(state&&state.treeEdges&&state.treeEdges[id]){edges[i].setAttribute('stroke-width','3');edges[i].setAttribute('stroke','var(--color-text-info)');}
+    else{edges[i].setAttribute('stroke-width','1');edges[i].setAttribute('stroke','var(--color-border-secondary)');}
+  }
+  var nodes=svg.querySelectorAll('.sim-node');
+  for(var i=0;i<nodes.length;i++){
+    var id=nodes[i].getAttribute('data-node');
+    if(state&&state.visited&&state.visited[id]){nodes[i].setAttribute('fill','var(--color-background-success)');nodes[i].setAttribute('stroke','var(--color-border-success)');}
+    else{nodes[i].setAttribute('fill','var(--color-background-secondary)');nodes[i].setAttribute('stroke','var(--color-border-secondary)');}
+  }
+  var labels=svg.querySelectorAll('.sim-label');
+  for(var i=0;i<labels.length;i++){
+    var id=labels[i].getAttribute('data-node');
+    labels[i].setAttribute('fill',state&&state.visited&&state.visited[id]?'var(--color-text-success)':'var(--color-text-primary)');
+    labels[i].textContent=state&&state.labels&&state.labels[id]?id+'('+state.labels[id]+')':id;
+  }
+}
+
+function initSim(){
+  var mode=document.getElementById('simMode').value;
+  simSteps=mode==='dfs'?buildDFSSteps():buildBFSSteps();
+  simIdx=0;drawSimState(null);
+  document.getElementById('simDesc').textContent='Press Next to start '+mode.toUpperCase()+' from a.';
+  document.getElementById('simStep').textContent='0 / '+simSteps.length;
+}
+
+function simNext(){
+  if(simIdx>=simSteps.length) return;
+  var state=simSteps[simIdx];simIdx++;
+  drawSimState(state);
+  document.getElementById('simDesc').textContent=state.desc;
+  document.getElementById('simStep').textContent=simIdx+' / '+simSteps.length;
+}
+
+function simPrev(){
+  if(simIdx<=0) return;
+  simIdx--;
+  if(simIdx===0){drawSimState(null);document.getElementById('simDesc').textContent='Press Next to start.';document.getElementById('simStep').textContent='0 / '+simSteps.length;}
+  else{var state=simSteps[simIdx-1];drawSimState(state);document.getElementById('simDesc').textContent=state.desc;document.getElementById('simStep').textContent=simIdx+' / '+simSteps.length;}
+}
+
+var qScore=0,qAnswered=0;
+
+function answerQ(qn,chosen,correct,expId){
+  var btns=document.querySelectorAll('[data-q="'+qn+'"]');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(btns[i].dataset.opt===correct) btns[i].classList.add('sel-right');
+    else if(btns[i].dataset.opt===chosen&&chosen!==correct) btns[i].classList.add('sel-wrong');
+  }
+  var exp=document.getElementById(expId);
+  if(exp){ exp.classList.add('open'); rerender(exp); }
+  var firstBtn=document.querySelector('[data-q="'+qn+'"]');
+  if(firstBtn){ var cont=firstBtn.closest('.qz'); if(cont) cont.classList.add(chosen===correct?'right':'wrong'); }
+  if(chosen===correct) qScore++;
+  qAnswered++;
+  document.getElementById('scv').textContent=qScore+'/'+qAnswered;
+}
+
+function init(){
+  if(!window.renderMathInElement){setTimeout(init,80);return;}
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  initSim();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+init();
+</script>
+</body>
+</html>

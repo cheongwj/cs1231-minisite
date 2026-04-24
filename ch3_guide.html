@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS1231 Chapter 3 — The Integers</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 3: The Integers — interactive study guide covering divisibility, modular arithmetic, primes, GCD, algorithms, and RSA cryptography</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+
+  <nav id="nv">
+    <h1>Chapter 3</h1>
+    <button class="nb act" onclick="show('s1',this)">3.1 Divisibility</button>
+    <button class="nb" onclick="show('s2',this)">3.2 Modular Arithmetic</button>
+    <button class="nb" onclick="show('s3',this)">3.3 Primes &amp; GCD</button>
+    <button class="nb" onclick="show('s4',this)">3.4 Algorithms</button>
+    <button class="nb" onclick="show('s5',this)">3.5 Applications</button>
+    <button class="nb" onclick="show('t6',this)">Tutorial 6</button>
+    <button class="nb" onclick="show('tools',this)">Interactive Tools</button>
+    <button class="nb" onclick="show('quiz',this)">Quiz</button>
+    <div id="sc">
+      <p>Quiz score</p>
+      <div id="scv">—</div>
+    </div>
+  </nav>
+
+  <main id="mn">
+
+    <section id="s1" class="sec on">
+      <h2>3.1 Divisibility</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Divides</div>
+        <p>Let \(n, d \in \mathbb{Z}\) with \(d \neq 0\). We say \(d\) <b>divides</b> \(n\) if \(n = dk\) for some \(k \in \mathbb{Z}\), or equivalently \(n/d \in \mathbb{Z}\).</p>
+        <p>We write \(d \mid n\) if \(d\) divides \(n\) and \(d \nmid n\) if \(d\) does not divide \(n\).</p>
+        <p>Synonyms: "\(n\) is <b>divisible</b> by \(d\)", "\(n\) is a <b>multiple</b> of \(d\)", "\(d\) is a <b>factor</b> of \(n\)", "\(d\) is a <b>divisor</b> of \(n\)".</p>
+      </div>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Critical Common Mistake</div>
+        <p>Do not confuse \(d \mid n\) (a relationship between integers) with \(d/n\) (a fraction). For example, \(2 \mid 4\) states "2 is a factor of 4" — it is not the number \(2/4 = 0.5\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Remarks (with proofs)</div>
+        <ul>
+          <li>\(\forall n \in \mathbb{Z},\, n \neq 0 \Rightarrow n \mid 0\). <b>Proof:</b> \(0/n = 0 \in \mathbb{Z}\).</li>
+          <li>If \(d \mid n\), then \(\pm d \mid \pm n\). <b>Proof:</b> \(n/d \in \mathbb{Z} \Rightarrow (\pm n)/(\pm d) \in \mathbb{Z}\).</li>
+          <li>If \(d \mid n\) and \(n \neq 0\), then \(\lvert d \rvert \leq \lvert n \rvert\). <b>Proof:</b> \(n = dk\) with \(\lvert n \rvert = \lvert d \rvert \lvert k \rvert\). Since \(n \neq 0\), \(k \geq 1\), so \(\lvert n \rvert \geq \lvert d \rvert\).</li>
+          <li>How many multiples of 3 are in \([1, 1000]\)? <b>Answer:</b> \(\lfloor 1000/3 \rfloor = 333\).</li>
+        </ul>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Transitivity and Linear Combinations</div>
+        <p>Let \(a, b, c \in \mathbb{Z}\). Then:</p>
+        <ol>
+          <li>If \(a \mid b\) and \(b \mid c\), then \(a \mid c\). (<b>Transitive</b> property.)</li>
+          <li>\(\forall m, n \in \mathbb{Z}\): if \(a \mid b\) and \(a \mid c\), then \(a \mid mb + nc\).</li>
+        </ol>
+        <p><b>Proof (i):</b> Since \(a \mid b\) and \(b \mid c\), \(\exists k, \ell \in \mathbb{Z}\) with \(b = ak\) and \(c = b\ell = a(k\ell)\). Since \(k\ell \in \mathbb{Z}\), \(a \mid c\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Division Algorithm</div>
+        <p>Let \(n \in \mathbb{Z}\) and \(d \in \mathbb{Z}^+\). Then there exist <em>unique</em> integers \(q\) and \(r\) with \(0 \leq r \lt d\) such that</p>
+        <p style="text-align:center">\[ n = dq + r. \]</p>
+        <p>We call \(q = n\,\mathbf{Div}\,d\) the <b>quotient</b> and \(r = n\,\mathbf{Mod}\,d\) the <b>remainder</b>.</p>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Key Point</div>
+        <p>The remainder \(r\) is <em>never negative</em>. When \(n\) is negative, be careful: \(q = \lfloor n/d \rfloor\) (floor, not truncation towards zero).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Division Algorithm</div>
+        <p>What are the quotient and remainder when:</p>
+        <ul>
+          <li>\(0\) is divided by \(5\): \(0 = 5 \cdot 0 + 0\). So \(q = 0,\, r = 0\).</li>
+          <li>\(-11\) is divided by \(5\): \(-11 = 5 \cdot (-3) + 4\). So \(q = -3,\, r = 4\). <em>(Not \(q=-2, r=-1\) — remainder cannot be negative!)</em></li>
+          <li>\(-1\) is divided by \(10\): \(-1 = 10 \cdot (-1) + 9\). So \(q = -1,\, r = 9\).</li>
+        </ul>
+        <p><b>Every integer is odd or even:</b> By Division Algorithm with \(d=2\), \(\exists q, r \in \mathbb{Z}\) with \(0 \leq r \lt 2\), so \(r = 0\) (even) or \(r = 1\) (odd).</p>
+      </div>
+    </section>
+
+    <section id="s2" class="sec">
+      <h2>3.2 Modular Arithmetic</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Congruence</div>
+        <p>If \(a, b \in \mathbb{Z}\) and \(m \in \mathbb{Z}^+\), then \(a\) is <b>congruent</b> to \(b\) modulo \(m\) if \(m \mid (a - b)\). We write</p>
+        <p style="text-align:center">\[ a \equiv b \pmod{m}. \]</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <ul>
+          <li>\(5 \equiv 1 \pmod{2}\) because \(2 \mid 5 - 1 = 4\).</li>
+          <li>\(-2 \equiv 4 \pmod{3}\) because \(3 \mid (-2) - 4 = -6\).</li>
+          <li>\(-4 \not\equiv 5 \pmod{7}\) because \(7 \nmid (-4) - 5 = -9\).</li>
+        </ul>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Same Remainder Characterisation</div>
+        <p>\(a \equiv b \pmod{m}\) iff \(a\,\mathbf{Mod}\,m = b\,\mathbf{Mod}\,m\), i.e., \(a\) and \(b\) leave the same remainder when divided by \(m\).</p>
+        <p><b>Proof:</b> Write \(a = q_1 m + r_1\) and \(b = q_2 m + r_2\). Then \(a - b = m(q_1-q_2)+(r_1-r_2)\). Now \(m \mid (a-b) \Leftrightarrow m \mid (r_1-r_2)\). Since \(\lvert r_1 - r_2 \rvert \lt m\), this forces \(r_1 = r_2\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — km Characterisation</div>
+        <p>\(a \equiv b \pmod{m}\) iff \(\exists k \in \mathbb{Z}\) such that \(a = b + km\).</p>
+        <p><b>Proof:</b> \(m \mid (a-b) \Leftrightarrow a - b = km \Leftrightarrow a = b + km\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Arithmetic of Congruences</div>
+        <p>Let \(a, b, c, d \in \mathbb{Z}\) and \(m \in \mathbb{Z}^+\). If \(a \equiv b \pmod{m}\) and \(c \equiv d \pmod{m}\), then:</p>
+        <p style="text-align:center">\[ a + c \equiv b + d \pmod{m} \qquad ac \equiv bd \pmod{m}. \]</p>
+        <p><b>Proof:</b> \(\exists p, q \in \mathbb{Z}\) with \(a = b + pm\) and \(c = d + qm\). Then \(a+c = (b+d) + m(p+q)\) and \(ac = bd + m(bq+dp+mpq)\). Both are divisible by \(m\).</p>
+      </div>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Common Mistake</div>
+        <p>The exponentiation analogue \(a^c \equiv b^d \pmod{m}\) does <em>not</em> hold in general — see Tutorial Q8(b).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Pseudorandom Numbers (Linear Congruence Method)</div>
+        <p>Choose modulus \(m\), multiplier \(a\) (with \(2 \leq a \lt m\)), increment \(c\) (\(0 \leq c \lt m\)), and seed \(x_0\) (\(0 \leq x_0 \lt m\)). Generate:</p>
+        <p style="text-align:center">\[ x_{n+1} = (ax_n + c)\,\mathbf{Mod}\,m. \]</p>
+        <p><b>Example:</b> \(m=9, a=7, c=4, x_0=3\) gives \(3, 7, 8, 6, 1, 2, 0, 4, 5, 3, \ldots\) — period 9. Common choice: \(m = 2^{31}-1,\, a = 7^5,\, c = 0\).</p>
+      </div>
+    </section>
+
+    <section id="s3" class="sec">
+      <h2>3.3 Primes &amp; GCD</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Prime and Composite</div>
+        <p>A positive integer is:</p>
+        <ul>
+          <li><b>Prime</b> if it has exactly 2 positive divisors: 1 and itself.</li>
+          <li><b>Composite</b> if it has more than 2 positive divisors.</li>
+        </ul>
+        <p><b>Note:</b> 1 is neither prime nor composite. 7 is prime (divisors: 1, 7). 9 is composite (divisors: 1, 3, 9).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>Every positive integer \(n \gt 1\) has a divisor which is prime.</p>
+        <p><b>Proof:</b> If \(n\) is prime, done. If composite, let \(a\) be its smallest divisor \(\gt 1\). By contradiction: if \(a\) is composite, it has a divisor \(b\) with \(1 \lt b \lt a\). Since \(b \mid a\) and \(a \mid n\), by transitivity \(b \mid n\), contradicting the minimality of \(a\). So \(a\) is prime.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Prime Factorisation (Fundamental Theorem of Arithmetic)</div>
+        <p>Every positive integer greater than 1 can be written <em>uniquely</em> as a product of primes in nondecreasing order.</p>
+        <p><b>Example:</b> \(100 = 2^2 \cdot 5^2\), \(641 = 641\) (prime), \(999 = 3^3 \cdot 37\).</p>
+      </div>
+
+      <div class="cor">
+        <div class="lbl lbl-c">Corollary — Form of Divisors</div>
+        <p>Let \(m = p_1^{a_1} p_2^{a_2} \cdots p_n^{a_n}\). Its divisors are exactly \(d = p_1^{b_1} \cdots p_n^{b_n}\) where \(0 \leq b_i \leq a_i\).</p>
+        <p><b>Example:</b> \(500 = 2^2 \cdot 5^3\). All divisors have the form \(2^x 5^y\) with \(0 \leq x \leq 2,\, 0 \leq y \leq 3\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Composite Has Small Divisor</div>
+        <p>If \(n\) is composite, then it has a divisor \(d\) with \(1 \lt d \leq \sqrt{n}\).</p>
+        <p><b>Proof:</b> Let \(n = ab\) with \(1 \lt a \lt n\). If both \(a, b \gt \sqrt{n}\) then \(n = ab \gt n\) — contradiction. So one of them is \(\leq \sqrt{n}\).</p>
+        <p><b>Corollary:</b> If \(n\) has no prime divisor \(p\) with \(1 \lt p \leq \sqrt{n}\), then \(n\) is prime.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Sieve of Eratosthenes (primes &lt; 50)</div>
+        <p>Start with 2–49. Delete multiples of 2, then 3, then 5, then 7 (since \(\sqrt{49} = 7\)).</p>
+        <p>Primes: <b>2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47</b>.</p>
+        <p><b>Example:</b> 101 is prime because the primes \(\leq \sqrt{101} \approx 10.05\) are 2, 3, 5, 7 and none divides 101.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Infinitely Many Primes</div>
+        <p><b>Proof by contradiction:</b> Suppose there are only finitely many primes \(p_1, p_2, \ldots, p_n\). Let \(N = p_1 p_2 \cdots p_n + 1\). Then \(N\) has a prime divisor \(d\). Say \(d = p_k\). Then \(p_k \mid N\) and \(p_k \mid p_1 \cdots p_n\), so \(p_k \mid 1\) — contradiction.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — GCD</div>
+        <p>Let \(a, b\) be integers, not both zero. The <b>greatest common divisor</b> \(\gcd(a, b)\) is the largest integer \(d\) such that \(d \mid a\) and \(d \mid b\).</p>
+        <p><b>Note:</b> \(\gcd(0, 0)\) is undefined (both zero is excluded).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Relatively Prime</div>
+        <p>Integers \(a, b\) are <b>relatively prime</b> (or coprime) if \(\gcd(a, b) = 1\).</p>
+        <p><b>Examples:</b> \(\gcd(12, 35) = 1\) (relatively prime). \(\gcd(0, 1) = 1\). For any \(n\), \(n\) and \(n+1\) are relatively prime — if \(d = \gcd(n, n+1)\), then \(d \mid n\) and \(d \mid n+1\), so \(d \mid 1\), so \(d = 1\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — GCD and LCM via Prime Factorisation</div>
+        <p>Let \(a = p_1^{a_1} \cdots p_n^{a_n}\) and \(b = p_1^{b_1} \cdots p_n^{b_n}\) (using \(0\) exponents as needed). Then:</p>
+        <p style="text-align:center">\[ \gcd(a,b) = p_1^{\min(a_1,b_1)} \cdots p_n^{\min(a_n,b_n)} \]</p>
+        <p style="text-align:center">\[ \text{lcm}(a,b) = p_1^{\max(a_1,b_1)} \cdots p_n^{\max(a_n,b_n)} \]</p>
+        <p><b>Example:</b> \(120 = 2^3 \cdot 3 \cdot 5 \cdot 7^0\), \(700 = 2^2 \cdot 3^0 \cdot 5^2 \cdot 7\).</p>
+        <p>\(\gcd(120,700) = 2^2 \cdot 3^0 \cdot 5^1 \cdot 7^0 = 20\). \(\text{lcm}(120,700) = 2^3 \cdot 3 \cdot 5^2 \cdot 7 = 4200\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>Let \(a, b\) be positive integers. Then \(ab = \gcd(a,b)\cdot\text{lcm}(a,b)\).</p>
+        <p><b>Proof:</b> Follows from \(\max + \min = \text{sum}\) on exponents.</p>
+      </div>
+    </section>
+
+    <section id="s4" class="sec">
+      <h2>3.4 Algorithms</h2>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Base-b Expansion</div>
+        <p>Let \(b \gt 1\) be an integer. Every \(n \in \mathbb{Z}^+\) can be written uniquely as</p>
+        <p style="text-align:center">\[ n = a_k b^k + a_{k-1}b^{k-1} + \cdots + a_0 b^0 \]</p>
+        <p>where \(k \in \mathbb{Z}^*\), \(0 \leq a_i \lt b\), and \(a_k \neq 0\). Notation: \((a_k a_{k-1} \cdots a_0)_b\).</p>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Notes</div>
+        <ul>
+          <li>\(b = 2\): <b>binary</b>. \(b = 16\): <b>hexadecimal</b> (digits A–F for 10–15).</li>
+          <li>\((245)_8 = 2 \cdot 8^2 + 4 \cdot 8 + 5 = 165_{10}\).</li>
+          <li>\((E0B)_{16} = 14 \cdot 256 + 0 \cdot 16 + 11 = 3595_{10}\).</li>
+        </ul>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Algorithm: base-b expansion of n</div>
+        <p>Repeatedly compute \(a_k := q \mathbf{\,Mod\,} b\) and \(q := \lfloor q/b \rfloor\) until \(q = 0\). Digits appear in order \(a_0, a_1, \ldots\) (write right-to-left).</p>
+        <p><b>Example:</b> \(250\) in base 8:</p>
+        <p>\(250 = 31 \cdot 8 + 2 \Rightarrow a_0 = 2,\, q = 31\)</p>
+        <p>\(31 = 3 \cdot 8 + 7 \Rightarrow a_1 = 7,\, q = 3\)</p>
+        <p>\(3 = 0 \cdot 8 + 3 \Rightarrow a_2 = 3,\, q = 0\)</p>
+        <p>Thus \(250 = (372)_8\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Modular Exponentiation</div>
+        <p>Find \(b^n \mathbf{\,Mod\,} m\):</p>
+        <ol>
+          <li>Write \(n = (a_k \cdots a_1 a_0)_2\) (binary).</li>
+          <li>Compute \(r_0 = b,\, r_1 = b^2,\, r_2 = b^4, \ldots,\, r_k = b^{2^k}\) each reduced mod \(m\) (square and reduce).</li>
+          <li>\(b^n \equiv r_0^{a_0} r_1^{a_1} \cdots r_k^{a_k} \pmod{m}\).</li>
+        </ol>
+        <p>Complexity: roughly \(2\lfloor\log_2 n\rfloor\) operations (vs \(n\) for brute force).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — \(3^{101} \mathbf{\,Mod\,} 100\)</div>
+        <p>Step 1: \(101 = (1100101)_2 = 2^6 + 2^5 + 2^2 + 2^0\). So \(3^{101} = 3^{64} \cdot 3^{32} \cdot 3^4 \cdot 3^1\).</p>
+        <p>Step 2 (squaring, mod 100):</p>
+        <p>\(3^2 \equiv 9,\; 3^4 \equiv 81,\; 3^8 \equiv 61,\; 3^{16} \equiv 21,\; 3^{32} \equiv 41,\; 3^{64} \equiv 81.\)</p>
+        <p>Step 3: \(3^{101} \equiv 81 \cdot 41 \cdot 81 \cdot 3 \equiv 3 \pmod{100}\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem (basis of Euclidean Algorithm)</div>
+        <p>Let \(a, b, q, r\) be integers with \(a = bq + r\) (i.e., \(a\,\mathbf{Mod}\,b = r\)). Then</p>
+        <p style="text-align:center">\[ \gcd(a, b) = \gcd(b, r). \]</p>
+        <p><b>Proof:</b> Let \(d = \gcd(a,b)\). Then \(d \mid a\) and \(d \mid b \Rightarrow d \mid r = a - bq\). So \(d\) divides both \(b\) and \(r\), hence \(d \leq \gcd(b,r)\). By symmetry \(\gcd(b,r) \leq d\). Thus equal.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Euclidean Algorithm Pseudocode</div>
+<pre>To find gcd(a, b) with a &gt; b:
+x := a;  y := b
+while y ≠ 0:
+  r := x Mod y
+  x := y
+  y := r
+{gcd(a,b) = x}</pre>
+        <p><b>Example:</b> \(\gcd(414, 1076)\):</p>
+        <p>\(1076\,\mathbf{Mod}\,414 = 248,\; 414\,\mathbf{Mod}\,248 = 166,\; 248\,\mathbf{Mod}\,166 = 82,\; 166\,\mathbf{Mod}\,82 = 2,\; 82\,\mathbf{Mod}\,2 = 0.\)</p>
+        <p>Thus \(\gcd(414, 1076) = 2\).</p>
+      </div>
+    </section>
+
+    <section id="s5" class="sec">
+      <h2>3.5 Applications</h2>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Bézout's Identity</div>
+        <p>Let \(a, b \in \mathbb{Z}^+\) and \(d = \gcd(a, b)\). Then \(\exists s, t \in \mathbb{Z}\) such that</p>
+        <p style="text-align:center">\[ d = as + bt. \]</p>
+        <p>The integers \(s, t\) are found by working backwards through the Euclidean Algorithm.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example: \(\gcd(414, 1076) = 2 = 414 \cdot 13 - 1076 \cdot 5\)</div>
+        <p>Working back from the Euclidean steps:</p>
+        <p>\(2 = 166 - 82 \cdot 2\)</p>
+        <p>\(82 = 248 - 166\), so \(2 = 166 - (248-166) \cdot 2 = 166 \cdot 3 - 248 \cdot 2\)</p>
+        <p>\(166 = 414 - 248\), so \(2 = (414-248) \cdot 3 - 248 \cdot 2 = 414 \cdot 3 - 248 \cdot 5\)</p>
+        <p>\(248 = 1076 - 414 \cdot 2\), so \(2 = 414 \cdot 3 - (1076-414\cdot 2)\cdot 5 = 414\cdot 13 - 1076\cdot 5\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>If \(a, b, c \in \mathbb{Z}^+\) with \(\gcd(a, b) = 1\) and \(a \mid bc\), then \(a \mid c\).</p>
+        <p><b>Proof:</b> By Bézout, \(\exists s, t\) with \(as + bt = 1\). Multiply by \(c\): \(acs + bct = c\). Since \(a \mid acs\) and \(a \mid bc \Rightarrow a \mid bct\), we get \(a \mid c\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>If \(p\) is prime and \(p \mid a_1 a_2 \cdots a_n\), then \(p \mid a_k\) for some \(k\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Cancellation</div>
+        <p>Let \(m \in \mathbb{Z}^+\) and \(a, b, c \in \mathbb{Z}\). If \(ac \equiv bc \pmod{m}\) and \(\gcd(c, m) = 1\), then \(a \equiv b \pmod{m}\).</p>
+        <p><b>Proof:</b> \(m \mid c(a-b)\). Since \(\gcd(c,m) = 1\), \(m \mid a - b\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Modular Inverse</div>
+        <p>Let \(m \in \mathbb{Z}^+\) and \(a \in \mathbb{Z}\). An integer \(\bar{a}\) such that \(\bar{a} a \equiv 1 \pmod{m}\) is called an <b>inverse of \(a\) modulo \(m\)</b>.</p>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Remarks</div>
+        <ul>
+          <li>Inverses are not unique: 2, 7, 12, … are all inverses of 3 mod 5, since \(2 \cdot 3 \equiv 7 \cdot 3 \equiv 12 \cdot 3 \equiv 1 \pmod 5\). We usually take the one in \([0, m)\).</li>
+          <li>2 has no inverse mod 6: computing \(2\cdot 1, 2\cdot 2, \ldots, 2\cdot 5\) mod 6 gives \(2, 4, 0, 2, 4\) — never 1.</li>
+        </ul>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Existence and Uniqueness of Inverse</div>
+        <p>The inverse of \(a\) modulo \(m\) exists iff \(\gcd(a, m) = 1\). When it exists, it is unique modulo \(m\).</p>
+        <p><b>Proof (existence \(\Rightarrow\) gcd = 1):</b> If \(ab \equiv 1 \pmod m\), then \(ab - 1 = mt\), so \(ab - mt = 1\). Any common divisor of \(a\) and \(m\) divides 1, so \(\gcd(a,m) = 1\).</p>
+        <p><b>Proof (gcd = 1 \(\Rightarrow\) existence):</b> By Bézout, \(\exists s, t\) with \(as + mt = 1\). So \(as \equiv 1 \pmod m\). Thus \(s\) is an inverse.</p>
+        <p><b>Uniqueness:</b> If \(s, w\) are both inverses, \(as \equiv aw \pmod m\). By Cancellation (gcd(a,m)=1), \(s \equiv w \pmod m\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Finding the inverse of 207 mod 331</div>
+        <p>Run the Euclidean algorithm to get \(\gcd(207, 331) = 1 = 207 \cdot 8 - 331 \cdot 5\).</p>
+        <p>Taking mod 331: \(1 \equiv 207 \cdot 8 \pmod{331}\). So \(\overline{207} = 8\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Fermat's Little Theorem (FLT)</div>
+        <p>If \(p\) is prime and \(a \in \mathbb{Z}\) with \(\gcd(p, a) = 1\), then</p>
+        <p style="text-align:center">\[ a^{p-1} \equiv 1 \pmod{p}. \]</p>
+        <p><b>Examples:</b> \(p=5, a=2\): \(2^4 = 16 \equiv 1 \pmod 5\). \(p=7, a=3\): \(3^6 = 729 \equiv 1 \pmod 7\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — RSA Cryptosystem</div>
+        <p><b>Setup:</b></p>
+        <ol>
+          <li>Choose two large primes \(p, q\) and compute \(n = pq\).</li>
+          <li>Choose \(e\) with \(\gcd(e,\,(p-1)(q-1)) = 1\).</li>
+          <li>Find \(d\) with \(de \equiv 1 \pmod{(p-1)(q-1)}\) (i.e., \(d = \bar{e}\) mod \((p-1)(q-1)\)).</li>
+        </ol>
+        <p><b>Keys:</b> Public key \((n, e)\). Private key \(d\).</p>
+        <p><b>Encryption:</b> \(C = M^e\,\mathbf{Mod}\,n\).</p>
+        <p><b>Decryption:</b> \(M = C^d\,\mathbf{Mod}\,n\).</p>
+        <p><b>Why it works:</b> \(C^d = M^{de} = M^{1 + k(p-1)(q-1)}\). By FLT, \(M^{p-1} \equiv 1 \pmod p\) and \(M^{q-1} \equiv 1 \pmod q\). Thus \(C^d \equiv M \pmod p\) and mod \(q\), hence mod \(n = pq\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Encrypt "STOP" with p=43, q=59, e=13</div>
+        <p>\(n = pq = 2537\). \((p-1)(q-1) = 2436\). Check: \(\gcd(13, 2436) = 1\). ✓</p>
+        <p>Translate STOP: S=19, T=20, O=15, P=16 → integer 19201516. Since \(n\) has 4 digits, use blocks of 3: <b>19 | 201 | 516</b>.</p>
+        <p>Encrypt (\(C = M^{13}\,\mathbf{Mod}\,2537\)):</p>
+        <p>\(19^{13}\,\mathbf{Mod}\,2537 = 2299,\quad 201^{13}\,\mathbf{Mod}\,2537 = 1953,\quad 516^{13}\,\mathbf{Mod}\,2537 = 1247.\)</p>
+        <p>Ciphertext: <b>2299 1953 1247</b>.</p>
+        <p><b>Decrypt:</b> Find \(d\): inverse of 13 mod 2436. Using Euclidean algorithm: \(d = 937\).</p>
+        <p>\(2299^{937}\,\mathbf{Mod}\,2537 = 19,\quad 1953^{937}\,\mathbf{Mod}\,2537 = 201,\quad 1247^{937}\,\mathbf{Mod}\,2537 = 516.\)</p>
+        <p>Recover: 19 20 15 16 → STOP. ✓</p>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Remark — Security</div>
+        <p>RSA is secure because factoring large integers (to recover \(p, q\) from \(n\)) is computationally intractable with current algorithms.</p>
+      </div>
+    </section>
+
+    <section id="t6" class="sec">
+      <h2>Tutorial 6</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Prove that for any odd integer \(n\): \(\left\lfloor \dfrac{n^2}{4} \right\rfloor = \dfrac{n^2-1}{4}\) and \(\left\lceil \dfrac{n^2}{4} \right\rceil = \dfrac{n^2+3}{4}\).</p>
+        <button class="togbtn" onclick="tog('t6q1')">Show solution ▾</button>
+        <div id="t6q1" class="tog">
+          <div class="sol">
+            <p>Since \(n\) is odd, write \(n = 2k+1\) for some \(k \in \mathbb{Z}\). Then \(n^2 = 4k^2+4k+1\), so \(\dfrac{n^2}{4} = k^2+k+\dfrac{1}{4}\).</p>
+            <p><b>Floor:</b> \(\left\lfloor k^2+k+\tfrac{1}{4} \right\rfloor = k^2+k = \dfrac{4k^2+4k}{4} = \dfrac{n^2-1}{4}\). ✓</p>
+            <p><b>Ceiling:</b> \(\left\lceil k^2+k+\tfrac{1}{4} \right\rceil = k^2+k+1 = \dfrac{4k^2+4k+4}{4} = \dfrac{n^2+3}{4}\). ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Find the quotient and remainder when \(x\) is divided by \(y\): (a) \((44, 8)\), (b) \((777, 21)\), (c) \((-123, 19)\), (d) \((0, 17)\), (e) \((-100, 101)\).</p>
+        <button class="togbtn" onclick="tog('t6q2')">Show solution ▾</button>
+        <div id="t6q2" class="tog">
+          <div class="sol">
+            <p>Recall: \(x = qy + r\) with \(0 \leq r \lt y\). Key: \(q = \lfloor x/y \rfloor\), never truncation toward zero.</p>
+            <p>(a) \(44 = 5 \cdot 8 + 4\). \(q = 5,\, r = 4\).</p>
+            <p>(b) \(777 = 37 \cdot 21 + 0\). \(q = 37,\, r = 0\).</p>
+            <p>(c) \(-123/19 \approx -6.47\), so \(q = \lfloor -6.47 \rfloor = -7\). Then \(r = -123 - (-7)(19) = -123 + 133 = 10\). Check: \(-7 \cdot 19 + 10 = -123\). ✓ \(q = -7,\, r = 10\).</p>
+            <p>(d) \(0 = 0 \cdot 17 + 0\). \(q = 0,\, r = 0\).</p>
+            <p>(e) \(-100/101 \approx -0.99\), so \(q = -1\). \(r = -100 - (-1)(101) = 1\). \(q = -1,\, r = 1\).</p>
+            <p><b>Common error on (c):</b> Writing \(q = -6, r = -3\) — this is wrong as \(r\) must be non-negative.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q3. Show that if \(a, b, c \in \mathbb{Z}\) with \(a \neq 0\) and \(c \neq 0\), and \(ac \mid bc\), then \(a \mid b\).</p>
+        <button class="togbtn" onclick="tog('t6q3')">Show solution ▾</button>
+        <div id="t6q3" class="tog">
+          <div class="sol">
+            <p>Since \(ac \mid bc\), \(\exists k \in \mathbb{Z}\) such that \(bc = k(ac)\).</p>
+            <p>Thus \(bc = (ka)c\). Since \(c \neq 0\), we may cancel: \(b = ka\).</p>
+            <p>Therefore \(a \mid b\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q4. Show that if \(a \mid b\) and \(b \mid a\), then \(a = b\) or \(a = -b\).</p>
+        <button class="togbtn" onclick="tog('t6q4')">Show solution ▾</button>
+        <div id="t6q4" class="tog">
+          <div class="sol">
+            <p><b>Case 1:</b> \(b = 0\). Then \(b \mid a \Rightarrow a = 0\). So \(a = b = 0\). ✓</p>
+            <p><b>Case 2:</b> \(b \neq 0\) (hence also \(a \neq 0\) since \(b \mid a\)). By the remark in §3.1: if \(d \mid n\) and \(n \neq 0\), then \(|d| \leq |n|\). Applying this:</p>
+            <p>\(a \mid b\) and \(b \neq 0 \Rightarrow |a| \leq |b|\).</p>
+            <p>\(b \mid a\) and \(a \neq 0 \Rightarrow |b| \leq |a|\).</p>
+            <p>Thus \(|a| = |b|\), so \(a = b\) or \(a = -b\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q5. Prove that if \(a\) and \(b\) are integers and \(a \mid b\), then \(a\) is odd or \(b\) is even.</p>
+        <button class="togbtn" onclick="tog('t6q5')">Show solution ▾</button>
+        <div id="t6q5" class="tog">
+          <div class="sol">
+            <p>We prove the contrapositive: if \(a\) is even and \(b\) is odd, then \(a \nmid b\).</p>
+            <p>Suppose \(a\) is even and \(b\) is odd. Then \(a = 2s\) for some \(s \in \mathbb{Z}\).</p>
+            <p>Suppose for contradiction that \(a \mid b\). Then \(b = at = 2st\) for some \(t \in \mathbb{Z}\), making \(b\) even — contradicting that \(b\) is odd.</p>
+            <p>Therefore \(a \nmid b\). By contrapositive, \(a \mid b \Rightarrow\) (a is odd or b is even). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q6. Find the integer \(a\) such that: (a) \(a \equiv -15 \pmod{27}\) and \(-26 \leq a \leq 0\); (b) \(a \equiv 24 \pmod{31}\) and \(-15 \leq a \leq 15\); (c) \(a \equiv 99 \pmod{41}\) and \(100 \leq a \leq 140\).</p>
+        <button class="togbtn" onclick="tog('t6q6')">Show solution ▾</button>
+        <div id="t6q6" class="tog">
+          <div class="sol">
+            <p>(a) \(a = -15 + 27k\). \(k=0\): \(a = -15\). Check: \(-26 \leq -15 \leq 0\). ✓ So \(a = -15\).</p>
+            <p>(b) \(a = 24 + 31k\). \(k=0\): \(a = 24\) (too large). \(k=-1\): \(a = -7\). Check: \(-15 \leq -7 \leq 15\). ✓ So \(a = -7\).</p>
+            <p>(c) First reduce: \(99 \equiv 99 - 2\cdot 41 = 17 \pmod{41}\). So \(a = 17 + 41k\). \(k=2\): \(a = 99\) (fails \(100 \leq a\)). \(k=3\): \(a = 140\). Check: \(100 \leq 140 \leq 140\). ✓ So \(a = 140\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q7. Prove that if \(d\) is a positive divisor of \(a\), \(b\), and \(m\), and \(a \equiv b \pmod{m}\), then \(a/d \equiv b/d \pmod{m/d}\).</p>
+        <button class="togbtn" onclick="tog('t6q7')">Show solution ▾</button>
+        <div id="t6q7" class="tog">
+          <div class="sol">
+            <p>Since \(d \mid a\) and \(d \mid b\), write \(a = da'\) and \(b = db'\) for some \(a', b' \in \mathbb{Z}\). Since \(d \mid m\), write \(m = de\).</p>
+            <p>Given \(a \equiv b \pmod m\), we have \(m \mid (a - b)\), i.e., \(de \mid d(a'-b')\). Dividing by \(d\): \(e \mid (a'-b')\).</p>
+            <p>This says \((m/d) \mid (a/d - b/d)\), i.e., \(a/d \equiv b/d \pmod{m/d}\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q8. Find counterexamples: (a) if \(ac \equiv bc \pmod m\) then \(a \equiv b \pmod m\); (b) if \(a \equiv b \pmod m\) and \(c \equiv d \pmod m\) then \(a^c \equiv b^d \pmod m\).</p>
+        <button class="togbtn" onclick="tog('t6q8')">Show solution ▾</button>
+        <div id="t6q8" class="tog">
+          <div class="sol">
+            <p>(a) Take \(a=1, b=3, c=2, m=4\). Then \(ac = 2 \equiv 6 = bc \pmod 4\). But \(1 \not\equiv 3 \pmod 4\).</p>
+            <p><em>Why it fails:</em> Cancellation requires \(\gcd(c,m)=1\). Here \(\gcd(2,4)=2 \neq 1\).</p>
+            <p>(b) Take \(m=5\), \(a=2, b=7\) (so \(a \equiv b \pmod 5\)), \(c=1, d=6\) (so \(c \equiv d \pmod 5\)).</p>
+            <p>\(a^c = 2^1 = 2\). \(b^d = 7^6\). Now \(7 \equiv 2 \pmod 5\), so \(7^6 \equiv 2^6 = 64 \equiv 4 \pmod 5\). But \(2 \not\equiv 4 \pmod 5\). Counterexample found. ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q9. Determine whether 107 and 113 are prime.</p>
+        <button class="togbtn" onclick="tog('t6q9')">Show solution ▾</button>
+        <div id="t6q9" class="tog">
+          <div class="sol">
+            <p>It suffices to check prime divisors \(\leq \sqrt{n}\).</p>
+            <p><b>107:</b> \(\sqrt{107} \approx 10.3\). Primes to check: 2, 3, 5, 7.</p>
+            <p>107 is odd; \(1+0+7=8\) (not div. by 3); doesn't end in 0 or 5; \(107 / 7 \approx 15.3\) (not an integer).</p>
+            <p><b>107 is prime.</b></p>
+            <p><b>113:</b> \(\sqrt{113} \approx 10.6\). Primes to check: 2, 3, 5, 7.</p>
+            <p>113 is odd; \(1+1+3=5\) (not div. by 3); doesn't end in 0 or 5; \(113/7 \approx 16.1\).</p>
+            <p><b>113 is prime.</b></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q10. Find the prime factorisation of 909,090.</p>
+        <button class="togbtn" onclick="tog('t6q10')">Show solution ▾</button>
+        <div id="t6q10" class="tog">
+          <div class="sol">
+            <p>Systematically divide by primes:</p>
+            <p>\(909090 \div 2 = 454545\)<br>
+            \(454545 \div 3 = 151515\)<br>
+            \(151515 \div 3 = 50505\)<br>
+            \(50505 \div 3 = 16835\)<br>
+            \(16835 \div 5 = 3367\)<br>
+            \(3367 \div 7 = 481\)<br>
+            \(481 \div 13 = 37\) (37 is prime)</p>
+            <p>Therefore: \(909090 = 2 \cdot 3^3 \cdot 5 \cdot 7 \cdot 13 \cdot 37\).</p>
+            <p><em>Verify:</em> \(2 \cdot 27 \cdot 5 \cdot 7 \cdot 13 \cdot 37 = 270 \cdot 7 \cdot 13 \cdot 37 = 1890 \cdot 481 = 909090\). ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q11. Show that \(a^m + 1\) is composite if \(a\) and \(m\) are integers greater than 1 and \(m\) is odd.</p>
+        <button class="togbtn" onclick="tog('t6q11')">Show solution ▾</button>
+        <div id="t6q11" class="tog">
+          <div class="sol">
+            <p><b>Key algebraic identity:</b> For odd \(m\) and any \(x\):</p>
+            <p>\[ x^m + 1 = (x+1)(x^{m-1} - x^{m-2} + x^{m-3} - \cdots - x + 1). \]</p>
+            <p>This holds because \(x = -1\) is a root of \(x^m + 1\) when \(m\) is odd (since \((-1)^m + 1 = -1+1 = 0\)), so \((x+1)\) is a factor by the factor theorem.</p>
+            <p>Setting \(x = a\): \(a^m + 1 = (a+1) \cdot Q\) where \(Q = a^{m-1} - a^{m-2} + \cdots + 1\).</p>
+            <p>Since \(a \geq 2\): \(a+1 \geq 3 \gt 1\).</p>
+            <p>Since \(m \geq 3\) (odd and \(\gt 1\)): \(Q = \frac{a^m+1}{a+1} \geq \frac{8+1}{3} = 3 \gt 1\).</p>
+            <p>Thus \(a^m+1\) has a factor \(a+1\) with \(1 \lt a+1 \lt a^m+1\), so \(a^m+1\) is composite. \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q12. An integer \(n\) is a perfect square if \(n = k^2\) for some \(k \in \mathbb{Z}\). Prove that a positive integer is a perfect square iff it has an odd number of positive divisors.</p>
+        <button class="togbtn" onclick="tog('t6q12')">Show solution ▾</button>
+        <div id="t6q12" class="tog">
+          <div class="sol">
+            <p><b>Key observation:</b> For any divisor \(d\) of \(n\) with \(d \gt \sqrt{n}\), the number \(n/d \lt \sqrt{n}\) is also a divisor. This gives a pairing \(d \leftrightarrow n/d\) between divisors greater than \(\sqrt{n}\) and divisors less than \(\sqrt{n}\). This pairing is a bijection.</p>
+            <p>So divisors pair up except for divisors equal to \(\sqrt{n}\). A divisor equals \(\sqrt{n}\) iff \(\sqrt{n}\) is an integer iff \(n\) is a perfect square.</p>
+            <p><b>(\(\Rightarrow\))</b> If \(n = k^2\), then \(d = k = \sqrt{n}\) is a divisor left unpaired. The remaining divisors form pairs. So the total count is \(2j + 1\) for some \(j\) — odd.</p>
+            <p><b>(\(\Leftarrow\))</b> If \(n\) has an odd number of divisors, then the pairing leaves one divisor unpaired. This unpaired divisor must equal \(\sqrt{n}\), i.e., \(\sqrt{n} \in \mathbb{Z}\), so \(n\) is a perfect square. \(\square\)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="sec">
+      <h2>Interactive Tools</h2>
+
+      <div class="tool">
+        <h3>Tool 1 — Division Algorithm Calculator</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Computes the quotient and remainder ensuring \(0 \leq r \lt d\).</p>
+        <div class="tool-row">
+          <label>\(n\) (dividend)</label>
+          <input type="number" id="da_n" value="-11">
+        </div>
+        <div class="tool-row">
+          <label>\(d\) (divisor, &gt;0)</label>
+          <input type="number" id="da_d" value="5" min="1">
+          <button class="go" onclick="calcDA()">Calculate</button>
+        </div>
+        <div class="out" id="da_out">Enter values above and click Calculate.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 2 — Euclidean Algorithm &amp; Bézout Coefficients</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Computes the greatest common divisor and the coefficients for Bézout's Identity.</p>
+        <div class="tool-row">
+          <label>\(a\)</label>
+          <input type="number" id="eu_a" value="414">
+        </div>
+        <div class="tool-row">
+          <label>\(b\)</label>
+          <input type="number" id="eu_b" value="1076">
+          <button class="go" onclick="calcEU()">Compute GCD</button>
+        </div>
+        <div class="out" id="eu_out">Enter values above and click Compute GCD.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 3 — Modular Exponentiation (\(b^n \mathbf{\,Mod\,} m\))</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Uses the square and reduce method.</p>
+        <div class="tool-row">
+          <label>\(b\) (base)</label>
+          <input type="number" id="me_b" value="3">
+        </div>
+        <div class="tool-row">
+          <label>\(n\) (exponent)</label>
+          <input type="number" id="me_n" value="101" min="0">
+        </div>
+        <div class="tool-row">
+          <label>\(m\) (modulus)</label>
+          <input type="number" id="me_m" value="100" min="1">
+          <button class="go" onclick="calcME()">Compute</button>
+        </div>
+        <div class="out" id="me_out">Enter values above and click Compute.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 4 — Modular Inverse</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Finds \(\bar{a}\) such that \(\bar{a} \cdot a \equiv 1 \pmod{m}\).</p>
+        <div class="tool-row">
+          <label>\(a\)</label>
+          <input type="number" id="mi_a" value="207">
+        </div>
+        <div class="tool-row">
+          <label>\(m\) (modulus)</label>
+          <input type="number" id="mi_m" value="331" min="1">
+          <button class="go" onclick="calcMI()">Find Inverse</button>
+        </div>
+        <div class="out" id="mi_out">Enter values above and click Find Inverse.</div>
+      </div>
+    </section>
+
+    <section id="quiz" class="sec">
+      <h2>Quiz — 10 questions</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+      <div id="quiz-area"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+function init() {
+  if (!window.renderMathInElement) { setTimeout(init,80); return; }
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildQuiz();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+
+function posmod(a,b) { return ((a%b)+b)%b; }
+
+/* ---- DIV ALG ---- */
+function calcDA() {
+  var n = parseInt(document.getElementById('da_n').value);
+  var d = parseInt(document.getElementById('da_d').value);
+  var out = document.getElementById('da_out');
+  if (isNaN(n)||isNaN(d)||d<=0) { out.innerHTML='<span class="badge badge-err">Enter valid integers with d > 0.</span>'; return; }
+  var q = Math.floor(n/d);
+  var r = n - q*d;
+  var isRight = (r>=0 && r<d);
+  var checkStr = isRight ? '<span class="badge badge-ok">✓</span>' : '<span class="badge badge-err">Error</span>';
+  var html = '<p><strong>Result:</strong> \\(' + n + ' = ' + q + ' \\cdot ' + d + ' + ' + r + '\\)</p>' +
+    '<p>Quotient \\(q = ' + q + '\\), Remainder \\(r = ' + r + '\\)</p>' +
+    '<p style="margin-top:8px;font-size:11.5px;color:var(--color-text-secondary)">Check: \\(0 \\leq ' + r + ' \\lt ' + d + '\\) ' + checkStr + '</p>';
+  out.innerHTML = html;
+  rerender(out);
+}
+
+/* ---- EXT GCD ---- */
+function extgcd(a,b) {
+  if (b===0) return {g:a,s:1,t:0,steps:[]};
+  var x=a, y=b, s0=1, s1=0, t0=0, t1=1;
+  var steps=[];
+  while (y!==0) {
+    var q=Math.floor(x/y), r=x-q*y;
+    steps.push({x:x,y:y,q:q,r:r,s:s0,t:t0});
+    var ns=s0-q*s1, nt=t0-q*t1;
+    x=y; y=r; s0=s1; s1=ns; t0=t1; t1=nt;
+  }
+  return {g:x,s:s0,t:t0,steps:steps};
+}
+
+function calcEU() {
+  var a0 = parseInt(document.getElementById('eu_a').value);
+  var b0 = parseInt(document.getElementById('eu_b').value);
+  var out = document.getElementById('eu_out');
+  if (isNaN(a0)||isNaN(b0)||(a0===0&&b0===0)) { out.innerHTML='<span class="badge badge-err">Enter integers, not both zero.</span>'; return; }
+  var a=Math.abs(a0), b=Math.abs(b0);
+  var res = extgcd(Math.max(a,b), Math.min(a,b));
+  var g=res.g, s=res.s, t=res.t;
+  var steps=res.steps;
+  
+  var html = '<table class="ref"><tr><th>Step</th><th style="text-align:center">x</th><th style="text-align:center">y</th><th style="text-align:center">q</th><th style="text-align:center">r = x Mod y</th></tr>';
+  for (var i=0;i<steps.length;i++) {
+    var st = steps[i];
+    html += '<tr><td>'+(i+1)+'</td><td style="text-align:center">'+st.x+'</td><td style="text-align:center">'+st.y+'</td><td style="text-align:center">'+st.q+'</td><td style="text-align:center">'+st.r+'</td></tr>';
+  }
+  html += '</table>';
+  
+  html += '<p style="margin-top:10px"><strong>\\(\\gcd('+a0+', '+b0+') = '+g+'\\)</strong></p>';
+  var sa = (a>=b)?s:t, sb = (a>=b)?t:s;
+  if (sa!==undefined) html += '<p style="font-size:11.5px;color:var(--color-text-secondary);margin-top:6px">Bézout identity: \\('+g+' = '+sa+' \\cdot '+a0+' + ('+sb+') \\cdot '+b0+'\\)</p>';
+  out.innerHTML = html;
+  rerender(out);
+}
+
+/* ---- MOD EXP ---- */
+function toBin(n) {
+  if (n===0) return [0];
+  var bits=[];
+  while (n>0) { bits.push(n%2); n=Math.floor(n/2); }
+  return bits;
+}
+
+function calcME() {
+  var b=parseInt(document.getElementById('me_b').value);
+  var n=parseInt(document.getElementById('me_n').value);
+  var m=parseInt(document.getElementById('me_m').value);
+  var out=document.getElementById('me_out');
+  if (isNaN(b)||isNaN(n)||isNaN(m)||m<=0||n<0) { out.innerHTML='<span class="badge badge-err">Enter valid values (m&gt;0, n&ge;0).</span>'; return; }
+  
+  var bits=toBin(n);
+  var binStr='';
+  for (var i=bits.length-1;i>=0;i--) binStr+=bits[i];
+  
+  var html = '<p style="font-size:11.5px;margin-bottom:6px;color:var(--color-text-secondary)">Binary: \\('+n+' = ('+binStr+')_2\\)</p>';
+  html += '<table class="ref"><tr><th>Power</th><th style="text-align:center">Value Mod '+m+'</th><th style="text-align:center">Bit</th></tr>';
+  
+  var cur=posmod(b,m), result=1;
+  var usedTerms=[];
+  
+  for (var i=0;i<bits.length;i++) {
+    var pw=Math.pow(2,i);
+    var bitClass = bits[i] ? 'T' : '';
+    var bitText = bits[i] ? '1 ✓' : '0';
+    html += '<tr><td>\\('+b+'^{'+pw+'}\\)</td><td style="text-align:center">'+cur+'</td><td class="'+bitClass+'">'+bitText+'</td></tr>';
+    if (bits[i]) usedTerms.push(cur);
+    if (i<bits.length-1) cur=posmod(cur*cur,m);
+  }
+  html += '</table>';
+  
+  result=1;
+  for (var i=0;i<usedTerms.length;i++) result=posmod(result*usedTerms[i],m);
+  html += '<p style="margin-top:10px"><strong>\\('+b+'^{'+n+'} \\equiv '+result+' \\pmod{'+m+'}\\)</strong></p>';
+  
+  out.innerHTML = html;
+  rerender(out);
+}
+
+/* ---- MODULAR INVERSE ---- */
+function calcMI() {
+  var a=parseInt(document.getElementById('mi_a').value);
+  var m=parseInt(document.getElementById('mi_m').value);
+  var out=document.getElementById('mi_out');
+  if (isNaN(a)||isNaN(m)||m<=0) { out.innerHTML='<span class="badge badge-err">Enter valid integers with m>0.</span>'; return; }
+  
+  var res=extgcd(Math.abs(a),Math.abs(m));
+  if (res.g!==1) {
+    out.innerHTML='<p>\\(\\gcd('+a+', '+m+') = '+res.g+' \\neq 1\\).</p><p style="margin-top:8px"><span class="badge badge-err">Inverse does not exist.</span></p>';
+    rerender(out);
+    return;
+  }
+  
+  var inv=posmod(res.s,m);
+  var html = '<p>\\(\\gcd('+a+', '+m+') = 1\\) <span class="badge badge-ok">Coprime</span></p>';
+  html += '<p style="margin-top:6px">Inverse: <strong>\\(\\overline{'+a+'} = '+inv+'\\)</strong> (in \\([0, '+m+')\\))</p>';
+  html += '<p style="margin-top:8px;font-size:11.5px;color:var(--color-text-secondary)">Verify: \\('+inv+' \\cdot '+a+' = '+(inv*a)+' \\equiv '+posmod(inv*a,m)+' \\pmod{'+m+'}\\)</p>';
+  
+  out.innerHTML = html;
+  rerender(out);
+}
+
+/* ---- QUIZ ---- */
+var QUIZ = [
+  {q:'Which of the following is NOT equivalent to saying \\(d \\mid n\\)?',
+   opts:['\\(n = dk\\) for some \\(k \\in \\mathbb{Z}\\)','\\(n/d \\in \\mathbb{Z}\\)','\\(d\\) is a divisor of \\(n\\)','\\(n \\mathbf{\\,Mod\\,} d = n\\)'],
+   ans:3,
+   exp:'\\(n \\mathbf{\\,Mod\\,}\\, d = n\\) is only true when \\(d \\gt n\\), which is not what divisibility means. All other options are correct equivalent definitions.'},
+  {q:'By the Division Algorithm, when \\(n \\in \\mathbb{Z}\\) is divided by \\(d \\in \\mathbb{Z}^+\\), the remainder \\(r\\) satisfies:',
+   opts:['\\(r\\) can be any integer','\\(0 \\leq r \\leq d\\)','\\(0 \\leq r \\lt d\\)','\\(r \\lt d\\) with no lower bound'],
+   ans:2,
+   exp:'The correct constraint is \\(0 \\leq r \\lt d\\). The upper bound is strict (\\(r\\) is strictly less than \\(d\\)) and the lower bound is non-negative. Option (b) is wrong because \\(r = d\\) is impossible — that would mean one more full division was possible.'},
+  {q:'Which is a correct characterisation of \\(a \\equiv b \\pmod{m}\\)?',
+   opts:['\\(a \\mathbf{\\,Mod\\,}\\, m = b\\)','\\(a - b = m\\)','\\(m \\mid (a - b)\\)','\\(a \\mathbf{\\,Mod\\,}\\, m = b \\mathbf{\\,Mod\\,}\\, m\\)'],
+   ans:2,
+   exp:'Option (c) is the definition. Option (d) is also correct — but only if listed: the same-remainder characterisation is a theorem, not a definition. Option (a) is wrong because \\(b\\) itself may not be in \\([0, m)\\). Option (b) is too restrictive (requires \\(k=1\\) specifically).'},
+  {q:'\\(\\gcd(0, 0)\\) is:',
+   opts:['0','1','Undefined — the definition requires not both zero','The gcd of any pair of integers'],
+   ans:2,
+   exp:'By definition, \\(\\gcd(a, b)\\) requires that \\(a\\) and \\(b\\) are not both zero. Every non-zero integer divides 0, so there is no largest common divisor in that case — hence undefined.'},
+  {q:'The inverse of \\(a\\) modulo \\(m\\) exists if and only if:',
+   opts:['\\(m\\) is prime','\\(\\gcd(a, m) = 1\\)','\\(a \\lt m\\)','\\(a\\) is positive'],
+   ans:1,
+   exp:'The necessary and sufficient condition is \\(\\gcd(a, m) = 1\\) (coprimality). \\(m\\) being prime is sufficient but not necessary: e.g., the inverse of 3 mod 8 exists (\\(3 \\cdot 3 = 9 \\equiv 1\\)) even though 8 is not prime.'},
+  {q:'If \\(ac \\equiv bc \\pmod{m}\\), when can we conclude \\(a \\equiv b \\pmod{m}\\)?',
+   opts:['Always','If \\(c \\gt 0\\)','If \\(\\gcd(c, m) = 1\\)','Never'],
+   ans:2,
+   exp:'This is the Cancellation Theorem: cancellation is valid iff \\(\\gcd(c, m) = 1\\). If \\(\\gcd(c, m) \\gt 1\\), it may fail — e.g., \\(1 \\cdot 2 \\equiv 3 \\cdot 2 \\pmod{4}\\) but \\(1 \\not\\equiv 3 \\pmod{4}\\).'},
+  {q:'The integer 1 is:',
+   opts:['Prime (it has one prime factor: itself)','Composite (it has itself as a divisor)','Neither prime nor composite','Both prime and composite'],
+   ans:2,
+   exp:'1 is neither prime nor composite by definition. A prime has exactly 2 positive divisors (1 and itself). The number 1 has only 1 positive divisor. A composite has more than 2 positive divisors. So 1 fits neither category.'},
+  {q:'By Fermat\'s Little Theorem with \\(p = 7\\) and \\(a = 5\\), which is guaranteed?',
+   opts:['\\(5^7 \\equiv 1 \\pmod{7}\\)','\\(5^6 \\equiv 1 \\pmod{7}\\)','\\(5^5 \\equiv 1 \\pmod{7}\\)','\\(5^4 \\equiv 1 \\pmod{7}\\)'],
+   ans:1,
+   exp:'FLT states \\(a^{p-1} \\equiv 1 \\pmod{p}\\) when \\(p\\) is prime and \\(\\gcd(p, a) = 1\\). Here \\(p-1 = 6\\), so \\(5^6 \\equiv 1 \\pmod{7}\\). Option (a) \\(5^7 \\equiv 5 \\pmod 7\\) (the other form of FLT), not 1.'},
+  {q:'In RSA with \\(p = 43\\) and \\(q = 59\\), what is \\(n\\)?',
+   opts:['102','2537','2436','1891'],
+   ans:1,
+   exp:'\\(n = pq = 43 \\cdot 59 = 2537\\). Note that \\((p-1)(q-1) = 42 \\cdot 58 = 2436\\) is the value used to find the decryption key \\(d\\), not \\(n\\) itself.'},
+  {q:'To find \\(\\gcd(48, 18)\\) using the Euclidean Algorithm, the first step is:',
+   opts:['\\(\\gcd(48,18) = \\gcd(30,18)\\)','\\(\\gcd(48,18) = \\gcd(18,12)\\)','\\(\\gcd(48,18) = \\gcd(18,2)\\)','\\(\\gcd(48,18) = \\gcd(12,6)\\)'],
+   ans:1,
+   exp:'\\(48 = 2 \\cdot 18 + 12\\), so \\(\\gcd(48, 18) = \\gcd(18, 12)\\). Option (a) confuses subtraction with the Euclidean step. Options (c) and (d) skip steps.'}
+];
+
+init();
+</script>
+</body>
+</html>

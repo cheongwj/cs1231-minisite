@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS1231 Chapter 1 — Propositional Logic</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 1 Propositional Logic — interactive study guide with definitions, theorems, examples, tutorial solutions, interactive tools, and quiz</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+
+  <nav id="nv">
+    <h1>Chapter 1</h1>
+    <button class="nb act" onclick="show('s1',this)">1.1 Propositions</button>
+    <button class="nb" onclick="show('s2',this)">1.2 Tautology</button>
+    <button class="nb" onclick="show('s3',this)">1.3 Predicates</button>
+    <button class="nb" onclick="show('s4',this)">1.4 Nested Quantifiers</button>
+    <button class="nb" onclick="show('s5',this)">1.5 Arguments</button>
+    <button class="nb" onclick="show('t1',this)">Tutorial 1</button>
+    <button class="nb" onclick="show('t2',this)">Tutorial 2</button>
+    <button class="nb" onclick="show('t3',this)">Tutorial 3</button>
+    <button class="nb" onclick="show('tools',this)">Interactive Tools</button>
+    <button class="nb" onclick="show('quiz',this)">Quiz</button>
+    <div id="sc">
+      <p>Quiz score</p>
+      <div id="scv">—</div>
+    </div>
+  </nav>
+
+  <main id="mn">
+
+    <section id="s1" class="sec on">
+      <h2>Section 1.1 — Propositional Logic</h2>
+
+      <h3>Propositions</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Proposition</div>
+        <p>A <b>proposition</b> is a declarative sentence that is either true or false. This quality of being true (T) or false (F) is called the <b>truth value</b> of the proposition.</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <p><b>True propositions:</b> \(1+1=2\)</p>
+        <p><b>False propositions:</b> \(4+5=6\)</p>
+        <p><b>Non-propositions</b> (questions, commands, exclamations, or sentences with variables):</p>
+        <ul>
+          <li>"How is the lecture?" — question</li>
+          <li>"Stop talking!" — command</li>
+          <li>\(x+y>0\) — predicate (becomes proposition only when \(x,y\) are known)</li>
+        </ul>
+      </div>
+
+      <h3>Logical Connectives</h3>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Negation</div>
+        <p>The <b>negation</b> of proposition \(p\) is \(\neg p\). It denotes "not \(p\)". \(p\) and \(\neg p\) have opposite truth values.</p>
+        <table class="ref" style="width:auto; margin-top:8px">
+          <tr><th>\(p\)</th><th>\(\neg p\)</th></tr>
+          <tr><td style="text-align:center">T</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td class="T">T</td></tr>
+        </table>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Conjunction</div>
+        <p>The <b>conjunction</b> of \(p\) and \(q\) is \(p\wedge q\). It denotes "\(p\) and \(q\)". True only when both \(p\) and \(q\) are true.</p>
+        <table class="ref" style="width:auto; margin-top:8px">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(p\wedge q\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+        </table>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Disjunction</div>
+        <p>The <b>disjunction</b> of \(p\) and \(q\) is \(p\vee q\). It denotes "\(p\) or \(q\)". False only when both \(p\) and \(q\) are false.</p>
+        <table class="ref" style="width:auto; margin-top:8px">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(p\vee q\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+        </table>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Connectives</div>
+        <p>Let \(p\) be "it is hot" and \(q\) be "it is sunny."</p>
+        <ul>
+          <li>\(\neg p\): "It is not hot."</li>
+          <li>\(\neg p\wedge q\): "It is not hot but it is sunny."</li>
+          <li>"It is neither hot nor sunny": \(\neg p\wedge\neg q\)</li>
+        </ul>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Combining Connectives</div>
+        <p>Let \(p\): "\(x>0\)", \(q\): "\(x&lt;3\)", \(r\): "\(x=3\)". Then:</p>
+        <ul>
+          <li>\(q\vee r\): \(x&lt;3\) or \(x=3\), i.e., \(x\le 3\). True when \(x=3\) or \(x=2\).</li>
+          <li>\(p\wedge(q\vee r)\): \(x>0\) and \(x\le 3\), i.e., \(0&lt;x\le 3\).</li>
+        </ul>
+      </div>
+
+      <h3>Conditional Propositions</h3>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Motivation — Government Promise</div>
+        <p>"Taxes will be lowered if the growth is \(\ge 3\%\)." Let \(p\): "growth \(\ge3\%\)", \(q\): "taxes lowered".</p>
+        <table class="ref" style="width:auto; margin-top:6px">
+          <tr><th>Growth</th><th>Taxes</th><th>Promise</th></tr>
+          <tr><td>\(\ge3\%\)</td><td>L</td><td>Kept</td></tr>
+          <tr><td>\(\ge3\%\)</td><td>\(\neg\)L</td><td>Not kept</td></tr>
+          <tr><td>\(&lt;3\%\)</td><td>L</td><td>Not broken (very happy)</td></tr>
+          <tr><td>\(&lt;3\%\)</td><td>\(\neg\)L</td><td>Not broken</td></tr>
+        </table>
+        <p>The promise is broken <em>only</em> when growth \(\ge3\%\) but taxes are not lowered.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Conditional Proposition</div>
+        <p>The <b>conditional proposition</b> \(p\to q\) is false when \(p\) is true and \(q\) is false; true otherwise. \(p\) is the <b>hypothesis / premise</b>; \(q\) is the <b>conclusion / consequence</b>.</p>
+        <table class="ref" style="width:auto; margin-top:8px">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(p\to q\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="T">T</td></tr>
+        </table>
+        <p style="margin-top:6px">Key: \(p\to q\) is <em>only</em> false when the hypothesis is true but the conclusion is false.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Contrapositive, Converse, Inverse</div>
+        <p>Given \(p\to q\):</p>
+        <ul>
+          <li><b>Contrapositive:</b> \(\neg q\to\neg p\)</li>
+          <li><b>Converse:</b> \(q\to p\)</li>
+          <li><b>Inverse:</b> \(\neg p\to\neg q\)</li>
+        </ul>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <div class="inf-row"><div class="inf-nm">(i) Equiv. to contrapositive:</div><div class="inf-form">\(p\to q\equiv\neg q\to\neg p\)</div></div>
+        <div class="inf-row"><div class="inf-nm">(ii) Converse = inverse:</div><div class="inf-form">\(q\to p\equiv\neg p\to\neg q\)</div></div>
+        <div class="inf-row"><div class="inf-nm">(iii) NOT equiv. to converse:</div><div class="inf-form">\(p\to q\not\equiv q\to p\)</div></div>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Units Digit</div>
+        <p>"If the units digit of \(n\) is 0, then \(n\) is a multiple of 2."</p>
+        <ul>
+          <li><b>Contrapositive:</b> If \(n\) is NOT a multiple of 2, then its units digit is NOT 0. (equivalent)</li>
+          <li><b>Converse:</b> If \(n\) is a multiple of 2, then its units digit is 0. (NOT equivalent — e.g. \(n=12\))</li>
+          <li><b>Inverse:</b> If the units digit is NOT 0, then \(n\) is NOT a multiple of 2. (NOT equivalent)</li>
+        </ul>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Equivalence</div>
+        <p>Two compound propositions \(p\) and \(q\) are <b>equivalent</b>, written \(p\equiv q\), if they always have the same truth value.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Conditional as Disjunction</div>
+        <p>\[p\to q\equiv\neg p\vee q\]</p>
+        <p><b>Proof:</b> Both columns are identical in the truth table:</p>
+        <table class="ref" style="width:auto; margin-top:6px">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(\neg p\)</th><th>\(p\to q\)</th><th>\(\neg p\vee q\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="T">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="T">T</td><td class="T">T</td></tr>
+        </table>
+      </div>
+
+      <h3>Biconditional Proposition</h3>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Biconditional</div>
+        <p>The <b>biconditional proposition</b> \(p\leftrightarrow q\) is true when \(p\) and \(q\) have the same truth values, false otherwise. \(p\leftrightarrow q\equiv(p\to q)\wedge(q\to p)\).</p>
+        <table class="ref" style="width:auto; margin-top:8px">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(p\leftrightarrow q\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="T">T</td></tr>
+        </table>
+      </div>
+
+      <h3>"If", "Only if", "Iff" — Language Reference</h3>
+      <table class="ref">
+        <tr><th>Phrase</th><th>Logical form</th><th>Notes</th></tr>
+        <tr><td>"if \(p\) then \(q\)"</td><td>\(p\to q\)</td><td>\(p\) sufficient for \(q\)</td></tr>
+        <tr><td>"\(p\) implies \(q\)"</td><td>\(p\to q\)</td><td></td></tr>
+        <tr><td>"\(p\) is sufficient for \(q\)"</td><td>\(p\to q\)</td><td></td></tr>
+        <tr><td>"\(q\) is necessary for \(p\)"</td><td>\(p\to q\)</td><td>\(q\) must hold for \(p\) to hold</td></tr>
+        <tr><td>"\(p\) only if \(q\)"</td><td>\(p\to q\)</td><td>NOT "\(q\to p\)" — common error!</td></tr>
+        <tr><td>"\(p\) if and only if \(q\)"</td><td>\(p\leftrightarrow q\)</td><td>\(p\) necessary AND sufficient for \(q\)</td></tr>
+      </table>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Common error — "only if"</div>
+        <p>"You can have ice cream <em>only if</em> you finish dinner" means: if you don't finish dinner, you can't have ice cream, i.e., <b>ice cream \(\to\) finish dinner</b>. It does NOT mean "if you finish dinner, you get ice cream."</p>
+      </div>
+
+      <h3>Operator Precedence</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Precedence (highest to lowest)</div>
+        <p style="text-align:center">\[\neg \quad\succ\quad\wedge,\vee\quad\succ\quad\to,\leftrightarrow\]</p>
+        <ul>
+          <li>\(\wedge\) and \(\vee\) have the same precedence (use parentheses to disambiguate)</li>
+          <li>\(\to\) and \(\leftrightarrow\) have the same precedence</li>
+          <li>\(\neg p\vee q\) means \((\neg p)\vee q\), NOT \(\neg(p\vee q)\)</li>
+          <li>Cannot write \(p\vee q\wedge r\) — must write \((p\vee q)\wedge r\) or \(p\vee(q\wedge r)\)</li>
+        </ul>
+      </div>
+
+      <h3>Translating English Sentences</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Internet Access</div>
+        <p>"You can access the internet from campus only if you are a computer science major or you are not a freshman."</p>
+        <p>Let \(a\): "access internet", \(c\): "CS major", \(f\): "freshman". Answer: \(a\to(c\vee\neg f)\)</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Diagnostic Buffer</div>
+        <p>Express simultaneously: "The diagnostic message is stored in the buffer or it is retransmitted", "The message is NOT stored in the buffer", "If stored in the buffer, then it is retransmitted."</p>
+        <p>Let \(s\): "stored in buffer", \(r\): "retransmitted". The three conditions are \(s\vee r\), \(\neg s\), \(s\to r\). All are simultaneously true when \(s=F\) and \(r=T\).</p>
+      </div>
+    </section>
+
+    <section id="s2" class="sec">
+      <h2>Section 1.2 — Tautology and Contradiction</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Tautology</div>
+        <p>A <b>tautology</b> is a compound proposition that is always true.</p>
+        <table class="ref" style="width:auto; margin-top:6px">
+          <tr><th>\(p\)</th><th>\(\neg p\)</th><th>\(p\vee\neg p\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="T">T</td></tr>
+        </table>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Contradiction</div>
+        <p>A <b>contradiction</b> is a compound proposition that is always false.</p>
+        <table class="ref" style="width:auto; margin-top:6px">
+          <tr><th>\(p\)</th><th>\(\neg p\)</th><th>\(p\wedge\neg p\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="F">F</td></tr>
+        </table>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Contingency</div>
+        <p>A <b>contingency</b> is a compound proposition that is neither a tautology nor a contradiction. Example: \(p\wedge q\).</p>
+      </div>
+
+      <h3>Logical Equivalence Laws</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — All Basic Equivalences</div>
+        <p>Let \(\mathbf{T}\) denote a tautology and \(\mathbf{C}\) a contradiction.</p>
+        <table class="ref" style="margin-top:8px">
+          <tr><th>Law</th><th>Form 1</th><th>Form 2</th></tr>
+          <tr><td>Commutative</td><td>\(p\wedge q\equiv q\wedge p\)</td><td>\(p\vee q\equiv q\vee p\)</td></tr>
+          <tr><td>Associative</td><td>\((p\wedge q)\wedge r\equiv p\wedge(q\wedge r)\)</td><td>\((p\vee q)\vee r\equiv p\vee(q\vee r)\)</td></tr>
+          <tr><td>Distributive</td><td>\(p\wedge(q\vee r)\equiv(p\wedge q)\vee(p\wedge r)\)</td><td>\(p\vee(q\wedge r)\equiv(p\vee q)\wedge(p\vee r)\)</td></tr>
+          <tr><td>Identity</td><td>\(p\wedge\mathbf{T}\equiv p\)</td><td>\(p\vee\mathbf{C}\equiv p\)</td></tr>
+          <tr><td>Negation</td><td>\(p\wedge\neg p\equiv\mathbf{C}\)</td><td>\(p\vee\neg p\equiv\mathbf{T}\)</td></tr>
+          <tr><td>Double negation</td><td colspan="2" style="text-align:center">\(\neg(\neg p)\equiv p\)</td></tr>
+          <tr><td>Idempotent</td><td>\(p\wedge p\equiv p\)</td><td>\(p\vee p\equiv p\)</td></tr>
+          <tr><td>Universal bound</td><td>\(p\wedge\mathbf{C}\equiv\mathbf{C}\)</td><td>\(p\vee\mathbf{T}\equiv\mathbf{T}\)</td></tr>
+          <tr><td>De Morgan's</td><td>\(\neg(p\wedge q)\equiv\neg p\vee\neg q\)</td><td>\(\neg(p\vee q)\equiv\neg p\wedge\neg q\)</td></tr>
+          <tr><td>Absorption</td><td>\(p\wedge(p\vee q)\equiv p\)</td><td>\(p\vee(p\wedge q)\equiv p\)</td></tr>
+          <tr><td>Negation of T,C</td><td>\(\neg\mathbf{C}\equiv\mathbf{T}\)</td><td>\(\neg\mathbf{T}\equiv\mathbf{C}\)</td></tr>
+        </table>
+      </div>
+
+      <h3>Worked Examples</h3>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Verify distributive law</div>
+        <p>Show \(p\wedge(q\vee r)\equiv(p\wedge q)\vee(p\wedge r)\). Set \(L=p\wedge(q\vee r)\), \(R=(p\wedge q)\vee(p\wedge r)\):</p>
+        <table class="ref" style="margin-top:6px; width:auto">
+          <tr><th>\(p\)</th><th>\(q\)</th><th>\(r\)</th><th>\(q\vee r\)</th><th>\(p\wedge q\)</th><th>\(p\wedge r\)</th><th>\(L\)</th><th>\(R\)</th></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td class="T">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td class="T">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td class="T">T</td><td class="T">T</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">T</td><td style="text-align:center">T</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+          <tr><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td style="text-align:center">F</td><td class="F">F</td><td class="F">F</td></tr>
+        </table>
+        <p style="margin-top:8px">Columns L and R are identical. ✓</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Simplify \(\neg(p\to q)\)</div>
+        <p>Using algebraic manipulation:</p>
+        <p style="text-align:center">\[\neg(p\to q)\equiv\neg(\neg p\vee q)\equiv\neg(\neg p)\wedge\neg q\equiv p\wedge\neg q\]</p>
+        <p>Alternative: truth table (both columns of \(\neg(p\to q)\) and \(p\wedge\neg q\) match). ✓</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Show \(\neg(\neg p\wedge q)\wedge(p\vee q)\equiv p\)</div>
+        <p style="text-align:center">\[\neg(\neg p\wedge q)\wedge(p\vee q)\equiv(\neg(\neg p)\vee\neg q)\wedge(p\vee q)\]</p>
+        <p style="text-align:center">\[\equiv(p\vee\neg q)\wedge(p\vee q)\equiv p\vee(\neg q\wedge q)\equiv p\vee\mathbf{C}\equiv p\quad\checkmark\]</p>
+      </div>
+    </section>
+
+    <section id="s3" class="sec">
+      <h2>Section 1.3 — Predicates &amp; Quantifiers</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Predicate</div>
+        <p>A <b>predicate</b> is a sentence that contains a finite number of variables and becomes a proposition when the variables are specialised. The <b>domain</b> of a predicate variable is the set of all values that may be substituted.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Examples of Predicates</div>
+        <ul>
+          <li>\(P(x)\): "\(x\) is a student at NUS", domain = residents of Clementi. \(P(\text{John Tan})\) is a proposition.</li>
+          <li>\(Q(x)\): "\(x^2>x\)", domain \(\mathbb{R}\). \(Q(2)=T\), \(Q(0.5)=F\).</li>
+          <li>\(R(x,y,z)\): "\(x+y>z\)", domain \(\mathbb{R}\). \(R(1,2,3)=F\), \(R(0,1,-1)=T\).</li>
+        </ul>
+      </div>
+
+      <h3>Universal Quantifier</h3>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Universal Quantification</div>
+        <p>The <b>universal quantification</b> of \(P(x)\) with domain \(D\) is \(\forall x\in D,\,P(x)\).</p>
+        <ul>
+          <li><b>TRUE</b> if \(P(x)\) is true for <em>all</em> \(x\in D\).</li>
+          <li><b>FALSE</b> if \(P(x)\) is false for at least one \(x\in D\). Such an \(x\) is a <b>counter example</b>.</li>
+        </ul>
+        <p>Other phrasings of \(\forall\): "for every", "all of", "for each", "given any", "for arbitrary".</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <ul>
+          <li>\(\forall x\in\{1,2,3,4,5\},\,x^2\ge x\) is <b>TRUE</b> (verify: \(1\ge1,4\ge2,9\ge3,16\ge4,25\ge5\)).</li>
+          <li>\(\forall x\in\mathbb{R},\,x^2\ge x\) is <b>FALSE</b> (counter example: \(x=0.5\), \(0.25&lt;0.5\)).</li>
+          <li>"Every integer is also rational": \(\forall x\in\mathbb{Z},\,x\in\mathbb{Q}\). TRUE.</li>
+        </ul>
+      </div>
+
+      <h3>Existential Quantifier</h3>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Existential Quantification</div>
+        <p>The <b>existential quantification</b> of \(P(x)\) with domain \(D\) is \(\exists x\in D,\,P(x)\).</p>
+        <ul>
+          <li><b>TRUE</b> if \(P(x)\) is true for at least one \(x\in D\).</li>
+          <li><b>FALSE</b> if \(P(x)\) is false for <em>all</em> \(x\in D\).</li>
+        </ul>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <ul>
+          <li>\(\exists x\in\mathbb{Z},\,x^2=x\) is <b>TRUE</b> (witness: \(x=0\), \(0^2=0\)).</li>
+          <li>\(\exists x\in\{-1,2,3\},\,x^2=x\) is <b>FALSE</b> (none of \(1,4,9\) equals \(-1,2,3\)).</li>
+          <li>"The integer 24 can be written as a sum of two integers": \(\exists m,n\in\mathbb{Z}(24=m+n)\). TRUE.</li>
+        </ul>
+      </div>
+
+      <h3>Translating from English — Key Patterns</h3>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Critical Pattern: ∀ with → vs ∧</div>
+        <table class="ref">
+          <tr><th>Statement</th><th>Correct form</th><th>Wrong form</th></tr>
+          <tr><td>"Every student in class has studied calculus"<br><small>(domain = all university students \(U\))</small></td><td>\(\forall x\in U,\,Q(x)\to P(x)\)</td><td>\(\forall x\in U,\,Q(x)\wedge P(x)\) ✗</td></tr>
+          <tr><td>"Some student in class has not studied calculus"<br><small>(domain = all university students)</small></td><td>\(\exists x\in U,\,Q(x)\wedge\neg P(x)\)</td><td>\(\exists x\in U,\,Q(x)\to\neg P(x)\) ✗</td></tr>
+        </table>
+        <p style="margin-top:6px">Rule: <b>\(\forall\) pairs with \(\to\)</b>; <b>\(\exists\) pairs with \(\wedge\)</b>.</p>
+      </div>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Common mistake</div>
+        <p>\(\forall x\in U,\,Q(x)\wedge P(x)\) says "every person in the university is a student in the class AND has studied calculus." This makes the statement false as soon as any non-class-member exists in \(U\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">More Translation Examples</div>
+        <ul>
+          <li>"All mathematicians wear glasses": \(\forall x\in M,\,G(x)\) or \(\forall x\in H,\,P(x)\to G(x)\)</li>
+          <li>"No mathematician wears glasses": \(\forall x\in M,\,\neg G(x)\)</li>
+          <li>"At least one mathematician does not wear glasses": \(\exists x\in M,\,\neg G(x)\)</li>
+          <li>"Every even integer is divisible by 2": \(\forall n\in\mathbb{Z},\,E(n)\to D(n)\)</li>
+        </ul>
+      </div>
+
+      <h3>Negating Quantified Expressions</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p style="text-align:center">\[\neg\forall x\,P(x)\equiv\exists x\,\neg P(x)\]</p>
+        <p style="text-align:center">\[\neg\exists x\,P(x)\equiv\forall x\,\neg P(x)\]</p>
+      </div>
+    </section>
+
+    <section id="s4" class="sec">
+      <h2>Section 1.4 — Nested Quantifiers</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Nested Quantifiers</div>
+        <p>Two quantifiers are <b>nested</b> if one is within the scope of the other, e.g. \(\forall x\,\exists y\,(x+y=0)\). Everything within the scope of a quantifier can be treated as a propositional function of the outer variable.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Examples (domain \(\mathbb{R}\))</div>
+        <ul>
+          <li>\(\forall x\,\exists y\,(x+y=0)\): TRUE — for every real \(x\), take \(y=-x\).</li>
+          <li>\(\forall x\,\forall y\,(x+y=y+x)\): TRUE — commutativity of addition.</li>
+          <li>\(\forall x\,\exists y\,(xy=1)\): FALSE — fails when \(x=0\), no \(y\) exists.</li>
+        </ul>
+      </div>
+
+      <h3>Order of Quantifiers</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Key: Changing order CAN change meaning</div>
+        <ul>
+          <li>"Everyone loves someone": \(\forall x\,\exists y\,P(x,y)\) — for each person, there is (possibly different) someone they love.</li>
+          <li>"There is someone loved by everyone": \(\exists y\,\forall x\,P(x,y)\) — a single \(y\) loved by all.</li>
+        </ul>
+        <p>These are <b>different</b>. The second is stronger. (If domain is 3 people \(a,b,c\) where \(a\) loves \(b\), \(b\) loves \(c\), \(c\) loves \(a\): first is true, second is false.)</p>
+      </div>
+
+      <h3>Summary Table of Two-Variable Quantifications</h3>
+      <table class="ref">
+        <tr><th>Form</th><th>When TRUE</th><th>When FALSE</th></tr>
+        <tr><td>\(\forall x\,\forall y\,P(x,y)\)<br>\(\equiv\forall y\,\forall x\,P(x,y)\)</td><td>\(P(x,y)\) true for every pair \(x,y\)</td><td>There exists a pair \(x,y\) for which \(P(x,y)\) is false</td></tr>
+        <tr><td>\(\forall x\,\exists y\,P(x,y)\)</td><td>For every \(x\), there is some \(y\) with \(P(x,y)\)</td><td>There is some \(x\) for which \(P(x,y)\) is false for all \(y\)</td></tr>
+        <tr><td>\(\exists x\,\forall y\,P(x,y)\)</td><td>There is some \(x\) for which \(P(x,y)\) holds for every \(y\)</td><td>For every \(x\), there is a \(y\) making \(P(x,y)\) false</td></tr>
+        <tr><td>\(\exists x\,\exists y\,P(x,y)\)<br>\(\equiv\exists y\,\exists x\,P(x,y)\)</td><td>There is at least one pair \(x,y\) for which \(P(x,y)\) is true</td><td>\(P(x,y)\) is false for every pair \(x,y\)</td></tr>
+      </table>
+
+      <h3>Negation of Multiple Quantifiers</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p style="text-align:center">\[\neg(\forall x\,\exists y\,P(x,y))\equiv\exists x\,\forall y\,\neg P(x,y)\]</p>
+        <p style="text-align:center">\[\neg(\exists x\,\forall y\,P(x,y))\equiv\forall x\,\exists y\,\neg P(x,y)\]</p>
+      </div>
+    </section>
+
+    <section id="s5" class="sec">
+      <h2>Section 1.5 — Valid and Invalid Arguments</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Argument Form</div>
+        <p>An <b>argument form</b> is a sequence of propositions \(p_1,p_2,\ldots,p_n,c\). The propositions \(p_1,\ldots,p_n\) are <b>premises / assumptions / hypotheses</b>; \(c\) is the <b>conclusion</b>. An argument form is <b>valid</b> when, whenever all premises are true, the conclusion is also true.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Testing Validity (Truth-Table Method)</div>
+        <ol>
+          <li>Identify premises and conclusion.</li>
+          <li>Construct a truth table.</li>
+          <li>If any row has all premises true and conclusion false → <b>INVALID</b>. Otherwise → <b>VALID</b>.</li>
+        </ol>
+      </div>
+
+      <h3>Rules of Inference</h3>
+      <table class="ref">
+        <tr><th>Name</th><th>Form</th><th>Description</th></tr>
+        <tr><td><b>Modus Ponens</b><br>(Affirming)</td><td>\(p\to q,\;p\;\therefore q\)</td><td>If the implication and the hypothesis hold, the conclusion holds.</td></tr>
+        <tr><td><b>Modus Tollens</b><br>(Denying)</td><td>\(p\to q,\;\neg q\;\therefore\neg p\)</td><td>If the implication holds and the conclusion is false, the hypothesis is false.</td></tr>
+        <tr><td><b>Specialisation</b></td><td>\(p\wedge q\;\therefore p\) or \(q\)</td><td>From a conjunction, extract either conjunct.</td></tr>
+        <tr><td><b>Generalisation</b></td><td>\(p\;\therefore p\vee q\)</td><td>Any proposition implies any disjunction containing it.</td></tr>
+        <tr><td><b>Elimination</b></td><td>\(p\vee q,\;\neg p\;\therefore q\)</td><td>If a disjunct is false, the other must be true.</td></tr>
+        <tr><td><b>Transitivity</b></td><td>\(p\to q,\;q\to r\;\therefore p\to r\)</td><td>Chaining implications.</td></tr>
+        <tr><td><b>Proof by Cases</b></td><td>\(p\vee q,\;p\to r,\;q\to r\;\therefore r\)</td><td>If each case leads to the same conclusion, that conclusion holds.</td></tr>
+        <tr><td><b>Proof by Contradiction</b></td><td>\(\neg p\to\mathbf{C}\;\therefore p\)</td><td>If an assumption leads to a contradiction, the assumption is false.</td></tr>
+      </table>
+
+      <h3>Common Fallacies</h3>
+      <div class="warn">
+        <div class="lbl lbl-w">Fallacy 1 — Affirming the Consequent (Converse Error)</div>
+        <p>Form: \(p\to q,\;q\;\therefore p\). <b>INVALID</b>. Counter example: \(p=F,q=T\) — both premises true but conclusion false.</p>
+      </div>
+      <div class="warn">
+        <div class="lbl lbl-w">Fallacy 2 — Denying the Antecedent (Inverse Error)</div>
+        <p>Form: \(p\to q,\;\neg p\;\therefore\neg q\). <b>INVALID</b>. Counter example: \(p=F,q=T\) — premises hold, conclusion \(\neg q=F\).</p>
+      </div>
+
+      <h3>Worked Examples</h3>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Knights and Knaves</div>
+        <p>Knights always tell the truth, knaves always lie. Let \(a\): "A is a knight", \(b\): "B is a knight."</p>
+        <p>A says "B is a knight." B says "A and I are of opposite type."</p>
+        <p>A's statement translates to \(a\to b\) and \(\neg a\to\neg b\). B's statement translates to \(b\to\neg a\) and \(\neg b\to\neg a\).</p>
+        <p><b>Solution (chaining):</b></p>
+        <ol>
+          <li>\(a\to b\) (A's statement, if A is knight)</li>
+          <li>\(b\to\neg a\) (B's statement, if B is knight)</li>
+          <li>\(\therefore a\to\neg a\) (transitivity from 1, 2)</li>
+          <li>\(\therefore\neg a\vee\neg a=\neg a\) (simplify)</li>
+          <li>\(\neg a\to\neg b\) (A's statement, if A is knave)</li>
+          <li>\(\therefore\neg b\) (modus ponens on 4, 5)</li>
+        </ol>
+        <p>Both A and B are knaves (consistent with facts). ✓</p>
+      </div>
+    </section>
+
+    <section id="t1" class="sec">
+      <h2>Tutorial 1 — Propositional Logic</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Which of these are propositions? (a) Do not go. (b) Can you answer the question? (c) There are no black flies in Maine. (d) \(4+x=5\). (e) \(2^n\ge100\). (f) The moon is made of green cheese.</p>
+        <button class="togbtn" onclick="tog('t1q1')">Show solution ▾</button>
+        <div id="t1q1" class="tog">
+          <div class="sol">
+            <ul>
+              <li>(a) <b>NOT a proposition</b> — command.</li>
+              <li>(b) <b>NOT a proposition</b> — question.</li>
+              <li>(c) <b>PROPOSITION</b> — declarative sentence, either T or F.</li>
+              <li>(d) <b>NOT a proposition</b> — contains variable \(x\); it is a predicate.</li>
+              <li>(e) <b>NOT a proposition</b> — contains variable \(n\); it is a predicate.</li>
+              <li>(f) <b>PROPOSITION</b> — declarative sentence (happens to be false).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Let \(p\): "The election is decided", \(q\): "The votes have been counted." Express as English sentences: (a) \(\neg p\wedge q\) (b) \(q\to p\) (c) \(p\leftrightarrow q\) (d) \(\neg q\vee(\neg p\wedge q)\).</p>
+        <button class="togbtn" onclick="tog('t1q2')">Show solution ▾</button>
+        <div id="t1q2" class="tog">
+          <div class="sol">
+            <ul>
+              <li>(a) "The election is not decided and the votes have been counted."</li>
+              <li>(b) "If the votes have been counted, then the election is decided."</li>
+              <li>(c) "The election is decided if and only if the votes have been counted."</li>
+              <li>(d) \(\neg q\vee(\neg p\wedge q)\). Note: \(\neg q\vee(\neg p\wedge q)\equiv(\neg q\vee\neg p)\wedge(\neg q\vee q)\equiv(\neg q\vee\neg p)\wedge\mathbf{T}\equiv\neg p\vee\neg q\equiv\neg(p\wedge q)\). So: "It is not the case that both the election is decided and the votes have been counted."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q3. Are the following conditional propositions true or false? (a) If \(1+1=3\), then unicorns exist. (b) If \(1+1=3\), then dogs can fly. (c) If \(1+1=2\), then dogs can fly. (d) If \(2+2=4\), then \(1+2=3\).</p>
+        <button class="togbtn" onclick="tog('t1q3')">Show solution ▾</button>
+        <div id="t1q3" class="tog">
+          <div class="sol">
+            <ul>
+              <li>(a) \(p=F,q=F\Rightarrow p\to q=\)<b>TRUE</b> (vacuously true — false hypothesis).</li>
+              <li>(b) \(p=F,q=F\Rightarrow p\to q=\)<b>TRUE</b> (vacuously true).</li>
+              <li>(c) \(p=T,q=F\Rightarrow p\to q=\)<b>FALSE</b> (true hypothesis, false conclusion).</li>
+              <li>(d) \(p=T,q=T\Rightarrow p\to q=\)<b>TRUE</b>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q4. "You will get an A in this module only if either you do every exercise in the textbook or you score at least 80 marks in the final." Let \(A\): get an A, \(E\): do every exercise, \(S\): score \(\ge80\). (a) When is the proposition true? (b) Given the proposition is true, will you get an A if you did not do exercise 5 and scored 79?</p>
+        <button class="togbtn" onclick="tog('t1q4')">Show solution ▾</button>
+        <div id="t1q4" class="tog">
+          <div class="sol">
+            <p>"only if" → \(A\to(E\vee S)\). False only when \(A=T\) and \(E\vee S=F\).</p>
+            <p>(a) The proposition is true in all situations <em>except</em> when you get an A but neither do all exercises nor score \(\ge80\).</p>
+            <p>(b) Did not do exercise 5 ⇒ \(E=F\). Scored 79 ⇒ \(S=F\). So \(E\vee S=F\). Given the proposition \(A\to(E\vee S)\) is true and \(E\vee S=F\): by modus tollens, \(A=F\). You would <b>NOT</b> get an A.</p>
+          </div>
+        </div>
+      </div>
+      
+    </section>
+
+    <section id="t2" class="sec">
+      <h2>Tutorial 2 — Predicates &amp; Quantifiers</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Translate into English where \(R(x)\): "\(x\) is a rabbit", \(H(x)\): "\(x\) hops", domain = all animals. (a) \(\forall x(R(x)\to H(x))\) (b) \(\forall x(R(x)\wedge H(x))\) (c) \(\exists x(R(x)\to H(x))\) (d) \(\exists x(R(x)\wedge H(x))\)</p>
+        <button class="togbtn" onclick="tog('t2q1')">Show solution ▾</button>
+        <div id="t2q1" class="tog">
+          <div class="sol">
+            <ul>
+              <li>(a) "Every rabbit hops." (correct universal translation with \(\to\))</li>
+              <li>(b) "Every animal is both a rabbit and hops." (WRONG for "every rabbit hops" — this claims ALL animals are rabbits)</li>
+              <li>(c) "There is an animal such that if it is a rabbit, then it hops." (vacuously true for any non-rabbit — not a useful statement)</li>
+              <li>(d) "There is an animal that is a rabbit and hops." = "Some rabbit hops."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. \(Q(x,y)\): "If \(x&lt;y\) then \(x^2&lt;y^2\)", domain \(\{1,\pm2\}\). (a) Why is \(Q(-2,1)\) false and \(Q(1,2)\) true? (b) Find all \((x,y)\) for which \(Q(x,y)\) is true.</p>
+        <button class="togbtn" onclick="tog('t2q2')">Show solution ▾</button>
+        <div id="t2q2" class="tog">
+          <div class="sol">
+            <p>(a) \(Q(-2,1)\): hypothesis \(-2&lt;1\) is TRUE; conclusion \(4&lt;1\) is FALSE → conditional is FALSE. \(Q(1,2)\): hypothesis \(1&lt;2\) TRUE; conclusion \(1&lt;4\) TRUE → TRUE.</p>
+            <p>(b) \(Q(x,y)\) is false only when \(x&lt;y\) AND \(x^2\ge y^2\). Pairs with \(x&lt;y\): \((-2,-1): 4\ge1\to F\); \((-2,1): 4\ge1\to F\); \((-2,2): 4\ge4\to F\); \((-1,1): 1\ge1\to F\); \((-1,2): 1&lt;4\to T\); \((1,2): 1&lt;4\to T\). All pairs with \(x\ge y\): vacuously true. So \(Q(x,y)\) is true for: \((-1,2),(1,2)\), and all pairs where \(x\ge y\).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="t3" class="sec">
+      <h2>Tutorial 3 — Arguments &amp; Proofs</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Use a truth table to determine whether each argument form is valid. (a) \(p\to r,\;q\to r\;\therefore\;p\vee q\to r\). (b) \(p\to q\vee r,\;\neg q\vee\neg r\;\therefore\;\neg p\vee\neg r\). (c) \(p\vee q,\;p\to r,\;q\to s\;\therefore\;r\vee s\).</p>
+        <button class="togbtn" onclick="tog('t3q1')">Show solution ▾</button>
+        <div id="t3q1" class="tog">
+          <div class="sol">
+            <p>(a) <b>VALID.</b> Suppose \(p\vee q\to r\) is false: \(p\vee q=T\) and \(r=F\). If \(r=F\): \(p\to r=\neg p\) so \(p=F\); \(q\to r=\neg q\) so \(q=F\). But then \(p\vee q=F\), contradicting \(p\vee q=T\). ✓</p>
+            <p>(b) <b>INVALID.</b> Counter example: \(p=T,q=F,r=T\): \(p\to q\vee r=T\to T=T\); \(\neg q\vee\neg r=T\vee F=T\); but \(\neg p\vee\neg r=F\vee F=F\). Both premises true, conclusion false. ✗</p>
+            <p>(c) <b>VALID.</b> Suppose \(r\vee s\) is false: \(r=F,s=F\). Then \(p\to r=\neg p\Rightarrow p=F\) and \(q\to s=\neg q\Rightarrow q=F\). But premise says \(p\vee q=T\). Contradiction. ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Use valid argument forms to derive \(\neg q\) from: \(\neg p\vee q\to r\), \(s\vee\neg q\), \(\neg t\), \(p\to t\), \(\neg p\wedge r\to\neg s\).</p>
+        <button class="togbtn" onclick="tog('t3q2')">Show solution ▾</button>
+        <div id="t3q2" class="tog">
+          <div class="sol">
+            <div class="step">1. \(p\to t\) (hyp 4); \(\neg t\) (hyp 3) → \(\neg p\) by <b>Modus Tollens</b></div>
+            <div class="step">2. \(\neg p\) → \(\neg p\vee q=T\) by <b>Generalisation</b></div>
+            <div class="step">3. \((\neg p\vee q)\to r\) (hyp 1); \(\neg p\vee q=T\) (step 2) → \(r\) by <b>Modus Ponens</b></div>
+            <div class="step">4. \(\neg p\) (step 1) and \(r\) (step 3) → \(\neg p\wedge r\) by <b>Conjunction</b></div>
+            <div class="step">5. \((\neg p\wedge r)\to\neg s\) (hyp 5); \(\neg p\wedge r\) (step 4) → \(\neg s\) by <b>Modus Ponens</b></div>
+            <div class="step">6. \(s\vee\neg q\) (hyp 2); \(\neg s\) (step 5) → \(\neg q\) by <b>Elimination</b> ✓</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="sec">
+      <h2>Interactive Tools</h2>
+
+      <div class="tool">
+        <h3>Tool 1 — Connective truth table</h3>
+        <div class="tool-row">
+          <label>Select connective</label>
+          <select id="connSel" onchange="buildConnTable()">
+            <option value="neg">Negation: ¬p</option>
+            <option value="and">Conjunction: p ∧ q</option>
+            <option value="or">Disjunction: p ∨ q</option>
+            <option value="imp">Conditional: p → q</option>
+            <option value="bic">Biconditional: p ↔ q</option>
+          </select>
+        </div>
+        <div class="out" id="connRes"></div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 2 — Formula truth table builder</h3>
+        <div class="tool-row">
+          <label>Enter formula</label>
+          <input type="text" id="fmlInp" value="p -> (~p | q)" placeholder="e.g. p -> (~p | q)">
+          <button class="go" onclick="buildFmlTable()">Build table</button>
+        </div>
+        <div class="out" id="fmlRes"></div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 3 — Equivalence checker</h3>
+        <div class="tool-row">
+          <label>Formula A</label>
+          <input type="text" id="eqA" value="p -> q">
+        </div>
+        <div class="tool-row">
+          <label>Formula B</label>
+          <input type="text" id="eqB" value="~p | q">
+          <button class="go" onclick="checkEq()">Check</button>
+        </div>
+        <div class="out" id="eqRes"></div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 4 — Argument validity checker</h3>
+        <div class="tool-row">
+          <label>Premises (1 per line)</label>
+          <textarea id="premInp">p -> q&#10;p</textarea>
+        </div>
+        <div class="tool-row">
+          <label>Conclusion</label>
+          <input type="text" id="concInp" value="q">
+          <button class="go" onclick="checkArg()">Check validity</button>
+        </div>
+        <div class="out" id="argRes"></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="sec">
+      <h2>Quiz — 10 questions</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+      <div id="quiz-area"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+function init() {
+  if (!window.renderMathInElement) { setTimeout(init,80); return; }
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildConnTable();
+  buildQuiz();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+
+/* ---- FORMULA PARSER ---- */
+function tokenize(s) {
+  var tokens = [];
+  var i = 0;
+  while (i < s.length) {
+    var c = s[i];
+    if (c === ' ' || c === '\t') { i++; continue; }
+    if (c === '~' || c === '\u00ac') { tokens.push({t:'NOT'}); i++; continue; }
+    if (c === '&' || c === '\u2227') { tokens.push({t:'AND'}); i++; continue; }
+    if (c === '|' || c === '\u2228') { tokens.push({t:'OR'}); i++; continue; }
+    if (c === '\u2192') { tokens.push({t:'IMP'}); i++; continue; }
+    if (c === '\u2194') { tokens.push({t:'BIC'}); i++; continue; }
+    if (c === '-' && s[i+1] === '>') { tokens.push({t:'IMP'}); i+=2; continue; }
+    if (c === '<' && s[i+1] === '-' && s[i+2] === '>') { tokens.push({t:'BIC'}); i+=3; continue; }
+    if (c === '(') { tokens.push({t:'LP'}); i++; continue; }
+    if (c === ')') { tokens.push({t:'RP'}); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) {
+      var v = '';
+      while (i < s.length && /[a-zA-Z0-9_]/.test(s[i])) { v += s[i]; i++; }
+      tokens.push({t:'VAR',v:v});
+      continue;
+    }
+    i++;
+  }
+  return tokens;
+}
+
+var _toks, _pos;
+function parseFormula(s) {
+  _toks = tokenize(s);
+  _pos = 0;
+  return parseBIC();
+}
+function peek() { return _pos < _toks.length ? _toks[_pos] : null; }
+function consume() { return _toks[_pos++]; }
+function parseBIC() {
+  var left = parseIMP();
+  while (peek() && peek().t === 'BIC') { consume(); var right = parseIMP(); left = {t:'BIC',l:left,r:right}; }
+  return left;
+}
+function parseIMP() {
+  var left = parseOR();
+  while (peek() && peek().t === 'IMP') { consume(); var right = parseIMP(); left = {t:'IMP',l:left,r:right}; return left; }
+  return left;
+}
+function parseOR() {
+  var left = parseAND();
+  while (peek() && peek().t === 'OR') { consume(); var right = parseAND(); left = {t:'OR',l:left,r:right}; }
+  return left;
+}
+function parseAND() {
+  var left = parseNOT();
+  while (peek() && peek().t === 'AND') { consume(); var right = parseNOT(); left = {t:'AND',l:left,r:right}; }
+  return left;
+}
+function parseNOT() {
+  if (peek() && peek().t === 'NOT') { consume(); var inner = parseNOT(); return {t:'NOT',c:inner}; }
+  return parseATOM();
+}
+function parseATOM() {
+  var tk = peek();
+  if (!tk) return {t:'VAR',v:'?'};
+  if (tk.t === 'VAR') { consume(); return {t:'VAR',v:tk.v}; }
+  if (tk.t === 'LP') {
+    consume();
+    var e = parseBIC();
+    if (peek() && peek().t === 'RP') consume();
+    return e;
+  }
+  return {t:'VAR',v:'?'};
+}
+
+function evalAST(ast, vals) {
+  if (!ast) return false;
+  if (ast.t === 'VAR') return vals[ast.v] === true;
+  if (ast.t === 'NOT') return !evalAST(ast.c, vals);
+  if (ast.t === 'AND') return evalAST(ast.l,vals) && evalAST(ast.r,vals);
+  if (ast.t === 'OR')  return evalAST(ast.l,vals) || evalAST(ast.r,vals);
+  if (ast.t === 'IMP') return !evalAST(ast.l,vals) || evalAST(ast.r,vals);
+  if (ast.t === 'BIC') return evalAST(ast.l,vals) === evalAST(ast.r,vals);
+  return false;
+}
+
+function getVars(ast) {
+  var s = {};
+  function walk(n) {
+    if (!n) return;
+    if (n.t === 'VAR') { s[n.v] = true; return; }
+    walk(n.l); walk(n.r); walk(n.c);
+  }
+  walk(ast);
+  return Object.keys(s).sort();
+}
+
+function getSubs(ast) {
+  var list = [];
+  var seen = {};
+  function walk(n) {
+    if (!n) return;
+    walk(n.l); walk(n.r); walk(n.c);
+    var str = astStr(n);
+    if (!seen[str] && n.t !== 'VAR') { seen[str]=true; list.push(n); }
+  }
+  walk(ast);
+  return list;
+}
+
+function astStr(n) {
+  if (!n) return '';
+  if (n.t === 'VAR') return n.v;
+  if (n.t === 'NOT') return '~(' + astStr(n.c) + ')';
+  if (n.t === 'AND') return '(' + astStr(n.l) + ' & ' + astStr(n.r) + ')';
+  if (n.t === 'OR')  return '(' + astStr(n.l) + ' | ' + astStr(n.r) + ')';
+  if (n.t === 'IMP') return '(' + astStr(n.l) + ' -> ' + astStr(n.r) + ')';
+  if (n.t === 'BIC') return '(' + astStr(n.l) + ' <-> ' + astStr(n.r) + ')';
+  return '?';
+}
+
+function niceStr(n) {
+  if (!n) return '';
+  if (n.t === 'VAR') return n.v;
+  if (n.t === 'NOT') return '\u00ac(' + niceStr(n.c) + ')';
+  if (n.t === 'AND') return '(' + niceStr(n.l) + ' \u2227 ' + niceStr(n.r) + ')';
+  if (n.t === 'OR')  return '(' + niceStr(n.l) + ' \u2228 ' + niceStr(n.r) + ')';
+  if (n.t === 'IMP') return '(' + niceStr(n.l) + ' \u2192 ' + niceStr(n.r) + ')';
+  if (n.t === 'BIC') return '(' + niceStr(n.l) + ' \u2194 ' + niceStr(n.r) + ')';
+  return '?';
+}
+
+function allRows(vars) {
+  var n = vars.length;
+  var rows = [];
+  for (var i = 0; i < (1 << n); i++) {
+    var vals = {};
+    for (var j = 0; j < n; j++) {
+      vals[vars[j]] = !!(i & (1 << (n-1-j)));
+    }
+    rows.push(vals);
+  }
+  return rows;
+}
+
+function tv(b) { return b ? 'T' : 'F'; }
+function tdcell(b) { return '<td class="'+(b ? 'T' : 'F')+'">'+tv(b)+'</td>'; }
+
+function buildConnTable() {
+  var sel = document.getElementById('connSel').value;
+  var html = '<table class="ref" style="width:auto; margin-top:8px">';
+  if (sel === 'neg') {
+    html += '<tr><th>p</th><th>\u00acp</th></tr>';
+    [[true,false],[false,true]].forEach(function(r){html+='<tr>'+tdcell(r[0])+tdcell(r[1])+'</tr>';});
+  } else {
+    var op = sel === 'and' ? '\u2227' : sel === 'or' ? '\u2228' : sel === 'imp' ? '\u2192' : '\u2194';
+    html += '<tr><th>p</th><th>q</th><th>p '+op+' q</th></tr>';
+    [[true,true],[true,false],[false,true],[false,false]].forEach(function(r){
+      var res;
+      if (sel==='and') res=r[0]&&r[1];
+      else if(sel==='or') res=r[0]||r[1];
+      else if(sel==='imp') res=!r[0]||r[1];
+      else res=r[0]===r[1];
+      html+='<tr>'+tdcell(r[0])+tdcell(r[1])+tdcell(res)+'</tr>';
+    });
+  }
+  html += '</table>';
+  document.getElementById('connRes').innerHTML = html;
+}
+
+function buildFmlTable() {
+  var s = document.getElementById('fmlInp').value;
+  var el = document.getElementById('fmlRes');
+  var ast;
+  try { ast = parseFormula(s); } catch(e) { el.innerHTML = '<span class="badge badge-err">Parse error.</span>'; return; }
+  var vars = getVars(ast);
+  var subs = getSubs(ast);
+  var rows = allRows(vars);
+  var allT = true, allF = true;
+  var html = '<table class="ref" style="margin-top:8px"><tr>';
+  vars.forEach(function(v){ html+='<th>'+v+'</th>'; });
+  subs.forEach(function(sub){ html+='<th>'+niceStr(sub)+'</th>'; });
+  html+='</tr>';
+  rows.forEach(function(vals){
+    var finalVal = evalAST(ast,vals);
+    if(!finalVal) allT=false; else allF=false;
+    var rowClass = finalVal ? '' : 'trow-f';
+    html+='<tr class="'+rowClass+'">';
+    vars.forEach(function(v){ html+=tdcell(vals[v]); });
+    subs.forEach(function(sub){ html+=tdcell(evalAST(sub,vals)); });
+    html+='</tr>';
+  });
+  html+='</table>';
+  var cls = allT ? 'badge-ok' : allF ? 'badge-err' : 'badge-info';
+  var label = allT ? 'Tautology' : allF ? 'Contradiction' : 'Contingency';
+  html += '<p style="margin-top:8px"><span class="badge '+cls+'">'+label+'</span></p>';
+  el.innerHTML = html;
+}
+
+function checkEq() {
+  var sA = document.getElementById('eqA').value;
+  var sB = document.getElementById('eqB').value;
+  var el = document.getElementById('eqRes');
+  var astA, astB;
+  try { astA = parseFormula(sA); astB = parseFormula(sB); } catch(e){ el.innerHTML='<span class="badge badge-err">Parse error.</span>'; return; }
+  var vA = getVars(astA), vB = getVars(astB);
+  var vars = [];
+  var seen = {};
+  vA.concat(vB).forEach(function(v){ if(!seen[v]){seen[v]=true;vars.push(v);} });
+  vars.sort();
+  var rows = allRows(vars);
+  var equiv = true;
+  var html = '<table class="ref" style="margin-top:8px"><tr>';
+  vars.forEach(function(v){ html+='<th>'+v+'</th>'; });
+  html+='<th>A</th><th>B</th></tr>';
+  rows.forEach(function(vals){
+    var vala = evalAST(astA,vals), valb = evalAST(astB,vals);
+    var diff = vala !== valb;
+    if(diff) equiv = false;
+    var rowClass = diff ? 'trow-diff' : '';
+    html+='<tr class="'+rowClass+'">';
+    vars.forEach(function(v){ html+=tdcell(vals[v]); });
+    html+=tdcell(vala)+tdcell(valb)+'</tr>';
+  });
+  html+='</table>';
+  var badge = equiv ? '<span class="badge badge-ok">Equivalent \u2261</span>' : '<span class="badge badge-err">Not equivalent</span>';
+  html+='<p style="margin-top:8px">'+badge+'</p>';
+  if(!equiv) html+='<p style="font-size:11.5px;color:var(--color-text-secondary);margin-top:4px">Rows highlighted in amber have differing truth values.</p>';
+  el.innerHTML = html;
+}
+
+function checkArg() {
+  var premLines = document.getElementById('premInp').value.split('\n');
+  var concStr = document.getElementById('concInp').value;
+  var el = document.getElementById('argRes');
+  var prems = [];
+  for(var i=0;i<premLines.length;i++){
+    var ln = premLines[i].trim();
+    if(ln) { try { prems.push(parseFormula(ln)); } catch(e){el.innerHTML='<span class="badge badge-err">Parse error in premise.</span>';return;} }
+  }
+  var conc;
+  try { conc = parseFormula(concStr); } catch(e){ el.innerHTML='<span class="badge badge-err">Parse error in conclusion.</span>'; return; }
+  var allAsts = prems.concat([conc]);
+  var seen = {};
+  var vars = [];
+  allAsts.forEach(function(a){ getVars(a).forEach(function(v){ if(!seen[v]){seen[v]=true;vars.push(v);} }); });
+  vars.sort();
+  var rows = allRows(vars);
+  var valid = true;
+  var ceRow = null;
+  for(var r=0;r<rows.length;r++){
+    var vals = rows[r];
+    var allPremsTrue = true;
+    for(var p=0;p<prems.length;p++){ if(!evalAST(prems[p],vals)){allPremsTrue=false;break;} }
+    if(allPremsTrue && !evalAST(conc,vals)){ valid=false; ceRow=vals; break; }
+  }
+  var html = '';
+  if(valid){
+    html+='<span class="badge badge-ok">VALID</span> <span style="font-size:12px;margin-left:6px">The argument is valid — no row has all premises true and conclusion false.</span>';
+  } else {
+    html+='<span class="badge badge-err">INVALID</span> <span style="font-size:12px;margin-left:6px">Counter example found:</span>';
+    html+='<table class="ref" style="width:auto; margin-top:8px"><tr>';
+    vars.forEach(function(v){ html+='<th>'+v+'</th>'; });
+    prems.forEach(function(p,i){ html+='<th>P'+(i+1)+'</th>'; });
+    html+='<th>C</th></tr>';
+    html+='<tr>';
+    vars.forEach(function(v){ html+=tdcell(ceRow[v]); });
+    prems.forEach(function(p){ html+=tdcell(evalAST(p,ceRow)); });
+    html+=tdcell(evalAST(conc,ceRow));
+    html+='</tr></table>';
+  }
+  el.innerHTML = html;
+}
+
+/* ---- QUIZ ---- */
+var QUIZ = [
+  {q:'Which of the following is NOT a proposition?', opts:['\\(1+1=2\\)','The moon is made of green cheese','\\(x+y>0\\)','\\(4+5=6\\)'], ans:2, exp:'\\(x+y>0\\) contains the free variable \\(x\\) and \\(y\\), so its truth value is undefined — it is a predicate, not a proposition.'},
+  {q:'What is the truth value of the conditional "If \\(1+1=3\\), then dogs can fly"?', opts:['True','False','Undefined','Depends on context'], ans:0, exp:'A conditional \\(p\\to q\\) is false ONLY when \\(p=T\\) and \\(q=F\\). Here \\(p=F\\), so the conditional is vacuously TRUE regardless of \\(q\\).'},
+  {q:'\\(p\\) only if \\(q\\) is logically equivalent to:', opts:['\\(q\\to p\\)','\\(p\\to q\\)','\\(p\\leftrightarrow q\\)','\\(q\\leftrightarrow p\\)'], ans:1, exp:'"\\(p\\) only if \\(q\\)" means \\(q\\) is necessary for \\(p\\), i.e. \\(p\\to q\\). A common trap is to interpret it as \\(q\\to p\\).'},
+  {q:'Which is the contrapositive of \\(p\\to q\\)?', opts:['\\(q\\to p\\)','\\(\\neg p\\to\\neg q\\)','\\(\\neg q\\to\\neg p\\)','\\(\\neg p\\to q\\)'], ans:2, exp:'The contrapositive of \\(p\\to q\\) is \\(\\neg q\\to\\neg p\\). It is logically equivalent to the original. The converse is \\(q\\to p\\) and the inverse is \\(\\neg p\\to\\neg q\\).'},
+  {q:'\\(\\neg(p\\to q)\\) is logically equivalent to:', opts:['\\(\\neg p\\wedge q\\)','\\(p\\wedge\\neg q\\)','\\(\\neg p\\vee\\neg q\\)','\\(p\\vee\\neg q\\)'], ans:1, exp:'\\(p\\to q\\equiv\\neg p\\vee q\\). So \\(\\neg(p\\to q)\\equiv\\neg(\\neg p\\vee q)\\equiv p\\wedge\\neg q\\) by De Morgan\'s law and double negation.'},
+  {q:'The negation of \\(\\forall x\\,P(x)\\) is:', opts:['\\(\\forall x\\,\\neg P(x)\\)','\\(\\exists x\\,P(x)\\)','\\(\\exists x\\,\\neg P(x)\\)','\\(\\neg\\exists x\\,P(x)\\)'], ans:2, exp:'\\(\\neg\\forall x\\,P(x)\\equiv\\exists x\\,\\neg P(x)\\). To show a universal is false, you need to exhibit a counter example.'},
+  {q:'Which translation is CORRECT for "Every student in class has studied calculus" (domain = all university students \\(U\\), \\(Q(x)\\): in class, \\(P(x)\\): studied calculus)?', opts:['\\(\\forall x\\in U,\\,Q(x)\\wedge P(x)\\)','\\(\\forall x\\in U,\\,Q(x)\\to P(x)\\)','\\(\\exists x\\in U,\\,Q(x)\\wedge P(x)\\)','\\(\\exists x\\in U,\\,Q(x)\\to P(x)\\)'], ans:1, exp:'The correct pattern is \\(\\forall\\) paired with \\(\\to\\). Using \\(\\wedge\\) instead says every person in the university is a student in class AND studied calculus — false for anyone not in class.'},
+  {q:'The argument "\\(p\\to q\\), \\(q\\therefore p\\)" is:', opts:['Valid — Modus Ponens','Valid — Modus Tollens','Invalid — converse error','Invalid — inverse error'], ans:2, exp:'This is the fallacy of affirming the consequent (converse error). Knowing \\(p\\to q\\) and \\(q\\) does NOT allow you to conclude \\(p\\). Counter example: \\(p=F, q=T\\).'},
+  {q:'\\(p\\wedge(q\\vee r)\\) is equivalent to:', opts:['\\((p\\wedge q)\\vee r\\)','\\((p\\wedge q)\\vee(p\\wedge r)\\)','\\((p\\vee q)\\wedge(p\\vee r)\\)','\\(p\\vee(q\\wedge r)\\)'], ans:1, exp:'By the distributive law: \\(p\\wedge(q\\vee r)\\equiv(p\\wedge q)\\vee(p\\wedge r)\\). This is the AND-distributes-over-OR version.'},
+  {q:'Which of the following is a tautology?', opts:['\\(p\\wedge q\\)','\\(p\\to q\\)','\\(p\\vee\\neg p\\)','\\(p\\wedge\\neg p\\)'], ans:2, exp:'\\(p\\vee\\neg p\\) is always true (law of excluded middle) — a tautology. \\(p\\wedge\\neg p\\) is always false (contradiction). \\(p\\wedge q\\) and \\(p\\to q\\) are contingencies.'}
+];
+
+init();
+</script>
+</body>
+</html>

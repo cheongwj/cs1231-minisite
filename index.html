@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS1231 — Discrete Structures Study Guides</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,'Times New Roman',serif;background:#ffffff;color:#1a1a1a;min-height:100vh}
+
+header{
+  border-bottom:0.5px solid rgba(0,0,0,0.1);
+  padding:32px 48px 24px;
+}
+header h1{font-size:22px;font-weight:500;margin-bottom:6px}
+header p{font-size:12.5px;color:#555;line-height:1.6}
+
+main{padding:32px 48px 64px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+  margin-top:24px;
+}
+
+.card{
+  border:0.5px solid rgba(0,0,0,0.12);
+  border-radius:8px;
+  padding:20px 22px;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  transition:box-shadow 0.15s,border-color 0.15s;
+  background:#ffffff;
+}
+.card:hover{
+  border-color:rgba(37,99,235,0.4);
+  box-shadow:0 2px 12px rgba(37,99,235,0.08);
+}
+
+.card-num{
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#888;
+  margin-bottom:6px;
+}
+.card h2{
+  font-size:14px;
+  font-weight:500;
+  margin-bottom:8px;
+  color:#1a1a1a;
+  border:none;
+  padding:0;
+}
+.card p{
+  font-size:11.5px;
+  color:#555;
+  line-height:1.55;
+  margin-bottom:10px;
+}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{
+  font-size:10px;
+  padding:2px 8px;
+  border-radius:3px;
+  background:#f5f5f5;
+  color:#555;
+  border:0.5px solid rgba(0,0,0,0.1);
+}
+
+footer{
+  padding:24px 48px;
+  border-top:0.5px solid rgba(0,0,0,0.1);
+  font-size:11px;
+  color:#aaa;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CS1231 — Discrete Structures</h1>
+  <p>Interactive study guides covering all eight lecture chapters.<br>
+     Each guide includes definitions, worked examples, tutorial solutions, interactive tools, and a practice quiz.</p>
+</header>
+
+<main>
+  <p style="font-size:12px;color:#888">Select a chapter to open its study guide.</p>
+
+  <div class="grid">
+
+    <a class="card" href="ch1_guide.html">
+      <div class="card-num">Chapter 1</div>
+      <h2>Propositional Logic</h2>
+      <p>Propositions, connectives, tautologies, predicates, nested quantifiers, and formal arguments.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorials 1–3</span>
+        <span class="tag">Truth table tool</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch2_guide.html">
+      <div class="card-num">Chapter 2</div>
+      <h2>Sets &amp; Functions</h2>
+      <p>Set operations and identities, functions, inverse and composition, floor and ceiling functions.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorials 4–5</span>
+        <span class="tag">Set calculator</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch3_guide.html">
+      <div class="card-num">Chapter 3</div>
+      <h2>Number Theory</h2>
+      <p>Divisibility, modular arithmetic, primes, GCD, Euclidean algorithm, and cryptographic applications.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorial 6</span>
+        <span class="tag">GCD / modular tool</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch4_guide.html">
+      <div class="card-num">Chapter 4</div>
+      <h2>Mathematical Induction</h2>
+      <p>Weak and strong induction, lecture examples, key theorems, and Fibonacci / Lamé applications.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorial 8</span>
+        <span class="tag">Induction checker</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch5_guide.html">
+      <div class="card-num">Chapter 5</div>
+      <h2>Counting</h2>
+      <p>Product and sum rules, permutations, combinations, binomial theorem, generalised counting, and probability.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorials 9–10</span>
+        <span class="tag">P &amp; C calculator</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch6_guide.html">
+      <div class="card-num">Chapter 6</div>
+      <h2>Graph Theory</h2>
+      <p>Graph definitions, terminology, special graphs, adjacency representations, connectedness, and Euler circuits.</p>
+      <div class="card-tags">
+        <span class="tag">Tutorial 7</span>
+        <span class="tag">Graph tools</span>
+        <span class="tag">10 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch7_guide.html">
+      <div class="card-num">Chapter 7</div>
+      <h2>Trees</h2>
+      <p>Tree definitions and properties, applications (expression and decision trees), spanning trees, and minimum spanning trees.</p>
+      <div class="card-tags">
+        <span class="tag">BST / DFS / BFS tools</span>
+        <span class="tag">7 quiz questions</span>
+      </div>
+    </a>
+
+    <a class="card" href="ch8_guide.html">
+      <div class="card-num">Chapter 8</div>
+      <h2>Relations</h2>
+      <p>Relation properties, equivalence relations and partitions, partial orders, Hasse diagrams, and topological sorting.</p>
+      <div class="card-tags">
+        <span class="tag">Relation property checker</span>
+        <span class="tag">Hasse diagram tool</span>
+        <span class="tag">6 quiz questions</span>
+      </div>
+    </a>
+
+  </div>
+</main>
+
+<footer>CS1231 Discrete Structures — NUS School of Computing</footer>
+
+</body>
+</html>

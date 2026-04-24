@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS1231 Chapter 2 — Sets & Functions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 2 — Sets and Functions interactive study guide</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+
+  <nav id="nv">
+    <h1>Chapter 2</h1>
+    <button class="nb act" onclick="show('s1',this)">2.1 Sets</button>
+    <button class="nb" onclick="show('s2',this)">2.2 Set Operations</button>
+    <button class="nb" onclick="show('s3',this)">2.3 Set Identities</button>
+    <button class="nb" onclick="show('s4',this)">2.4 Functions</button>
+    <button class="nb" onclick="show('s5',this)">2.5 Inverse &amp; Composition</button>
+    <button class="nb" onclick="show('s6',this)">2.6 Floor &amp; Ceiling</button>
+    <button class="nb" onclick="show('t4',this)">Tutorial 4</button>
+    <button class="nb" onclick="show('t5',this)">Tutorial 5</button>
+    <button class="nb" onclick="show('tools',this)">Interactive Tools</button>
+    <button class="nb" onclick="show('quiz',this)">Quiz</button>
+    <div id="sc">
+      <p>Quiz score</p>
+      <div id="scv">—</div>
+    </div>
+  </nav>
+
+  <main id="mn">
+
+    <section id="s1" class="sec on">
+      <h2>2.1 Sets</h2>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Set</div>
+        <p>A <b>set</b> is an unordered collection of objects. The objects are the <b>elements</b> or <b>members</b> of the set.</p>
+        <p>Notation: \(x \in A\) means \(x\) is a member of \(A\); \(x \notin A\) means it is not.</p>
+      </div>
+
+      <h3>Describing sets</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Roster notation</div>
+        <p>\(D = \{0,1,2,3,4,5,6,7,8,9\}\). Positive odd integers less than 10: \(\{1,3,5,7,9\}\).</p>
+      </div>
+      <div class="ex">
+        <div class="lbl lbl-e">Set-builder notation</div>
+        <p>\(\{x \in \mathbb{N} \mid x/2 \in \mathbb{Z},\; x \lt 100\}\) = positive even numbers less than 100.</p>
+        <p>\(\mathbb{R}^+ = \{x \in \mathbb{R} \mid x \gt 0\} = \{x \mid x \in \mathbb{R}, x \gt 0\}\).</p>
+      </div>
+
+      <h3>Important standard sets</h3>
+      <table class="ref" style="width:auto">
+        <tr><th>Symbol</th><th>Set</th><th>Superscripts</th></tr>
+        <tr><td>\(\mathbb{R}\)</td><td>Real numbers</td><td>\(+\) pos, \(-\) neg, \(*\) nonneg</td></tr>
+        <tr><td>\(\mathbb{Q}\)</td><td>Rational numbers</td><td>similarly \(+,-,*\)</td></tr>
+        <tr><td>\(\mathbb{Z}\)</td><td>Integers \(\{\ldots,-2,-1,0,1,2,\ldots\}\)</td><td>similarly \(+,-,*\)</td></tr>
+        <tr><td>\(\mathbb{N}\)</td><td>Natural numbers \(\{1,2,3,\ldots\}\)</td><td></td></tr>
+      </table>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Order and repetition do not matter</div>
+        <p>\(\{1,3,7\} = \{7,1,3\} = \{7,1,1,1,3,3,1\}\). Listing an element twice does not change the set.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Set equality</div>
+        <p>Sets \(A\) and \(B\) are <b>equal</b>, written \(A = B\), if and only if</p>
+        <p style="text-align:center">\[ A = B \;\iff\; \forall x\,(x \in A \Leftrightarrow x \in B). \]</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — proving two sets equal</div>
+        <p>Show \(A = B\) where \(A = \{x \in \mathbb{Z} \mid x^8 - 1 = 0\}\) and \(B = \{x \in \mathbb{Z} \mid x^4 - 1 = 0\}\).</p>
+        <p><b>Solution:</b> Need both \(x \in A \Rightarrow x \in B\) and \(x \in B \Rightarrow x \in A\).</p>
+        <p>\(x \in B \Rightarrow x^4 = 1 \Rightarrow x^8 = 1 \Rightarrow x \in A.\)</p>
+        <p>\(x \in A \Rightarrow x^8 - 1 = (x^4-1)(x^4+1) = 0 \Rightarrow x^4 - 1 = 0 \Rightarrow x \in B.\)</p>
+        <p>Thus \(A = B\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Subset</div>
+        <p>\(A\) is a <b>subset</b> of \(B\), written \(A \subseteq B\), if every element of \(A\) is an element of \(B\):</p>
+        <p style="text-align:center">\[ A \subseteq B \;\iff\; \forall x\,(x \in A \Rightarrow x \in B). \]</p>
+        <p>\(A\) is a <b>proper subset</b> of \(B\), written \(A \subset B\) or \(A \subsetneq B\), if \(A \subseteq B\) and \(A \neq B\).</p>
+        <p>\(A \not\subseteq B \;\iff\; \exists x\,((x \in A) \wedge (x \notin B))\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Special sets</div>
+        <p>The <b>universal set</b> \(U\) contains all objects under discussion (context-dependent).</p>
+        <p>The <b>empty set</b> (or null set) \(\emptyset = \{\}\) has no members. \(|\emptyset| = 0\).</p>
+        <p>A <b>singleton set</b> has exactly one element.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>For every set \(S\): (i) \(\emptyset \subseteq S\), and (ii) \(S \subseteq S\).</p>
+        <p><b>Proof of (i):</b> Need \(\forall x, x \in \emptyset \Rightarrow x \in S\). The hypothesis \(x \in \emptyset\) is always false, so the implication is <em>vacuously true</em>. (ii) is left as exercise.</p>
+      </div>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Critical — \(\{\emptyset\}\) is NOT empty</div>
+        <p>\(\{\emptyset\}\) is a <b>singleton set</b> whose single element happens to be the empty set. \(|\{\emptyset\}| = 1\), not 0.</p>
+      </div>
+
+      <h3>\(\in\) versus \(\subseteq\) — correct and incorrect</h3>
+      <table class="ref">
+        <tr><th>Expression</th><th>Correct?</th><th>Reason</th></tr>
+        <tr><td>\(2 \in \{1,2,3\}\)</td><td class="T">✓</td><td>2 is an element of the set</td></tr>
+        <tr><td>\(\{2\} \in \{\{1\},\{2\}\}\)</td><td class="T">✓</td><td>\(\{2\}\) is an element of that set</td></tr>
+        <tr><td>\(\{2\} \subseteq \{1,2,3\}\)</td><td class="T">✓</td><td>every element of \(\{2\}\) is in \(\{1,2,3\}\)</td></tr>
+        <tr><td>\(\{\{2\}\} \subseteq \{\{1\},\{2\}\}\)</td><td class="T">✓</td><td>\(\{2\} \in \{\{1\},\{2\}\}\) so \(\{\{2\}\} \subseteq \{\{1\},\{2\}\}\)</td></tr>
+        <tr><td>\(\{2\} \in \{1,2,3\}\)</td><td class="F">✗</td><td>\(\{2\}\) is not an element; 2 is</td></tr>
+        <tr><td>\(2 \subseteq \{1,2,3\}\)</td><td class="F">✗</td><td>2 is not a set; cannot take subset of a number</td></tr>
+        <tr><td>\(\{2\} \subseteq \{\{1\},\{2\}\}\)</td><td class="F">✗</td><td>2 is not in \(\{\{1\},\{2\}\}\); only \(\{1\}\) and \(\{2\}\) are</td></tr>
+      </table>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Cardinality</div>
+        <p>If set \(S\) has exactly \(n\) elements, it is a <b>finite set</b> with <b>cardinality</b> \(|S| = n\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Power set</div>
+        <p>The <b>power set</b> of \(A\), written \(\mathcal{P}(A)\) or \(2^A\), is the set of all subsets of \(A\).</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <p>\(\mathcal{P}(\emptyset) = \{\emptyset\}\).</p>
+        <p>\(\mathcal{P}(\{1\}) = \{\emptyset, \{1\}\}\).</p>
+        <p>\(\mathcal{P}(\{1,2\}) = \{\emptyset, \{1\}, \{2\}, \{1,2\}\}\).</p>
+      </div>
+      
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>If \(|S| = n\), then \(|\mathcal{P}(S)| = 2^n\).</p>
+      </div>
+
+      <h3>Cartesian products</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Ordered \(n\)-tuple</div>
+        <p>The <b>ordered \(n\)-tuple</b> \((x_1, \ldots, x_n)\) is the ordered collection with \(x_i\) as the \(i\)th element. Two \(n\)-tuples are equal iff \(x_1=y_1, \ldots, x_n=y_n\). An ordered 2-tuple is an <b>ordered pair</b>.</p>
+        <p>Note: \((1,2) \neq (2,1)\) — order matters. Do not confuse \((x_1,\ldots,x_n)\) with \(\{x_1,\ldots,x_n\}\).</p>
+      </div>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Cartesian product</div>
+        <p style="text-align:center">\[ A \times B = \{(x,y) \mid x \in A,\; y \in B\} \]</p>
+        <p style="text-align:center">\[ A_1 \times \cdots \times A_n = \{(a_1,\ldots,a_n) \mid a_1 \in A_1, \ldots, a_n \in A_n\} \]</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Example</div>
+        <p>\(\{0,1,x\} \times \{a,b\} = \{(0,a),(0,b),(1,a),(1,b),(x,a),(x,b)\}\).</p>
+        <p>\(\{0,1\} \times \{0,1\} \times \{x,y\} = \{(0,0,x),(0,0,y),(0,1,x),(0,1,y),(1,0,x),(1,0,y),(1,1,x),(1,1,y)\}\).</p>
+      </div>
+    </section>
+
+    <section id="s2" class="sec">
+      <h2>2.2 Set Operations</h2>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Six operations</div>
+        <p><b>1. Union:</b> \(A \cup B = \{x \mid (x \in A) \vee (x \in B)\}\).</p>
+        <p><b>2. Intersection:</b> \(A \cap B = \{x \mid (x \in A) \wedge (x \in B)\}\).</p>
+        <p><b>3. Difference:</b> \(B - A = \{x \mid (x \in B) \wedge (x \notin A)\}\).</p>
+        <p><b>4. Complement:</b> \(\overline{A} = U - A = \{x \mid x \notin A\}\).</p>
+        <p><b>5. Disjoint:</b> \(A\) and \(B\) are <b>disjoint</b> if \(A \cap B = \emptyset\).</p>
+        <p><b>6. Mutually/pairwise disjoint:</b> \(A_1,\ldots,A_n\) are pairwise disjoint if \(A_i \cap A_j = \emptyset\) for all \(i \neq j\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — interval sets</div>
+        <p>Let \(U = \mathbb{R}\), \(A = \{x \mid x \leq 0\} = (-\infty, 0]\), \(B = \{x \mid 0 \leq x \lt 1\} = [0,1)\). Then:</p>
+        <p>\(A \cup B = (-\infty, 1)\),  \(A \cap B = \{0\}\),  \(\overline{B} = (-\infty,0) \cup [1,\infty)\).</p>
+      </div>
+
+      <h3>Three methods to prove set identities</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Method 1 — element argument (both directions)</div>
+        <p><b>Goal:</b> Prove \(\overline{A \cap B} = \overline{A} \cup \overline{B}\).</p>
+        <p>(\(\subseteq\)) For any \(x\): \(x \in \overline{A \cap B} \Rightarrow x \notin A \cap B \Rightarrow \neg(x \in A \wedge x \in B) \Rightarrow x \notin A \vee x \notin B \Rightarrow x \in \overline{A} \vee x \in \overline{B} \Rightarrow x \in \overline{A} \cup \overline{B}.\)</p>
+        <p>(\(\supseteq\)) Conversely: \(x \in \overline{A} \cup \overline{B} \Rightarrow x \notin A \vee x \notin B \Rightarrow \neg(x \in A \wedge x \in B) \Rightarrow x \notin A \cap B \Rightarrow x \in \overline{A \cap B}.\)</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Method 2 — biconditional chain</div>
+        <p>\(x \in \overline{A \cap B} \Leftrightarrow x \notin A \cap B \Leftrightarrow \neg(x \in A \wedge x \in B) \Leftrightarrow x \notin A \vee x \notin B \Leftrightarrow x \in \overline{A} \vee x \in \overline{B} \Leftrightarrow x \in \overline{A} \cup \overline{B}.\)</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Method 3 — membership table</div>
+        <table class="ref" style="width:auto">
+          <tr><th>\(A\)</th><th>\(B\)</th><th>\(\overline{A}\)</th><th>\(\overline{B}\)</th><th>\(A\cap B\)</th><th>\(\overline{A\cap B}\)</th><th>\(\overline{A}\cup\overline{B}\)</th></tr>
+          <tr><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td></tr>
+          <tr><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+          <tr><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+          <tr><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+        </table>
+        <p style="margin-top:6px">Since columns for \(\overline{A\cap B}\) and \(\overline{A}\cup\overline{B}\) are identical, the sets are equal.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — using identity laws</div>
+        <p>Show \(\overline{A \cup (B \cap C)} = (\overline{C} \cup \overline{B}) \cap \overline{A}\).</p>
+        <p>\(\overline{A \cup (B \cap C)} = \overline{A} \cap \overline{(B \cap C)}\) (De Morgan) \(= \overline{A} \cap (\overline{B} \cup \overline{C})\) (De Morgan) \(= (\overline{B} \cup \overline{C}) \cap \overline{A}\) (commutative) \(= (\overline{C} \cup \overline{B}) \cap \overline{A}\) (commutative). ✓</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — element argument with two cases</div>
+        <p>Prove \(A \cap (B \cup C) = (A \cap B) \cup (A \cap C)\).</p>
+        <p>(\(\subseteq\)) Let \(x \in A \cap (B \cup C)\). Then \(x \in A\) and \(x \in B \cup C\), so \(x \in A\) and (\(x \in B\) or \(x \in C\)).</p>
+        <p>If \(x \in B\): \(x \in A \cap B \Rightarrow x \in (A\cap B)\cup(A\cap C)\). If \(x \in C\): \(x \in A \cap C \Rightarrow x \in (A\cap B)\cup(A\cap C)\).</p>
+        <p>(\(\supseteq\)) Let \(x \in (A\cap B)\cup(A\cap C)\). Case 1 (\(x \in A\cap B\)): \(x \in A\) and \(x \in B \Rightarrow x \in B\cup C \Rightarrow x \in A\cap(B\cup C)\). Case 2 similar. ✓</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — counterexample (statement is FALSE)</div>
+        <p>Is \((A-B)\cup(B-C) = A-C\) for all sets \(A,B,C\)?</p>
+        <p><b>False.</b> Counterexample: \(A=\{1,2\}\), \(B=\{2,3,4\}\), \(C=\{4,5\}\).</p>
+        <p>LHS: \((A-B)\cup(B-C) = \{1\}\cup\{2,3\} = \{1,2,3\}\). RHS: \(A-C = \{1,2\}\). Not equal.</p>
+      </div>
+
+      <h3>Truth sets</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — truth set</div>
+        <p>Let \(P(x)\) be a predicate with domain \(D\). The <b>truth set</b> of \(P\) is \(T_P = \{x \in D \mid P(x)\}\).</p>
+      </div>
+      
+      <div class="rem">
+        <div class="lbl lbl-e">Key connections</div>
+        <p>\(\forall x\in D,\,P(x)\) is true iff \(T_P = D\). \(\quad\) \(\exists x\in D,\,P(x)\) is true iff \(T_P \neq \emptyset\).</p>
+        <p>\(T_{\neg P} = \overline{T_P}\). \(\quad T_{P \wedge Q} = T_P \cap T_Q\). \(\quad T_{P \vee Q} = T_P \cup T_Q\). \(\quad T_{P \to Q} = \overline{T_P} \cup T_Q\).</p>
+      </div>
+
+      <h3>Computer representation (bit strings)</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Bit string encoding</div>
+        <p>With \(U = \{x_1,\ldots,x_n\}\), represent \(A \subseteq U\) by bit string of length \(n\) where the \(i\)th bit is 1 iff \(x_i \in A\).</p>
+        <p>For \(\overline{A}\): flip all bits. For \(A \cup B\): OR the bits. For \(A \cap B\): AND the bits.</p>
+        <p>Example: \(U=\{1,\ldots,10\}\), \(A=\{1,2,3,4,5\} \to 1111100000\), \(B=\{1,3,5,7,9\} \to 1010101010\).</p>
+        <p>\(A\cup B \to 1111101010\), \(A\cap B \to 1010100000\), \(\overline{A\cap B} \to 0101011111\).</p>
+      </div>
+    </section>
+
+    <section id="s3" class="sec">
+      <h2>2.3 Set Identities</h2>
+      <table class="ref">
+        <tr><th>Law family</th><th>Identity 1</th><th>Identity 2</th></tr>
+        <tr><td><b>Identity</b></td><td>\(A \cup \emptyset = A\)</td><td>\(A \cap U = A\)</td></tr>
+        <tr><td><b>Domination</b></td><td>\(A \cup U = U\)</td><td>\(A \cap \emptyset = \emptyset\)</td></tr>
+        <tr><td><b>Idempotent</b></td><td>\(A \cup A = A\)</td><td>\(A \cap A = A\)</td></tr>
+        <tr><td><b>Complementation</b></td><td>\(\overline{(\overline{A})} = A\)</td><td>—</td></tr>
+        <tr><td><b>Commutative</b></td><td>\(A \cup B = B \cup A\)</td><td>\(A \cap B = B \cap A\)</td></tr>
+        <tr><td><b>Associative</b></td><td>\((A\cup B)\cup C = A\cup(B\cup C)\)</td><td>\((A\cap B)\cap C = A\cap(B\cap C)\)</td></tr>
+        <tr><td><b>Distributive</b></td><td>\(A\cup(B\cap C)=(A\cup B)\cap(A\cup C)\)</td><td>\(A\cap(B\cup C)=(A\cap B)\cup(A\cap C)\)</td></tr>
+        <tr><td><b>De Morgan's</b></td><td>\(\overline{A\cup B}=\overline{A}\cap\overline{B}\)</td><td>\(\overline{A\cap B}=\overline{A}\cup\overline{B}\)</td></tr>
+        <tr><td><b>Absorption</b></td><td>\(A\cup(A\cap B)=A\)</td><td>\(A\cap(A\cup B)=A\)</td></tr>
+        <tr><td><b>Complement</b></td><td>\(A\cup\overline{A}=U\)</td><td>\(A\cap\overline{A}=\emptyset\)</td></tr>
+      </table>
+      <div class="rem">
+        <div class="lbl lbl-e">Analogy with propositional logic</div>
+        <p>\(\cup \leftrightarrow \vee\), \(\cap \leftrightarrow \wedge\), \(\overline{\phantom{A}} \leftrightarrow \neg\), \(\emptyset \leftrightarrow F\), \(U \leftrightarrow T\). Every law mirrors a propositional equivalence.</p>
+      </div>
+    </section>
+
+    <section id="s4" class="sec">
+      <h2>2.4 Functions</h2>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Function</div>
+        <p>Let \(A,B\) be nonempty sets. A <b>function</b> \(f\) from \(A\) to \(B\), written \(f: A \to B\), is an assignment of <b>exactly one</b> element of \(B\) to each element of \(A\).</p>
+        <p>\(A\) = <b>domain</b>, \(B\) = <b>co-domain</b>. If \(f(a)=b\): \(b\) is the <b>image/value</b> of \(a\); \(a\) is a <b>preimage</b> of \(b\).</p>
+        <p>The <b>image</b> (range) of \(f\) is \(f(A) = \{b \in B \mid \exists a \in A,\, b = f(a)\} = \{f(a) \mid a \in A\}\).</p>
+        <p>Note: each element of \(A\) has <em>exactly one</em> image, but an element of \(B\) may have 0, 1, or many preimages.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — what is NOT a function</div>
+        <p>Consider \(f: X \to Y\) with \(f(x) = y\) if \(x^2 + y^2 = 1\) (circle equation).</p>
+        <p>If \(X = Y = \mathbb{R}\): not a function — element 2 has no image (no real \(y\) with \(4+y^2=1\)).</p>
+        <p>If \(X = [-1,1], Y = \mathbb{R}\): not a function — \(0 \in X\) has two images \(+1,-1\).</p>
+        <p>If \(X = [-1,1], Y = [0,\infty)\): IS a function (take positive root). Image is \([0,1]\).</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Example — f: Q → Z by f(m/n) = m (NOT a function)</div>
+        <p>\(f(1/2) = 1\) but \(f(2/4) = 2\), yet \(1/2 = 2/4\). Same input, two outputs. Not a function.</p>
+      </div>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — function arithmetic</div>
+        <p>For \(f,g: A \to \mathbb{R}\): \((f+g)(x) = f(x)+g(x)\) and \((fg)(x) = f(x)g(x)\).</p>
+      </div>
+
+      <h3>Injective (one-to-one)</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — injective</div>
+        <p>A function \(f: X \to Y\) is <b>one-to-one</b> (or <b>injective</b>) iff</p>
+        <p style="text-align:center">\[ \forall a,b \in X,\; f(a) = f(b) \Rightarrow a = b. \]</p>
+      </div>
+      
+      <div class="rem">
+        <div class="lbl lbl-e">Equivalent characterisations</div>
+        <ul>
+          <li>Every element of the co-domain has <b>at most one</b> preimage.</li>
+          <li>Distinct inputs give distinct outputs: \(\forall a,b \in X,\; a \neq b \Rightarrow f(a) \neq f(b)\).</li>
+          <li>No horizontal line meets the graph more than once.</li>
+          <li>\(f\) is <b>NOT</b> 1-1 iff \(\exists a \neq b\) with \(f(a) = f(b)\).</li>
+        </ul>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <p>\(f: \mathbb{R} \to \mathbb{R}\), \(f(x) = 4x-1\): <b>injective.</b> \(f(a)=f(b) \Rightarrow 4a-1=4b-1 \Rightarrow a=b\).</p>
+        <p>\(g: \mathbb{R} \to \mathbb{R}\), \(g(x) = x^2\): <b>NOT injective.</b> \(g(2)=g(-2)=4\).</p>
+        <p>\(g: \mathbb{R}^* \to \mathbb{R}^*\), \(g(x) = x^2\): <b>injective</b> — on \(\mathbb{R}^*\), \(g\) is strictly increasing, so \(x \gt y \gt 0 \Rightarrow x^2 \gt y^2\), hence distinct inputs give distinct outputs.</p>
+      </div>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — increasing / decreasing</div>
+        <p>For \(f: A \to B\) with \(A,B \subseteq \mathbb{R}\):</p>
+        <p><b>Increasing:</b> \((x \gt y) \to f(x) \geq f(y)\). \(\quad\) <b>Strictly increasing:</b> \((x \gt y) \to f(x) \gt f(y)\).</p>
+        <p>Similarly decreasing and strictly decreasing. A strictly monotone function is always injective.</p>
+      </div>
+
+      <h3>Surjective (onto)</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — surjective</div>
+        <p>A function \(f: X \to Y\) is <b>onto</b> (or <b>surjective</b>) iff</p>
+        <p style="text-align:center">\[ \forall y \in Y\; \exists x \in X\; (f(x) = y). \]</p>
+        <p>Equivalently, the image equals the co-domain: \(f(X) = Y\). \(f\) is NOT onto iff \(\exists y \in Y\) with no preimage.</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Examples</div>
+        <p>\(f: \mathbb{R} \to \mathbb{R}\), \(f(x)=4x-1\): <b>surjective.</b> Given \(y\), take \(x = (y+1)/4\): \(f(x)=y\). ✓</p>
+        <p>\(g: \mathbb{N} \to \mathbb{N}\), \(g(n)=n^2\): <b>NOT surjective.</b> 2 has no preimage (no integer squares to 2).</p>
+      </div>
+
+      <h3>Bijection</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — bijection</div>
+        <p>A function is a <b>bijection</b> if it is both injective and surjective.</p>
+        <p>The <b>identity function</b> \(i_A: A \to A\) defined by \(i_A(x) = x\) is a bijection.</p>
+      </div>
+    </section>
+
+    <section id="s5" class="sec">
+      <h2>2.5 Inverse &amp; Composition</h2>
+      
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — inverse functions</div>
+        <p>Let \(f: X \to Y\) be a bijection. Then there is a function \(g: Y \to X\) defined by</p>
+        <p style="text-align:center">\[ \forall y \in Y,\; g(y) = x \;\Leftrightarrow\; f(x) = y. \]</p>
+        <p><b>Proof:</b> Since \(f\) is a bijection, each \(y\) has a unique preimage \(x\). This preimage becomes the unique image of \(y\) under \(g\), so \(g\) is a well-defined function.</p>
+      </div>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition — inverse function</div>
+        <p>The function \(g\) in the theorem is the <b>inverse function</b> of \(f\), denoted \(f^{-1}\).</p>
+      </div>
+      
+      <div class="warn">
+        <div class="lbl lbl-w">Common mistake — \(f^{-1} \neq 1/f\)</div>
+        <p>\(f^{-1}\) is the inverse function (reverses \(f\)), NOT the reciprocal \(1/f(x)\). The latter is defined separately only when \(f(x) \neq 0\).</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Example — finding the inverse</div>
+        <p>\(f: \mathbb{Z} \to \mathbb{Z}\), \(f(x) = x+1\).</p>
+        <p>1-1: \(f(a)=f(b) \Rightarrow a+1=b+1 \Rightarrow a=b\). ✓</p>
+        <p>Onto: given \(y\), take \(x=y-1\): \(f(y-1)=(y-1)+1=y\). ✓</p>
+        <p>So \(f\) is a bijection. From the onto proof: \(f^{-1}(y) = y-1\).</p>
+      </div>
+
+      <h3>Composition</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition — composition</div>
+        <p>Let \(f: X \to Y\) and \(g: Y \to Z\). The <b>composition</b> \(g \circ f: X \to Z\) is defined by</p>
+        <p style="text-align:center">\[ \forall x \in X,\; (g \circ f)(x) = g(f(x)). \]</p>
+      </div>
+      
+      <div class="rem">
+        <div class="lbl lbl-e">Key properties</div>
+        <ul>
+          <li>\(g \circ f \neq f \circ g\) in general (order matters — apply right-hand function first).</li>
+          <li>\(f \circ i_X = i_Y \circ f = f\).</li>
+          <li>If \(f\) is a bijection: \(f \circ f^{-1} = i_Y\) and \(f^{-1} \circ f = i_X\).</li>
+        </ul>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Example — composition is not commutative</div>
+        <p>\(f,g: \mathbb{Z} \to \mathbb{Z}\), \(f(n)=n+1\), \(g(n)=n^2\).</p>
+        <p>\((g \circ f)(n) = g(n+1) = (n+1)^2\).</p>
+        <p>\((f \circ g)(n) = f(n^2) = n^2+1\).</p>
+        <p>Clearly \((n+1)^2 \neq n^2+1\) in general.</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Example — composition with inverse</div>
+        <p>Let \(f:X \to Y\) be a bijection. Then \(f \circ f^{-1}(y) = f(f^{-1}(y)) = f(x) = y\), so \(f \circ f^{-1} = i_Y\). Similarly \(f^{-1} \circ f = i_X\).</p>
+      </div>
+    </section>
+
+    <section id="s6" class="sec">
+      <h2>2.6 Floor &amp; Ceiling</h2>
+      
+      <div class="def">
+        <div class="lbl lbl-d">Definition</div>
+        <p>The <b>floor</b> of \(x \in \mathbb{R}\), written \(\lfloor x \rfloor\), is the largest integer \(\leq x\).</p>
+        <p>The <b>ceiling</b> of \(x \in \mathbb{R}\), written \(\lceil x \rceil\), is the smallest integer \(\geq x\).</p>
+      </div>
+      
+      <div class="rem">
+        <div class="lbl lbl-e">Key characterisations</div>
+        <p>\(\lfloor x \rfloor = n \;\iff\; n \leq x \lt n+1 \;\iff\; n \leq x\) and \(x \lt n+1.\)</p>
+        <p>\(\lceil x \rceil = n \;\iff\; n-1 \lt x \leq n.\)</p>
+        <p>\(\forall x \in \mathbb{R}:\; \lfloor x \rfloor \leq x \leq \lceil x \rceil\). Equalities hold iff \(x \in \mathbb{Z}\).</p>
+      </div>
+      
+      <div class="ex">
+        <div class="lbl lbl-e">Numerical examples</div>
+        <p>\(\lfloor -3 \rfloor = \lceil -3 \rceil = -3\).</p>
+        <p>\(\lfloor -2.7 \rfloor = -3\), \(\quad \lceil -2.7 \rceil = -2\).</p>
+        <p>\(\lfloor 0 \rfloor = 0\), \(\quad \lfloor 4.979 \rfloor = 4\), \(\quad \lceil 4.001 \rceil = 5\).</p>
+      </div>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Common mistake</div>
+        <p>\(\lfloor x+y \rfloor = \lfloor x \rfloor + \lfloor y \rfloor\) is <b>FALSE</b> in general.</p>
+        <p>Counterexample: \(x = y = 0.7\): \(\lfloor 1.4 \rfloor = 1\) but \(\lfloor 0.7 \rfloor + \lfloor 0.7 \rfloor = 0\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — \(\lfloor x + m \rfloor = \lfloor x \rfloor + m\) for \(m \in \mathbb{Z}\)</div>
+        <div class="proof"><b>Proof.</b> Let \(\lfloor x \rfloor = n\), so \(n \leq x \lt n+1\). Adding \(m\): \(n+m \leq x+m \lt n+m+1\). By the characterisation, \(\lfloor x+m \rfloor = n+m = \lfloor x \rfloor + m\). \(\square\)</div>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — \(\lfloor 2x \rfloor = \lfloor x \rfloor + \lfloor x + \tfrac{1}{2} \rfloor\)</div>
+        <div class="proof">
+          <b>Proof.</b> Let \(\lfloor x \rfloor = n\), write \(x = n + \theta\) with \(0 \leq \theta \lt 1\). Split into two cases:
+          <br><br>
+          <b>Case 1 (\(0 \leq \theta \lt \tfrac{1}{2}\)):</b> \(\lfloor 2x \rfloor = \lfloor 2n+2\theta \rfloor = 2n\) (since \(0 \leq 2\theta \lt 1\)). \(\lfloor x + \tfrac{1}{2}\rfloor = \lfloor n + \theta + \tfrac{1}{2}\rfloor = n\) (since \(\tfrac{1}{2} \leq \theta + \tfrac{1}{2} \lt 1\)). So RHS \(= n + n = 2n\). ✓
+          <br><br>
+          <b>Case 2 (\(\tfrac{1}{2} \leq \theta \lt 1\)):</b> \(\lfloor 2x \rfloor = \lfloor 2n + 2\theta \rfloor = 2n+1\) (since \(1 \leq 2\theta \lt 2\)). \(\lfloor x + \tfrac{1}{2}\rfloor = \lfloor n + \theta + \tfrac{1}{2} \rfloor = n+1\) (since \(1 \leq \theta + \tfrac{1}{2} \lt \tfrac{3}{2}\)). So RHS \(= n + (n+1) = 2n+1\). ✓
+        </div>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — \(\lfloor x \rfloor \leq x \leq \lceil x \rceil\) (equalities iff integer)</div>
+        <div class="proof">
+          <b>Proof.</b> If \(x \in \mathbb{Z}\): \(\lfloor x \rfloor = x = \lceil x \rceil\).
+          <br><br>
+          If \(x \notin \mathbb{Z}\): \(\exists n \in \mathbb{Z}\) with \(n \lt x \lt n+1\). Then \(\lfloor x \rfloor = n \lt x\) and \(x \lt n+1 = \lceil x \rceil\). Strict inequalities hold. \(\square\)
+        </div>
+      </div>
+    </section>
+
+    <section id="t4" class="sec">
+      <h2>Tutorial 4 — Sets</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Determine whether each expression is true or false: (a) \(\emptyset \in \{\emptyset\}\). (b) \(\emptyset \in \{\emptyset, \{\emptyset\}\}\). (c) \(\{\emptyset\} \in \{\emptyset\}\). (d) \(\{\emptyset\} \in \{\{\emptyset\}\}\). (e) \(\{\emptyset\} \subset \{\emptyset, \{\emptyset\}\}\). (f) \(\{\{\emptyset\}\} \subset \{\emptyset, \{\emptyset\}\}\). (g) \(\{\{\emptyset\}\} \subset \{\{\emptyset\}, \{\emptyset\}\}\).</p>
+        <button class="togbtn" onclick="tog('t4q1')">Show solution ▾</button>
+        <div id="t4q1" class="tog">
+          <div class="sol">
+            <p>(a) <b>TRUE.</b> \(\{\emptyset\}\) is the set containing \(\emptyset\); \(\emptyset\) is indeed an element of it.</p>
+            <p>(b) <b>TRUE.</b> \(\emptyset\) is listed as an element of \(\{\emptyset, \{\emptyset\}\}\).</p>
+            <p>(c) <b>FALSE.</b> The only element of \(\{\emptyset\}\) is \(\emptyset\). Since \(\{\emptyset\} \neq \emptyset\), \(\{\emptyset\}\) is not in \(\{\emptyset\}\).</p>
+            <p>(d) <b>TRUE.</b> \(\{\{\emptyset\}\}\) contains \(\{\emptyset\}\) as its sole element, and \(\{\emptyset\}\) is an element of \(\{\{\emptyset\}\}\).</p>
+            <p>(e) <b>TRUE.</b> \(\{\emptyset\} \subseteq \{\emptyset, \{\emptyset\}\}\) (since \(\emptyset\) is in the right-hand set) and \(\{\emptyset\} \neq \{\emptyset, \{\emptyset\}\}\).</p>
+            <p>(f) <b>TRUE.</b> \(\{\{\emptyset\}\}\) has one element: \(\{\emptyset\}\). Since \(\{\emptyset\} \in \{\emptyset, \{\emptyset\}\}\), we have \(\{\{\emptyset\}\} \subseteq \{\emptyset, \{\emptyset\}\}\), and strict since \(\emptyset\) is in the right set but not in \(\{\{\emptyset\}\}\).</p>
+            <p>(g) <b>FALSE.</b> Since sets ignore repetition, \(\{\{\emptyset\},\{\emptyset\}\} = \{\{\emptyset\}\}\). So LHS = RHS — they are equal, not a proper subset.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Let \(B = \{n \in \mathbb{Z} : n = 3j+2,\, j \in \mathbb{Z}\}\) and \(D = \{n \in \mathbb{Z} : n = 3j-1,\, j \in \mathbb{Z}\}\). Is \(B = D\)?</p>
+        <button class="togbtn" onclick="tog('t4q2')">Show solution ▾</button>
+        <div id="t4q2" class="tog">
+          <div class="sol">
+            <p><b>Yes, \(B = D\).</b></p>
+            <p>Both are the set of integers \(\equiv 2 \pmod{3}\) (i.e., \(-1 \equiv 2 \pmod 3\)).</p>
+            <p><b>Proof:</b> If \(n \in B\) then \(n = 3j+2\) for some \(j\). Let \(k = j+1\). Then \(n = 3(k-1)+2 = 3k-1\), so \(n \in D\). Similarly, if \(n \in D\) then \(n = 3j-1 = 3(j-1)+2\), so \(n \in B\). Thus \(B = D\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q3. Find \(|A|\) if \(A = \{1, 2, \{2\}, \{4,5\}, 5, 5\}.\)</p>
+        <button class="togbtn" onclick="tog('t4q3')">Show solution ▾</button>
+        <div id="t4q3" class="tog">
+          <div class="sol">
+            <p>The distinct elements are: \(1,\; 2,\; \{2\},\; \{4,5\},\; 5\). (The second 5 is a repeat.)</p>
+            <p>\(|A| = 5\).</p>
+            <p>Note: \(2\) and \(\{2\}\) are different objects. \(2\) is a number; \(\{2\}\) is a set.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q4. Let \(A=\{a,b,c\}\), \(B=\{b,c,d\}\), \(C=\{b,c,e\}\). Find \((A-B)-C\) and \(A-(B-C)\). Are they equal?</p>
+        <button class="togbtn" onclick="tog('t4q4')">Show solution ▾</button>
+        <div id="t4q4" class="tog">
+          <div class="sol">
+            <p>\(A - B = \{a\}\). \(\quad (A-B) - C = \{a\} - \{b,c,e\} = \{a\}.\)</p>
+            <p>\(B - C = \{d\}\). \(\quad A - (B-C) = \{a,b,c\} - \{d\} = \{a,b,c\}.\)</p>
+            <p><b>Not equal.</b> Set difference is not associative.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q5. Let \(T_P\) denote the truth set of \(P(x)\). Prove: (a) \(T_{P \vee Q} = T_P \cup T_Q\) and \(T_{P \wedge Q} = T_P \cap T_Q\). (b) \(T_{P \to Q} = \overline{T_P} \cup T_Q\).</p>
+        <button class="togbtn" onclick="tog('t4q5')">Show solution ▾</button>
+        <div id="t4q5" class="tog">
+          <div class="sol">
+            <p><b>(a)</b> \(x \in T_{P \vee Q} \;\Leftrightarrow\; P(x) \vee Q(x) \text{ is true} \;\Leftrightarrow\; x \in T_P \text{ or } x \in T_Q \;\Leftrightarrow\; x \in T_P \cup T_Q.\)</p>
+            <p>\(x \in T_{P \wedge Q} \;\Leftrightarrow\; P(x) \text{ and } Q(x) \text{ both true} \;\Leftrightarrow\; x \in T_P \text{ and } x \in T_Q \;\Leftrightarrow\; x \in T_P \cap T_Q.\)</p>
+            <p><b>(b)</b> \(x \in T_{P \to Q} \;\Leftrightarrow\; P(x) \to Q(x) \text{ is true} \;\Leftrightarrow\; \neg P(x) \vee Q(x) \text{ is true} \;\Leftrightarrow\; x \notin T_P \text{ or } x \in T_Q \;\Leftrightarrow\; x \in \overline{T_P} \vee x \in T_Q \;\Leftrightarrow\; x \in \overline{T_P} \cup T_Q.\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q6. Let \(A=\{1,2,3\}\), \(B=\{u,v\}\), \(C=\{m,n\}\). List the elements of \((A \times B) \times C\) and \(A \times B \times C\). Are they equal?</p>
+        <button class="togbtn" onclick="tog('t4q6')">Show solution ▾</button>
+        <div id="t4q6" class="tog">
+          <div class="sol">
+            <p>\((A \times B) \times C\) has elements of the form \(((a,b),c)\), e.g. \(((1,u),m), ((1,u),n), ((1,v),m),\ldots\) — 12 ordered pairs of an ordered pair and an element.</p>
+            <p>\(A \times B \times C\) has elements of the form \((a,b,c)\) (ordered triples), e.g. \((1,u,m),(1,u,n),(1,v,m),\ldots\) — 12 ordered triples.</p>
+            <p><b>Not equal.</b> \(((1,u),m) \neq (1,u,m)\) — an ordered pair is not the same type as an ordered triple.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q7. Find the mistake in this "proof". Theorem: For all sets \(A,B\), \(\overline{A} \cup \overline{B} \subseteq \overline{A \cup B}\). Proof: Suppose \(x \in \overline{A} \cup \overline{B}\). Then \(x \in \overline{A}\) or \(x \in \overline{B}\), so \(x \notin A\) or \(x \notin B\), and so \(x \notin A \cup B\). Thus \(x \in \overline{A \cup B}\).</p>
+        <button class="togbtn" onclick="tog('t4q7')">Show solution ▾</button>
+        <div id="t4q7" class="tog">
+          <div class="sol">
+            <p><b>Mistake:</b> The step "\(x \notin A\) or \(x \notin B\) \(\Rightarrow x \notin A \cup B\)" is <b>wrong</b>.</p>
+            <p>\(x \notin A \cup B\) requires \(x \notin A\) <b>AND</b> \(x \notin B\) (De Morgan's law applied to negation). Having \(x \notin A\) or \(x \notin B\) is not enough — if \(x \notin A\) but \(x \in B\), then \(x \in A \cup B\).</p>
+            <p>In fact the stated theorem is <b>false</b>: \(\overline{A} \cup \overline{B} = \overline{A \cap B}\) (De Morgan), not \(\overline{A \cup B}\). The correct relationship is \(\overline{A \cup B} \subseteq \overline{A} \cup \overline{B}\) (not the other way around).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q8. Prove that \((A-C) \cap (B-C) \cap (A-B) = \emptyset\).</p>
+        <button class="togbtn" onclick="tog('t4q8')">Show solution ▾</button>
+        <div id="t4q8" class="tog">
+          <div class="sol">
+            <p>Suppose for contradiction that there exists \(x\) in the intersection. Then:</p>
+            <p>\(x \in A-C\) implies \(x \in A\) and \(x \notin C\).</p>
+            <p>\(x \in B-C\) implies \(x \in B\) and \(x \notin C\).</p>
+            <p>\(x \in A-B\) implies \(x \in A\) and \(x \notin B\).</p>
+            <p>From \(x \in B\) (second bullet) and \(x \notin B\) (third bullet) — contradiction. So no such \(x\) exists, and the intersection is \(\emptyset\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q9. Prove that if \(A \cap C = \emptyset\), then \((A \times B) \cap (C \times D) = \emptyset\).</p>
+        <button class="togbtn" onclick="tog('t4q9')">Show solution ▾</button>
+        <div id="t4q9" class="tog">
+          <div class="sol">
+            <p>Suppose for contradiction that \((x,y) \in (A \times B) \cap (C \times D)\). Then \((x,y) \in A \times B\) so \(x \in A\), and \((x,y) \in C \times D\) so \(x \in C\). Thus \(x \in A \cap C\), contradicting \(A \cap C = \emptyset\). Hence \((A \times B) \cap (C \times D) = \emptyset\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q10. Prove or disprove: (a) If \(B \cap C \subseteq A\), then \((A-B) \cap (A-C) = \emptyset\). (b) \((A-B) \cap (C-B) = A - (B \cup C)\).</p>
+        <button class="togbtn" onclick="tog('t4q10')">Show solution ▾</button>
+        <div id="t4q10" class="tog">
+          <div class="sol">
+            <p><b>(a) FALSE.</b> Counterexample: \(A=\{1,2,3\}\), \(B=\{4\}\), \(C=\{5\}\).</p>
+            <p>\(B \cap C = \emptyset \subseteq A\). \(\quad A-B = A = \{1,2,3\}\). \(\quad A-C = A = \{1,2,3\}\).</p>
+            <p>\((A-B)\cap(A-C) = \{1,2,3\} \neq \emptyset\).</p>
+            <p><b>(b) FALSE.</b> Note \((A-B)\cap(C-B) = (A \cap C) - B\) (both require \(x \notin B\) and \(x\) in both respective sets).</p>
+            <p>But \(A-(B\cup C) = \{x \mid x\in A,\; x\notin B,\; x\notin C\}\). These differ when \(x \in A \cap C\) but \(x \notin B\).</p>
+            <p>Counterexample: \(A=\{1,2\}\), \(B=\{3\}\), \(C=\{1\}\).</p>
+            <p>LHS: \((A-B)\cap(C-B) = \{1,2\}\cap\{1\} = \{1\}\).</p>
+            <p>RHS: \(A-(B\cup C) = \{1,2\}-\{1,3\} = \{2\}\). Not equal.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q11. Show that \(\overline{A \cap B \cap C} = \overline{A} \cup \overline{B} \cup \overline{C}\) (a) by showing each side is a subset of the other; (b) by membership table.</p>
+        <button class="togbtn" onclick="tog('t4q11')">Show solution ▾</button>
+        <div id="t4q11" class="tog">
+          <div class="sol">
+            <p><b>(a) Element proof:</b></p>
+            <p>\(x \in \overline{A \cap B \cap C} \;\Leftrightarrow\; x \notin A \cap B \cap C \;\Leftrightarrow\; \neg(x \in A \wedge x \in B \wedge x \in C)\)</p>
+            <p>\(\;\Leftrightarrow\; x \notin A \vee x \notin B \vee x \notin C \;\Leftrightarrow\; x \in \overline{A} \vee x \in \overline{B} \vee x \in \overline{C} \;\Leftrightarrow\; x \in \overline{A} \cup \overline{B} \cup \overline{C}.\)</p>
+            <p><b>(b) Membership table</b> (Y = in set, N = not in set):</p>
+            <table class="ref" style="width:auto">
+              <tr><th>\(A\)</th><th>\(B\)</th><th>\(C\)</th><th>\(A\cap B\cap C\)</th><th>\(\overline{A\cap B\cap C}\)</th><th>\(\overline{A}\cup\overline{B}\cup\overline{C}\)</th></tr>
+              <tr><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td></tr>
+              <tr><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+              <tr><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">N</td><td style="text-align:center">Y</td><td style="text-align:center">Y</td></tr>
+            </table>
+            <p style="margin-top:6px">The last two columns are identical, confirming equality.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q12. Define the symmetric difference as \(A \oplus B = (A-B) \cup (B-A)\). (a) Let \(A=\{1,2,3,4\}\), \(B=\{3,4,5,6\}\), \(C=\{5,6,7,8\}\). Find \((A \oplus B) \oplus C\). (b) Prove that if \(A \oplus C = B \oplus C\), then \(A = B\).</p>
+        <button class="togbtn" onclick="tog('t4q12')">Show solution ▾</button>
+        <div id="t4q12" class="tog">
+          <div class="sol">
+            <p><b>(a)</b> \(A \oplus B = (A-B) \cup (B-A) = \{1,2\} \cup \{5,6\} = \{1,2,5,6\}.\)</p>
+            <p>\((A \oplus B) \oplus C = \{1,2,5,6\} \oplus \{5,6,7,8\} = (\{1,2,5,6\}-\{5,6,7,8\}) \cup (\{5,6,7,8\}-\{1,2,5,6\})\)</p>
+            <p>\(= \{1,2\} \cup \{7,8\} = \{1,2,7,8\}.\)</p>
+            <p><b>(b)</b> Assume \(A \oplus C = B \oplus C\). Let \(x \in A\). We show \(x \in B\).</p>
+            <p><b>Case 1: \(x \in C\).</b> Then \(x \in A \cap C\), so \(x \notin A-C\), hence \(x \notin A \oplus C\). Since \(A \oplus C = B \oplus C\), \(x \notin B \oplus C\). Since \(x \in C\), \(x \notin C-B\), so we need \(x \notin B-C\) (already handled) and \(x \notin A \oplus C\) means \(x \in B \cap C\), thus \(x \in B\).</p>
+            <p><b>Case 2: \(x \notin C\).</b> Then \(x \in A-C \subseteq A \oplus C\). Since \(A \oplus C = B \oplus C\), \(x \in B \oplus C\). Since \(x \notin C\), \(x \notin C-B\), so \(x \in B-C \subseteq B\). Thus \(x \in B\).</p>
+            <p>In both cases \(x \in B\), so \(A \subseteq B\). By symmetry \(B \subseteq A\). Hence \(A = B\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="t5" class="sec">
+      <h2>Tutorial 5 — Functions</h2>
+
+      <div class="tq">
+        <p class="qs">Q1. Determine whether \(f: \mathbb{Z} \to \mathbb{R}\) is a function: (a) \(f(n)=\pm n\). (b) \(f(n)=\sqrt{n^2+1}\). (c) \(f(n)=1/(n^2-4)\). (d) \(f(n)=\sin n\).</p>
+        <button class="togbtn" onclick="tog('t5q1')">Show solution ▾</button>
+        <div id="t5q1" class="tog">
+          <div class="sol">
+            <p>(a) <b>NOT a function.</b> Each \(n \neq 0\) has two images: \(+n\) and \(-n\). A function must assign exactly one output.</p>
+            <p>(b) <b>IS a function.</b> \(n^2+1 \geq 1 \gt 0\) for all \(n\), so the positive square root is unique and real. Image is \(\mathbb{Z}^*\) (nonneg integers + more).</p>
+            <p>(c) <b>NOT a function.</b> Undefined at \(n=2\) and \(n=-2\) (denominator = 0). Those integers have no image.</p>
+            <p>(d) <b>IS a function.</b> \(\sin n\) is uniquely defined for every integer \(n\). Image \(\subseteq [-1,1]\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Find the domain and range of: (a) the function assigning each nonneg integer its last digit. (b) the function assigning each positive integer the next largest integer. (c) the function assigning each bit string the number of 1-bits. (d) the function assigning each bit string the number of bits.</p>
+        <button class="togbtn" onclick="tog('t5q2')">Show solution ▾</button>
+        <div id="t5q2" class="tog">
+          <div class="sol">
+            <p>(a) Domain: \(\mathbb{Z}^* = \{0,1,2,\ldots\}\). Range: \(\{0,1,2,\ldots,9\}\).</p>
+            <p>(b) Domain: \(\mathbb{Z}^+ = \{1,2,3,\ldots\}\). Range: \(\{2,3,4,\ldots\}\) (each \(n\) maps to \(n+1\)).</p>
+            <p>(c) Domain: all finite bit strings. Range: \(\mathbb{Z}^* = \{0,1,2,\ldots\}\).</p>
+            <p>(d) Domain: all finite bit strings. Range: \(\mathbb{Z}^* = \{0,1,2,\ldots\}\) (empty string has 0 bits).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q3. Find: (a) \(\lfloor 1.1 \rfloor\). (b) \(\lceil 1.1 \rceil\). (c) \(\lfloor -0.1 \rfloor\). (d) \(\lceil -0.1 \rceil\). (e) \(\lfloor \tfrac{1}{2} + \lceil \tfrac{3}{2} \rceil \rfloor\). (f) \(\lceil \tfrac{1}{2} + \lfloor \tfrac{3}{2} \rfloor \rceil\).</p>
+        <button class="togbtn" onclick="tog('t5q3')">Show solution ▾</button>
+        <div id="t5q3" class="tog">
+          <div class="sol">
+            <p>(a) \(\lfloor 1.1 \rfloor = 1\).</p>
+            <p>(b) \(\lceil 1.1 \rceil = 2\).</p>
+            <p>(c) \(\lfloor -0.1 \rfloor = -1\) (largest integer \(\leq -0.1\) is \(-1\)).</p>
+            <p>(d) \(\lceil -0.1 \rceil = 0\) (smallest integer \(\geq -0.1\) is \(0\)).</p>
+            <p>(e) \(\lceil 3/2 \rceil = \lceil 1.5 \rceil = 2\). Then \(\lfloor 1/2 + 2 \rfloor = \lfloor 2.5 \rfloor = 2\).</p>
+            <p>(f) \(\lfloor 3/2 \rfloor = \lfloor 1.5 \rfloor = 1\). Then \(\lceil 1/2 + 1 \rceil = \lceil 1.5 \rceil = 2\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q4. Determine whether \(f: \mathbb{Z} \times \mathbb{Z} \to \mathbb{Z}\) is onto: (a) \(f(m,n)=2m-n\). (b) \(f(m,n)=m^2-n^2\).</p>
+        <button class="togbtn" onclick="tog('t5q4')">Show solution ▾</button>
+        <div id="t5q4" class="tog">
+          <div class="sol">
+            <p><b>(a) YES, onto.</b> For any \(k \in \mathbb{Z}\), take \(m=0, n=-k\): \(f(0,-k)=0-(-k)=k\). ✓</p>
+            <p><b>(b) NO, not onto.</b> Claim: 2 is not in the image. \(f(m,n)=m^2-n^2=(m+n)(m-n)\). If this equals 2, we need two integers \((m+n)\) and \((m-n)\) with product 2 and the same parity (their sum \(2m\) must be even). The only factorings of 2 are \((1)(2)\) and \((2)(1)\), but \(1+2=3\) is odd, so \(m=3/2\) is not an integer. Hence 2 is not achievable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q5. Determine which are bijections; find inverse functions for those that are. (a) \(f: \mathbb{R} \to \mathbb{R}\), \(f(x)=-3x^2+7\). (b) \(f: \mathbb{R}-\{-2\} \to \mathbb{R}-\{1\}\), \(f(x)=\tfrac{x+1}{x+2}\).</p>
+        <button class="togbtn" onclick="tog('t5q5')">Show solution ▾</button>
+        <div id="t5q5" class="tog">
+          <div class="sol">
+            <p><b>(a) NOT a bijection.</b> Not 1-1: \(f(1)=f(-1)=-3+7=4\) with \(1 \neq -1\). Also not onto: \(f(x)=-3x^2+7 \leq 7\) for all \(x\), so values \(\gt 7\) are never achieved.</p>
+            <p><b>(b) IS a bijection.</b></p>
+            <p><b>1-1:</b> \(\frac{a+1}{a+2} = \frac{b+1}{b+2} \Rightarrow (a+1)(b+2)=(b+1)(a+2) \Rightarrow ab+2a+b+2=ab+2b+a+2 \Rightarrow a=b\). ✓</p>
+            <p><b>Onto:</b> Given \(y \in \mathbb{R}-\{1\}\), solve for \(x\): \(y(x+2)=x+1 \Rightarrow xy+2y=x+1 \Rightarrow x(y-1)=1-2y \Rightarrow x=\frac{1-2y}{y-1}\).</p>
+            <p>Check \(x \neq -2\): \(\frac{1-2y}{y-1}=-2 \Rightarrow 1-2y=-2y+2 \Rightarrow 1=2\). Contradiction, so \(x\) is valid. ✓</p>
+            <p><b>Inverse:</b> \(f^{-1}(y) = \dfrac{1-2y}{y-1}\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q6. The characteristic function of \(A \subseteq S\) is \(k_A: S \to \mathbb{Z}\) with \(k_A(x)=1\) if \(x \in A\), else 0. Prove: (a) \(k_{A\cap B}=k_A \cdot k_B\). (b) \(k_{\overline{A\cup B}}=(1-k_A)(1-k_B)\). (c) \(k_{A-B}=(1-k_B)k_A\). (d) Deduce \(|A \cup B| = |A|+|B|-|A\cap B|\).</p>
+        <button class="togbtn" onclick="tog('t5q6')">Show solution ▾</button>
+        <div id="t5q6" class="tog">
+          <div class="sol">
+            <p><b>(a)</b> \(k_{A\cap B}(x)=1 \;\Leftrightarrow\; x \in A\cap B \;\Leftrightarrow\; x \in A\) and \(x \in B \;\Leftrightarrow\; k_A(x)=1\) and \(k_B(x)=1 \;\Leftrightarrow\; k_A(x)\cdot k_B(x)=1.\) For all other cases both sides equal 0. ✓</p>
+            <p><b>(b)</b> \(k_{\overline{A\cup B}}(x)=1 \;\Leftrightarrow\; x \notin A\cup B \;\Leftrightarrow\; x \notin A\) and \(x \notin B \;\Leftrightarrow\; k_A=0\) and \(k_B=0 \;\Leftrightarrow\; (1-k_A)=1\) and \((1-k_B)=1 \;\Leftrightarrow\; (1-k_A)(1-k_B)=1.\) ✓</p>
+            <p><b>(c)</b> \(k_{A-B}(x)=1 \;\Leftrightarrow\; x \in A\) and \(x \notin B \;\Leftrightarrow\; k_A=1\) and \(k_B=0 \;\Leftrightarrow\; k_A(1-k_B)=1.\) ✓</p>
+            <p><b>(d)</b> From (b): \((1-k_A)(1-k_B)=1-k_A-k_B+k_Ak_B=k_{\overline{A\cup B}}=1-k_{A\cup B}.\)</p>
+            <p>So \(k_{A\cup B} = k_A + k_B - k_Ak_B = k_A + k_B - k_{A\cap B}.\)</p>
+            <p>Summing over all \(x \in S\): \(|A \cup B| = |A| + |B| - |A \cap B|.\) \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q7. If \(f \circ g\) is 1-1, does it follow that \(g\) is 1-1?</p>
+        <button class="togbtn" onclick="tog('t5q7')">Show solution ▾</button>
+        <div id="t5q7" class="tog">
+          <div class="sol">
+            <p><b>YES, \(g\) must be 1-1.</b></p>
+            <p><b>Proof:</b> Suppose \(g(a) = g(b)\). Then \(f(g(a)) = f(g(b))\), i.e., \((f \circ g)(a) = (f \circ g)(b)\). Since \(f \circ g\) is 1-1, we conclude \(a = b\). So \(g\) is 1-1. \(\square\)</p>
+            <p>Note: we can NOT conclude \(f\) is 1-1 — only the part of \(f\) that gets used (i.e., \(f\) restricted to the image of \(g\)) need be injective.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q8. Let \(f: X \to Y\) be a function. Are the following true or false? (a) \(f^{-1}(C \cap D) = f^{-1}(C) \cap f^{-1}(D)\). (b) \(f^{-1}(C-D) = f^{-1}(C) - f^{-1}(D)\).</p>
+        <button class="togbtn" onclick="tog('t5q8')">Show solution ▾</button>
+        <div id="t5q8" class="tog">
+          <div class="sol">
+            <p><b>Important:</b> Here \(f^{-1}(C)\) denotes the <b>preimage</b> of \(C\) under \(f\), defined as \(\{x \in X \mid f(x) \in C\}\). This is defined for ANY function \(f\), not just bijections.</p>
+            <p><b>(a) TRUE.</b> \(x \in f^{-1}(C\cap D) \;\Leftrightarrow\; f(x) \in C\cap D \;\Leftrightarrow\; f(x)\in C\) and \(f(x)\in D \;\Leftrightarrow\; x\in f^{-1}(C)\) and \(x\in f^{-1}(D) \;\Leftrightarrow\; x\in f^{-1}(C)\cap f^{-1}(D).\)</p>
+            <p><b>(b) TRUE.</b> \(x \in f^{-1}(C-D) \;\Leftrightarrow\; f(x)\in C-D \;\Leftrightarrow\; f(x)\in C\) and \(f(x)\notin D \;\Leftrightarrow\; x\in f^{-1}(C)\) and \(x\notin f^{-1}(D) \;\Leftrightarrow\; x\in f^{-1}(C)-f^{-1}(D).\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q9. Let \(S\) be all finite bit strings and define \(f: S \to \mathbb{Z}\) by \(f(s) = (\text{number of 0's}) - (\text{number of 1's})\) in \(s\). Is \(f\) one-to-one? Onto?</p>
+        <button class="togbtn" onclick="tog('t5q9')">Show solution ▾</button>
+        <div id="t5q9" class="tog">
+          <div class="sol">
+            <p><b>NOT 1-1.</b> \(f(\text{"01"}) = 1-1=0\) and \(f(\text{"10"})=1-1=0\), but \(\text{"01"} \neq \text{"10"}\). (Or: \(f(\text{""})\) = 0 = \(f(\text{"01"})\).)</p>
+            <p><b>IS onto \(\mathbb{Z}\).</b> For any \(k \in \mathbb{Z}\): if \(k \geq 0\), take a string of \(k\) zeros: \(f = k-0=k\). If \(k \lt 0\), take a string of \(|k|\) ones: \(f = 0-|k|=k\). ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q10. Define \(F,G: \mathbb{Z}^+ \times \mathbb{Z}^+ \to \mathbb{Z}^+\) by \(F(n,m)=3^n 5^m\) and \(G(n,m)=3^n 6^m\). Prove or disprove: (a) \(F\) is 1-1. (b) \(G\) is 1-1.</p>
+        <button class="togbtn" onclick="tog('t5q10')">Show solution ▾</button>
+        <div id="t5q10" class="tog">
+          <div class="sol">
+            <p><b>(a) \(F\) IS 1-1.</b> Suppose \(3^{n_1}5^{m_1} = 3^{n_2}5^{m_2}\). By the Fundamental Theorem of Arithmetic (unique prime factorisation), the exponent of 3 must match and the exponent of 5 must match, so \(n_1=n_2\) and \(m_1=m_2\). ✓</p>
+            <p><b>(b) \(G\) IS 1-1.</b> Note \(G(n,m)=3^n \cdot 6^m = 3^n \cdot 2^m \cdot 3^m = 2^m \cdot 3^{n+m}\).</p>
+            <p>If \(G(n_1,m_1)=G(n_2,m_2)\), then \(2^{m_1} \cdot 3^{n_1+m_1} = 2^{m_2} \cdot 3^{n_2+m_2}\). By unique prime factorisation: \(m_1=m_2\) and \(n_1+m_1=n_2+m_2\), giving \(n_1=n_2\). ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q11. How many integers in \([100, 1000]\) are multiples of 6?</p>
+        <button class="togbtn" onclick="tog('t5q11')">Show solution ▾</button>
+        <div id="t5q11" class="tog">
+          <div class="sol">
+            <p>First multiple of 6 in range: \(6 \cdot \lceil 100/6 \rceil = 6 \cdot \lceil 16.67\ldots \rceil = 6 \cdot 17 = 102.\)</p>
+            <p>Last multiple of 6 in range: \(6 \cdot \lfloor 1000/6 \rfloor = 6 \cdot \lfloor 166.67\ldots \rfloor = 6 \cdot 166 = 996.\)</p>
+            <p>Multiples are \(6 \cdot 17, 6 \cdot 18, \ldots, 6 \cdot 166\). Count: \(166 - 17 + 1 = \mathbf{150}\).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q12. Prove that \(\lfloor 3x \rfloor = \lfloor x \rfloor + \lfloor x + \tfrac{1}{3} \rfloor + \lfloor x + \tfrac{2}{3} \rfloor\).</p>
+        <button class="togbtn" onclick="tog('t5q12')">Show solution ▾</button>
+        <div id="t5q12" class="tog">
+          <div class="sol">
+            <p>Let \(\lfloor x \rfloor = n\) and write \(x = n + \theta\) where \(0 \leq \theta \lt 1\). Split into 3 cases:</p>
+            <p><b>Case 1: \(0 \leq \theta \lt \tfrac{1}{3}\).</b></p>
+            <p>\(\lfloor 3x \rfloor = \lfloor 3n+3\theta \rfloor = 3n\) (since \(0 \leq 3\theta \lt 1\)).</p>
+            <p>\(\lfloor x+\tfrac{1}{3}\rfloor = \lfloor n+\theta+\tfrac{1}{3}\rfloor = n\) (since \(\tfrac{1}{3} \leq \theta+\tfrac{1}{3} \lt \tfrac{2}{3}\)).</p>
+            <p>\(\lfloor x+\tfrac{2}{3}\rfloor = \lfloor n+\theta+\tfrac{2}{3}\rfloor = n\) (since \(\tfrac{2}{3} \leq \theta+\tfrac{2}{3} \lt 1\)).</p>
+            <p>RHS \(= n+n+n = 3n\) = LHS. ✓</p>
+            <p><b>Case 2: \(\tfrac{1}{3} \leq \theta \lt \tfrac{2}{3}\).</b></p>
+            <p>\(\lfloor 3x \rfloor = 3n+1\) (since \(1 \leq 3\theta \lt 2\)).</p>
+            <p>\(\lfloor x+\tfrac{1}{3}\rfloor = n\) (since \(\tfrac{2}{3} \leq \theta+\tfrac{1}{3} \lt 1\)).</p>
+            <p>\(\lfloor x+\tfrac{2}{3}\rfloor = n+1\) (since \(1 \leq \theta+\tfrac{2}{3} \lt \tfrac{4}{3}\)).</p>
+            <p>RHS \(= n+n+(n+1) = 3n+1\) = LHS. ✓</p>
+            <p><b>Case 3: \(\tfrac{2}{3} \leq \theta \lt 1\).</b></p>
+            <p>\(\lfloor 3x \rfloor = 3n+2\) (since \(2 \leq 3\theta \lt 3\)).</p>
+            <p>\(\lfloor x+\tfrac{1}{3}\rfloor = n+1\) (since \(1 \leq \theta+\tfrac{1}{3} \lt \tfrac{4}{3}\)).</p>
+            <p>\(\lfloor x+\tfrac{2}{3}\rfloor = n+1\) (since \(\tfrac{4}{3} \leq \theta+\tfrac{2}{3} \lt \tfrac{5}{3}\)).</p>
+            <p>RHS \(= n+(n+1)+(n+1) = 3n+2\) = LHS. ✓ \(\square\)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="sec">
+      <h2>Interactive Tools</h2>
+
+      <div class="tool">
+        <h3>Tool 1 — Membership table builder (2 sets)</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Enter the universal set and subsets as comma-separated values. The table will show membership across all standard operations.</p>
+        <div class="tool-row">
+          <label>Universal set U</label>
+          <input type="text" id="uu" value="1,2,3,4,5,6,7,8">
+        </div>
+        <div class="tool-row">
+          <label>Set A (subset of U)</label>
+          <input type="text" id="sa" value="1,2,3,4,5">
+        </div>
+        <div class="tool-row">
+          <label>Set B (subset of U)</label>
+          <input type="text" id="sb" value="1,3,5,7">
+          <button class="go" onclick="buildMem()">Build table</button>
+        </div>
+        <div class="out" id="tout">Configure the sets above to build the membership table.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 2 — Floor & ceiling explorer</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Enter a real number. The tool computes floor/ceiling and verifies key identities.</p>
+        <div class="tool-row">
+          <label>x (e.g. 2.7 or -1.3)</label>
+          <input type="text" id="fx" value="2.7">
+        </div>
+        <div class="tool-row">
+          <label>m (integer for x+m identity)</label>
+          <input type="text" id="fm" value="3">
+          <button class="go" onclick="calcFloor()">Calculate</button>
+        </div>
+        <div class="out" id="fout">Enter values above and calculate.</div>
+      </div>
+    </section>
+
+    <section id="quiz" class="sec">
+      <h2>Quiz — 10 questions</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+      <div id="quiz-area"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+function init(){
+  if(!window.renderMathInElement){setTimeout(init,80);return;}
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildQuiz();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+
+function parseSet(str){
+  var parts=str.split(',');
+  var s=[];
+  for(var i=0;i<parts.length;i++){
+    var t=parts[i].trim();
+    if(t!=='') s.push(t);
+  }
+  return s;
+}
+
+function inArr(arr,v){
+  for(var i=0;i<arr.length;i++) if(arr[i]===v) return true;
+  return false;
+}
+
+function buildMem(){
+  var U=parseSet(document.getElementById('uu').value);
+  var A=parseSet(document.getElementById('sa').value);
+  var B=parseSet(document.getElementById('sb').value);
+  var cols=['x','∈A','∈B','∈Ā','∈B̄','∈A∩B','∈A∪B','∈A-B','∈B-A','∈Ā∩B̄','∈Ā∪B̄'];
+  var html='<table class="ref"><tr>';
+  for(var c=0;c<cols.length;c++) html+='<th>'+cols[c]+'</th>';
+  html+='</tr>';
+  for(var i=0;i<U.length;i++){
+    var x=U[i];
+    var inA=inArr(A,x);
+    var inB=inArr(B,x);
+    var vals=[x,inA,inB,!inA,!inB,inA&&inB,inA||inB,inA&&!inB,!inA&&inB,!inA&&!inB,!inA||!inB];
+    html+='<tr>';
+    html+='<td style="text-align:center"><strong>'+x+'</strong></td>';
+    for(var j=1;j<vals.length;j++) {
+      html+='<td class="'+(vals[j]?'T':'F')+'">'+(vals[j]?'Y':'N')+'</td>';
+    }
+    html+='</tr>';
+  }
+  html+='</table>';
+  document.getElementById('tout').innerHTML=html;
+}
+
+function calcFloor(){
+  var xs=document.getElementById('fx').value.trim();
+  var ms=document.getElementById('fm').value.trim();
+  var x=parseFloat(xs);
+  var m=parseInt(ms);
+  if(isNaN(x)){document.getElementById('fout').innerHTML='<span class="badge badge-err">Please enter a valid number for x.</span>';return;}
+  var fl=Math.floor(x);
+  var ce=Math.ceil(x);
+  var fl2=Math.floor(2*x);
+  var flHalf=Math.floor(x+0.5);
+  var identity2=fl+flHalf;
+  var html='';
+  html+='<p>\u230ax\u230b = \u230a'+xs+'\u230b = <strong>'+fl+'</strong></p>';
+  html+='<p>\u2308x\u2309 = \u2308'+xs+'\u2309 = <strong>'+ce+'</strong></p>';
+  if(!isNaN(m)){
+    var xm=x+m;
+    var fl_xm=Math.floor(xm);
+    html+='<hr style="border:none;border-top:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));margin:12px 0">';
+    html+='<p><strong>Identity \u230ax+m\u230b = \u230ax\u230b + m</strong> (m='+m+'):</p>';
+    html+='<p>\u230a'+xs+' + '+m+'\u230b = \u230a'+(xs+'+'+ m)+'\u230b = \u230a'+xm.toFixed(6)+'\u230b = '+fl_xm+'</p>';
+    html+='<p>\u230ax\u230b + m = '+fl+' + '+m+' = '+(fl+m)+'</p>';
+    html+='<p>Match: <strong>'+(fl_xm===(fl+m)?'<span class="badge badge-ok">YES ✓</span>':'<span class="badge badge-err">NO ✗</span>')+'</strong></p>';
+  }
+  html+='<hr style="border:none;border-top:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));margin:12px 0">';
+  html+='<p><strong>Identity \u230a2x\u230b = \u230ax\u230b + \u230ax+\u00bd\u230b:</strong></p>';
+  html+='<p>\u230a2\u00d7'+xs+'\u230b = \u230a'+(2*x).toFixed(6)+'\u230b = '+fl2+'</p>';
+  html+='<p>\u230ax\u230b + \u230ax+\u00bd\u230b = '+fl+' + \u230a'+(x+0.5).toFixed(6)+'\u230b = '+fl+' + '+flHalf+' = '+identity2+'</p>';
+  html+='<p>Match: <strong>'+(fl2===identity2?'<span class="badge badge-ok">YES ✓</span>':'<span class="badge badge-err">NO ✗</span>')+'</strong></p>';
+  document.getElementById('fout').innerHTML=html;
+}
+
+var QUIZ=[
+  {q:'Which of these expressions is valid?',
+   opts:['\\(2 \\subseteq \\{1,2,3\\}\\)','\\(\\{2\\} \\in \\{1,2,3\\}\\)','\\(\\{2\\} \\subseteq \\{1,2,3\\}\\)','\\(2 \\in \\{\\{1\\},\\{2\\}\\}\\)'],
+   ans:2,
+   exp:'\\(\\{2\\} \\subseteq \\{1,2,3\\}\\) is correct because \\(2\\) (the only element of \\(\\{2\\}\\)) is in \\(\\{1,2,3\\}\\). The number \\(2\\) cannot be a subset (\\(\\subseteq\\) requires sets). \\(\\{2\\}\\) is not an element of \\(\\{1,2,3\\}\\) — only numbers are. \\(2\\) is not in \\(\\{\\{1\\},\\{2\\}\\}\\) — only \\(\\{1\\}\\) and \\(\\{2\\}\\) are elements.'},
+  {q:'What is \\(|\\mathcal{P}(\\{a,b,c\\})|\\)?',
+   opts:['3','6','8','9'],
+   ans:2,
+   exp:'The power set of a set with \\(n\\) elements has \\(2^n\\) elements. Here \\(n=3\\), so \\(|\\mathcal{P}(\\{a,b,c\\})| = 2^3 = 8\\).'},
+  {q:'Is \\(\\{\\emptyset\\}\\) the empty set?',
+   opts:['Yes — it contains only the empty set so it is effectively empty','No — it is a singleton with one element: \\(\\emptyset\\)','Only if \\(\\emptyset = \\{\\}\\)','It depends on the universal set'],
+   ans:1,
+   exp:'\\(\\{\\emptyset\\}\\) is a set with one element (the empty set itself). Its cardinality is 1. The empty set is \\(\\emptyset = \\{\\}\\), which has cardinality 0.'},
+  {q:'De Morgan\'s law for sets states \\(\\overline{A \\cup B}\\) equals:',
+   opts:['\\(\\overline{A} \\cup \\overline{B}\\)','\\(\\overline{A} \\cap \\overline{B}\\)','\\(A \\cap B\\)','\\(\\overline{A \\cap B}\\)'],
+   ans:1,
+   exp:'\\(\\overline{A \\cup B} = \\overline{A} \\cap \\overline{B}\\) by De Morgan\'s Law: \\(x \\notin A \\cup B \\Leftrightarrow x \\notin A\\) AND \\(x \\notin B \\Leftrightarrow x \\in \\overline{A} \\cap \\overline{B}\\). The common error is writing \\(\\overline{A} \\cup \\overline{B}\\) instead.'},
+  {q:'Is \\(f: \\mathbb{R} \\to \\mathbb{R}\\) defined by \\(f(x) = x^2\\) a bijection?',
+   opts:['Yes — every positive number has a square root','No — not injective (e.g. \\(f(2)=f(-2)\\))','No — not surjective only','No — neither injective nor surjective'],
+   ans:3,
+   exp:'\\(f(x)=x^2\\) is neither injective (\\(f(2)=f(-2)=4\\), so two inputs give the same output) nor surjective (negative numbers have no preimage). So it is not a bijection.'},
+  {q:'\\(\\lfloor -2.7 \\rfloor\\) equals:',
+   opts:['-2','-3','2','3'],
+   ans:1,
+   exp:'\\(\\lfloor x \\rfloor\\) is the largest integer \\(\\leq x\\). For \\(x=-2.7\\), integers around it are \\(-3 \\leq -2.7 \\lt -2\\), so \\(\\lfloor -2.7 \\rfloor = -3\\). Common error: rounding towards zero gives \\(-2\\), but floor always rounds DOWN (towards \\(-\\infty\\)).'},
+  {q:'If \\(f \\circ g\\) is injective, what must be true?',
+   opts:['\\(f\\) is injective','\\(g\\) is injective','Both \\(f\\) and \\(g\\) are injective','Nothing — no conclusion'],
+   ans:1,
+   exp:'\\(g\\) must be injective. If \\(g(a)=g(b)\\) then \\(f(g(a))=f(g(b))\\), i.e. \\((f \\circ g)(a)=(f \\circ g)(b)\\), so \\(a=b\\) since \\(f \\circ g\\) is injective. We cannot conclude \\(f\\) is injective — only the restriction of \\(f\\) to the image of \\(g\\) need be injective.'},
+  {q:'Which formula correctly captures NOT injective for \\(f: X \\to Y\\)?',
+   opts:['\\(\\exists y \\in Y, \\forall x \\in X, f(x) \\neq y\\)','\\(\\forall a,b \\in X, f(a) \\neq f(b)\\)','\\(\\exists a,b \\in X, a \\neq b \\text{ and } f(a) = f(b)\\)','\\(\\forall y \\in Y, \\exists x \\in X, f(x) = y\\)'],
+   ans:2,
+   exp:'Injective means \\(f(a)=f(b) \\Rightarrow a=b\\). Its negation is \\(\\exists a \\neq b\\) with \\(f(a)=f(b)\\) — two distinct inputs with the same output. Option (a) is NOT surjective. Option (b) is (wrong) attempt at injective. Option (d) is surjective.'},
+  {q:'For a bijection \\(f: X \\to Y\\), which is correct?',
+   opts:['\\(f^{-1} = 1/f\\)','\\(f \\circ f^{-1} = i_X\\)','\\(f^{-1} \\circ f = i_X\\)','\\(f \\circ f^{-1} = f^{-1} \\circ f\\)'],
+   ans:2,
+   exp:'\\(f^{-1} \\circ f = i_X\\): for \\(x \\in X\\), \\(f^{-1}(f(x)) = x\\). The identity on the domain. Meanwhile \\(f \\circ f^{-1} = i_Y\\) (identity on the codomain). So option (b) is wrong (it has the wrong set). \\(f^{-1} \\neq 1/f\\) — that\'s the reciprocal.'},
+  {q:'Which identity is TRUE for all real \\(x\\) and \\(y\\)?',
+   opts:['\\(\\lfloor x+y \\rfloor = \\lfloor x \\rfloor + \\lfloor y \\rfloor\\)','\\(\\lfloor x \\rfloor \\leq x \\leq \\lceil x \\rceil\\)','\\(\\lceil x \\rceil = -\\lfloor -x \\rfloor\\) only for positive \\(x\\)','\\(\\lfloor 2x \\rfloor = 2\\lfloor x \\rfloor\\)'],
+   ans:1,
+   exp:'\\(\\lfloor x \\rfloor \\leq x \\leq \\lceil x \\rceil\\) always holds; equality iff \\(x \\in \\mathbb{Z}\\). The others are all false in general: \\(x=y=0.7\\) breaks (a); \\(\\lceil x \\rceil = -\\lfloor -x \\rfloor\\) holds for ALL real \\(x\\); \\(x=0.7\\) breaks (d).'}
+];
+
+init();
+</script>
+</body>
+</html>

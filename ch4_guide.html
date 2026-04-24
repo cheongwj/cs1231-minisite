@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS1231 Chapter 4 — Mathematical Induction</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 4 Mathematical Induction — interactive study guide covering the principle of induction, lecture examples, theorems, and tutorial solutions.</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+
+  <nav id="nv">
+    <h1>Chapter 4</h1>
+        <button class="nb act" onclick="show('s2',this)">4.1 Principle</button>
+    <button class="nb" onclick="show('s3',this)">4.2 Lecture Examples</button>
+    <button class="nb" onclick="show('s4',this)">4.3 Theorems</button>
+    <button class="nb" onclick="show('s5',this)">4.4 Fibonacci &amp; Lamé</button>
+    <button class="nb" onclick="show('t8',this)">Tutorial 8</button>
+    <button class="nb" onclick="show('tools',this)">Interactive Tools</button>
+    <button class="nb" onclick="show('quiz',this)">Quiz</button>
+    <div id="sc">
+      <p>Quiz score</p>
+      <div id="scv">—</div>
+    </div>
+  </nav>
+
+  <main id="mn">
+    <section id="s2" class="sec on">
+      <h2>4.1 The Principle of Mathematical Induction</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">What is induction?</div>
+        <p>Mathematical induction is a proof technique used to show that a propositional function \(P(n)\) is true for all \(n \in \mathbb{Z}^+\) (or all integers from some base). It is <em>not</em> empirical induction — it is a logically rigorous deductive proof.</p>
+      </div>
+
+      <h3>Two variants covered</h3>
+      <ul>
+        <li><strong>Standard (weak) induction</strong>: Assume \(P(k)\) to prove \(P(k+1)\).</li>
+        <li><strong>Strong induction</strong>: Assume \(P(1), P(2), \ldots, P(k)\) to prove \(P(k+1)\). Required when \(P(k+1)\) depends on more than just \(P(k)\) (e.g., Fibonacci recurrences, 3-term sequences).</li>
+      </ul>
+
+      <div class="warn">
+        <div class="lbl lbl-w">Common trap</div>
+        <p>Checking many cases never proves a universal statement. Induction is needed. Conversely, finding even one counterexample <em>disproves</em> a universal claim.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Principle of Mathematical Induction</div>
+        <p>To prove \(\forall n \in \mathbb{Z}^+\,(P(n))\) where \(P(n)\) is a propositional function, we complete two steps:</p>
+        <p><strong>Basis step:</strong> Verify that \(P(1)\) is true.</p>
+        <p><strong>Inductive step:</strong> Show that \(\forall k \in \mathbb{Z}^+\,(P(1) \wedge P(2) \wedge \cdots \wedge P(k) \to P(k+1))\) is true.</p>
+      </div>
+
+      <h3>The induction hypothesis</h3>
+      <p>In the inductive step we <em>assume</em> that \(P(1), \ldots, P(k)\) are all true. This assumption is called the <strong>induction hypothesis</strong>. We then use it to prove \(P(k+1)\).</p>
+      
+      <div class="warn">
+        <div class="lbl lbl-w">Not circular</div>
+        <p>We are NOT asserting \(P(k)\) holds for all \(k\). We are proving: "if \(P(1),\ldots,P(k)\) then \(P(k+1)\)". The two steps together give the chain:<br>
+        \(P(1)\) (basis) \(\Rightarrow P(2) \Rightarrow P(3) \Rightarrow \cdots\)</p>
+      </div>
+
+      <h3>Chain of implications built by induction</h3>
+      <p>\[P(1) \quad \text{(basis)}\]</p>
+      <p>\[P(1) \Rightarrow P(2)\]</p>
+      <p>\[P(1) \wedge P(2) \Rightarrow P(3)\]</p>
+      <p>\[P(1) \wedge P(2) \wedge P(3) \Rightarrow P(4)\]</p>
+      <p>\[\vdots\]</p>
+      <p>Eventually we get \(P(5), P(6), \ldots\) for all positive integers.</p>
+
+      <h3>When to use strong induction</h3>
+      <p>Use strong induction when \(P(k+1)\) requires <em>more than one</em> previous case. Examples:</p>
+      <ul>
+        <li>Fibonacci recurrence \(F_{k+1} = F_k + F_{k-1}\) — needs two cases.</li>
+        <li>Three-term recurrences \(h_{k+1} = h_k + h_{k-1} + h_{k-2}\) — needs three base cases.</li>
+        <li>Binary representation — case-splits on even/odd using \(k/2 \leq k\).</li>
+      </ul>
+
+      <div class="def">
+        <div class="lbl lbl-d">Proof template</div>
+        <ol>
+          <li>State: "Let \(P(n)\) be the proposition [statement]."</li>
+          <li>Basis step: Show \(P(1)\) [or \(P(0)\), \(P(n_0)\)] is true by direct computation.</li>
+          <li>Inductive step: State "Assume \(P(1),\ldots,P(k)\) are true [induction hypothesis]." Then show \(P(k+1)\) follows.</li>
+          <li>Conclude: "Therefore \(P(n)\) is true for all \(n \in \mathbb{Z}^+\) by mathematical induction."</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="s3" class="sec">
+      <h2>4.2 Lecture Examples</h2>
+
+      <h3>Example 1 — Sum formula</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Example</div>
+        <p>Prove that \(\forall n \in \mathbb{Z}^+,\; \displaystyle\sum_{i=1}^{n} i = \frac{n(n+1)}{2}.\)</p>
+        <p><strong>Let</strong> \(P(n)\) be the proposition \(\sum_{i=1}^n i = \tfrac{n(n+1)}{2}\).</p>
+        <p><strong>Basis step:</strong> \(P(1)\): \(\sum_{i=1}^1 i = 1 = \tfrac{1 \cdot 2}{2}\). True.</p>
+        <p><strong>Inductive step:</strong> Assume \(P(1),\ldots,P(k)\) are true, i.e.
+        \[\sum_{i=1}^j i = \frac{j(j+1)}{2} \quad \text{for } j=1,2,\ldots,k.\]
+        We use \(P(k)\) to prove \(P(k+1)\):
+        \[\sum_{i=1}^{k+1} i = \left(\sum_{i=1}^k i\right) + (k+1) = \frac{k(k+1)}{2} + (k+1) = \frac{k(k+1)+2(k+1)}{2} = \frac{(k+1)(k+2)}{2}.\]
+        This is exactly \(P(k+1)\). \(\square\)</p>
+      </div>
+
+      <h3>Example 2 — Exponential inequality</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Example</div>
+        <p>Prove that \(n \lt 2^n\) for all \(n \in \mathbb{Z}^+\).</p>
+        <p><strong>Basis:</strong> \(P(1)\): \(1 \lt 2^1 = 2\). True.</p>
+        <p><strong>Inductive step:</strong> Assume \(P(k)\): \(k \lt 2^k\). Then:
+        \[k+1 \lt 2^k + 1 \leq 2^k + 2^k = 2^{k+1}.\]
+        (We used \(1 \leq 2^k\) for all \(k \geq 1\).) \(\square\)</p>
+      </div>
+
+      <h3>Example 3 — Harmonic numbers</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Example (uses strong induction; base is \(n=0\))</div>
+        <p>The <strong>harmonic numbers</strong> are \(H_j = 1 + \tfrac{1}{2} + \cdots + \tfrac{1}{j}\) for \(j \in \mathbb{Z}^+\).</p>
+        <p>Prove that \(H_{2^n} \geq 1 + \tfrac{n}{2}\) for all \(n \in \mathbb{Z}^*\).</p>
+        <p><strong>Basis:</strong> \(P(0)\): \(H_{2^0} = H_1 = 1 \geq 1 + \tfrac{0}{2} = 1\). True.</p>
+        <p><strong>Inductive step:</strong> Assume \(P(0),\ldots,P(k)\). Then:
+        \[H_{2^{k+1}} = H_{2^k} + \left(\frac{1}{2^k+1}+\frac{1}{2^k+2}+\cdots+\frac{1}{2^{k+1}}\right).\]
+        There are \(2^k\) new terms, each \(\geq \tfrac{1}{2^{k+1}}\), so their sum \(\geq 2^k \cdot \tfrac{1}{2^{k+1}} = \tfrac{1}{2}\).
+        Using \(P(k)\): \(H_{2^k} \geq 1 + \tfrac{k}{2}\). Therefore:
+        \[H_{2^{k+1}} \geq \left(1+\frac{k}{2}\right)+\frac{1}{2} = 1+\frac{k+1}{2}.\]
+        This is \(P(k+1)\). \(\square\)</p>
+      </div>
+
+      <h3>Example 4 — Checkerboard tiling</h3>
+      <div class="ex">
+        <div class="lbl lbl-e">Example (geometric / structural)</div>
+        <p>Prove that for any \(n \geq 1\), if one square is removed from a \(2^n \times 2^n\) checkerboard, the remaining squares can be covered by <strong>L-trominoes</strong> (L-shaped pieces covering exactly 3 squares).</p>
+        <p><strong>Basis:</strong> \(P(1)\): A \(2 \times 2\) board with one square removed leaves 3 squares forming an L-tromino. True.</p>
+        <p><strong>Inductive step:</strong> Assume \(P(k)\). Consider a \(2^{k+1} \times 2^{k+1}\) board with one square removed.</p>
+        <ul>
+          <li>Divide it into four \(2^k \times 2^k\) quadrants.</li>
+          <li>The removed square is in one quadrant (say the top-left). The other three quadrants are intact.</li>
+          <li>Place one L-tromino at the centre of the board, with one square in each of the three intact quadrants' corners.</li>
+          <li>Now each quadrant is a \(2^k \times 2^k\) board with exactly one square missing. By \(P(k)\), each can be tiled.</li>
+        </ul>
+        <p>Hence \(P(k+1)\) holds. \(\square\)</p>
+      </div>
+    </section>
+
+    <section id="s4" class="sec">
+      <h2>4.3 Theorems</h2>
+
+      <h3>Theorem — Number of subsets</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>A set with \(n\) elements has \(2^n\) subsets.</p>
+        <p><strong>Proof.</strong> Let \(Q(n)\) be the proposition \(|\mathcal{P}(X)| = 2^n\) for any set \(X\) with \(|X|=n\).</p>
+        <p><strong>Basis:</strong> \(Q(0)\): \(\emptyset\) has exactly one subset (\(\emptyset\) itself), and \(2^0 = 1\). True.</p>
+        <p><strong>Inductive step:</strong> Assume \(Q(k)\). Let \(X\) be any set with \(k+1\) elements. Pick any \(a \in X\) and let \(Y = X \setminus \{a\}\), so \(|Y|=k\). Subsets of \(X\) split into two types:</p>
+        <ul>
+          <li><em>Those not containing \(a\)</em>: precisely the subsets of \(Y\); there are \(2^k\) of these (by \(Q(k)\)).</li>
+          <li><em>Those containing \(a\)</em>: each corresponds to a subset of \(Y\) with \(a\) added; there are also \(2^k\) of these.</li>
+        </ul>
+        <p>Total: \(|\mathcal{P}(X)| = 2^k + 2^k = 2^{k+1}\). \(\square\)</p>
+      </div>
+
+      <h3>Theorem — Sum of a geometric progression</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem (GP sum)</div>
+        <p>For all \(n \in \mathbb{Z}^*\) and all real \(r \neq 1\):
+        \[\sum_{i=0}^{n} r^i = \frac{r^{n+1}-1}{r-1}.\]</p>
+        <p><strong>Proof.</strong> Let \(P(n)\) be the above equality.</p>
+        <p><strong>Basis (\(n=0\)):</strong> LHS \(= r^0 = 1\). RHS \(= \tfrac{r^1-1}{r-1} = 1\). True.</p>
+        <p><strong>Inductive step:</strong> Assume \(P(k)\): \(\sum_{i=0}^k r^i = \tfrac{r^{k+1}-1}{r-1}\). Then:
+        \[\sum_{i=0}^{k+1} r^i = \sum_{i=0}^k r^i + r^{k+1} = \frac{r^{k+1}-1}{r-1} + r^{k+1} = \frac{r^{k+1}-1 + r^{k+1}(r-1)}{r-1} = \frac{r^{k+2}-1}{r-1}.\]
+        This is \(P(k+1)\). \(\square\)</p>
+      </div>
+
+      <h3>Common mistakes in induction proofs</h3>
+      <div class="warn">
+        <div class="lbl lbl-w">Missing / wrong basis step</div>
+        <p>Changing the base to \(n=0\) or \(n=2\) without noticing, or skipping it entirely, invalidates the proof.</p>
+      </div>
+      <div class="warn">
+        <div class="lbl lbl-w">Using what you want to prove</div>
+        <p>Writing \(P(k+1)\) on both sides without actually deriving it from \(P(k)\) is circular.</p>
+      </div>
+      <div class="warn">
+        <div class="lbl lbl-w">Strong induction with insufficient base cases</div>
+        <p>A \(d\)-term recurrence requires \(d\) base cases. A 2-term recurrence needs \(P(1)\) and \(P(2)\) both verified.</p>
+      </div>
+      <div class="warn">
+        <div class="lbl lbl-w">Off-by-one in limits</div>
+        <p>When manipulating \(\sum_{i=1}^{k+1} = \sum_{i=1}^k + (k+1)\text{th term}\), ensure the last term is correct.</p>
+      </div>
+    </section>
+
+    <section id="s5" class="sec">
+      <h2>4.4 Fibonacci Numbers &amp; Lamé's Theorem</h2>
+
+      <h3>Fibonacci numbers</h3>
+      <div class="def">
+        <div class="lbl lbl-d">Definition</div>
+        <p>The Fibonacci sequence \(F_0, F_1, F_2, \ldots\) is defined by:
+        \[F_0 = 0,\quad F_1 = 1,\quad F_{n+1} = F_n + F_{n-1} \quad \text{for } n \geq 1.\]</p>
+        <p>First values: \(F_0=0,\; F_1=1,\; F_2=1,\; F_3=2,\; F_4=3,\; F_5=5,\; F_6=8,\; F_7=13,\ldots\)</p>
+      </div>
+
+      <h3>Theorem — Fibonacci growth bound</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem</div>
+        <p>Let \(\alpha = \dfrac{1+\sqrt{5}}{2} \approx 1.618\). Then \(F_n > \alpha^{n-2}\) for all \(n \geq 3\).</p>
+        <p><strong>Key algebraic identity:</strong> \(\alpha^2 = \dfrac{(1+\sqrt{5})^2}{4} = \dfrac{3+\sqrt{5}}{2} = 1 + \alpha.\)</p>
+        <p><strong>Proof (strong induction with two base cases).</strong></p>
+        <p><strong>Basis:</strong> \(P(3)\): \(F_3=2 > \alpha^1 = \alpha \approx 1.618\). True. \(P(4)\): \(F_4=3 > \alpha^2 = 1+\alpha \approx 2.618\). True.</p>
+        <p><em>We need both \(P(3)\) and \(P(4)\) because the recurrence uses the two previous terms.</em></p>
+        <p><strong>Inductive step:</strong> Assume \(P(n)\) for \(n = 3,\ldots,k\) (where \(k \geq 4\)). Then:
+        \[F_{k+1} = F_k + F_{k-1} > \alpha^{k-2} + \alpha^{k-3} = \alpha^{k-3}(\alpha + 1) = \alpha^{k-3} \cdot \alpha^2 = \alpha^{k-1}.\]
+        This is \(P(k+1)\). \(\square\)</p>
+      </div>
+
+      <h3>Lame's theorem (Euclidean algorithm efficiency)</h3>
+      <div class="thm">
+        <div class="lbl lbl-t">Lame's theorem</div>
+        <p>Let \(a, b\) be positive integers with \(a \geq b\). The number of divisions used by the Euclidean algorithm to compute \(\gcd(a,b)\) is at most \(5 \times\) the number of decimal digits in \(b\).</p>
+        <p><em>Example:</em> \(\gcd(1{,}034{,}578{,}929{,}341,\; 2018)\): at most \(5 \times 4 = 20\) steps.</p>
+      </div>
+      <div class="ex">
+        <div class="lbl lbl-e">Proof sketch</div>
+        <p>Let the Euclidean algorithm produce remainders \(r_1 = a,\; r_2 = b,\; r_3,\;\ldots,\; r_n,\; r_{n+1} = 0\), so \(\gcd = r_n\). Show that \(r_i \geq F_{n+3-i}\) for \(i = 2,\ldots,n+1\) by backward induction:</p>
+        <ul>
+          <li>\(r_{n+1} = 0\) and \(r_n = \gcd \geq 1 = F_2\).</li>
+          <li>\(r_{n-1} \geq r_n + r_{n+1} \geq F_2 + F_1 = F_3 = 2\), since \(r_{n-1} = r_n q + r_{n+1}\) with \(q \geq 1\).</li>
+          <li>Continuing: \(b = r_2 \geq F_{n+1} > \alpha^{n-1}\).</li>
+        </ul>
+        <p>Let \(m\) = number of digits of \(b\). Then \(\log_{10} \alpha > 1/5\), so:
+        \[m \geq \log_{10}(b+1) \geq (n-1)\log_{10} \alpha > \frac{n-1}{5}.\]
+        Hence \(n-1 \lt 5m\), and since \(n\) is an integer, \(n \leq 5m\). \(\square\)</p>
+      </div>
+    </section>
+
+    <section id="t8" class="sec">
+      <h2>Tutorial 8</h2>
+
+      <div class="tq">
+        <p class="qs">Q1(a). Prove \(\displaystyle\sum_{i=1}^{n+1} i \cdot 2^i = n \cdot 2^{n+2} + 2\) for all \(n \in \mathbb{Z}^*\).</p>
+        <button class="togbtn" onclick="tog('t8q1a')">Show solution ▾</button>
+        <div id="t8q1a" class="tog">
+          <div class="sol">
+            <p><strong>Let</strong> \(P(n)\) be \(\sum_{i=1}^{n+1} i \cdot 2^i = n \cdot 2^{n+2} + 2\).</p>
+            <p><strong>Basis (\(n=0\)):</strong> LHS \(= \sum_{i=1}^1 i \cdot 2^i = 1 \cdot 2 = 2\). RHS \(= 0 \cdot 4 + 2 = 2\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(P(k)\): \(\sum_{i=1}^{k+1} i \cdot 2^i = k \cdot 2^{k+2} + 2\). Then:
+            \[\sum_{i=1}^{k+2} i \cdot 2^i = \sum_{i=1}^{k+1} i \cdot 2^i + (k+2) \cdot 2^{k+2} = k \cdot 2^{k+2} + 2 + (k+2) \cdot 2^{k+2}\]
+            \[= 2^{k+2}(k + k + 2) + 2 = 2^{k+2} \cdot 2(k+1) + 2 = (k+1) \cdot 2^{k+3} + 2.\]
+            This is \(P(k+1)\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q1(b). Prove \(6 \mid 7^n - 1\) for all \(n \in \mathbb{Z}^*\).</p>
+        <button class="togbtn" onclick="tog('t8q1b')">Show solution ▾</button>
+        <div id="t8q1b" class="tog">
+          <div class="sol">
+            <p><strong>Basis (\(n=0\)):</strong> \(7^0 - 1 = 0\), and \(6 \mid 0\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(6 \mid 7^k - 1\). Then:
+            \[7^{k+1} - 1 = 7 \cdot 7^k - 1 = 7(7^k - 1) + 6.\]
+            Since \(6 \mid 7^k - 1\) (IH) and \(6 \mid 6\), we have \(6 \mid 7^{k+1} - 1\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q1(c). Prove \(1 + nx \leq (1+x)^n\) for all integers \(n \geq 2\) and all real \(x > -1\) (Bernoulli's inequality).</p>
+        <button class="togbtn" onclick="tog('t8q1c')">Show solution ▾</button>
+        <div id="t8q1c" class="tog">
+          <div class="sol">
+            <p><strong>Basis (\(n=2\)):</strong> \((1+x)^2 = 1 + 2x + x^2 \geq 1 + 2x\) since \(x^2 \geq 0\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(1 + kx \leq (1+x)^k\) with \(k \geq 2\). Since \(x > -1\), we have \(1+x > 0\), so:
+            \[(1+x)^{k+1} = (1+x)^k \cdot (1+x) \geq (1+kx)(1+x) = 1 + kx + x + kx^2 = 1 + (k+1)x + kx^2.\]
+            Since \(kx^2 \geq 0\), we get \((1+x)^{k+1} \geq 1+(k+1)x\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q2. Prove by induction that \(n^3 + 11n\) is divisible by 3 for all \(n \in \mathbb{Z}^+\).</p>
+        <button class="togbtn" onclick="tog('t8q2')">Show solution ▾</button>
+        <div id="t8q2" class="tog">
+          <div class="sol">
+            <p><strong>Basis (\(n=1\)):</strong> \(1 + 11 = 12 = 3 \times 4\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(3 \mid k^3 + 11k\). Then:
+            \[(k+1)^3 + 11(k+1) = k^3 + 3k^2 + 3k + 1 + 11k + 11 = (k^3 + 11k) + 3(k^2 + k + 4).\]
+            By the IH, \(3 \mid k^3 + 11k\). Clearly \(3 \mid 3(k^2 + k + 4)\). Hence \(3 \mid (k+1)^3 + 11(k+1)\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q3. Let \(h_0=1, h_1=2, h_2=3\) and \(h_k = h_{k-1}+h_{k-2}+h_{k-3}\) for \(k \geq 3\). Prove \(h_n \leq 3^n\) for all \(n \geq 0\).</p>
+        <button class="togbtn" onclick="tog('t8q3')">Show solution ▾</button>
+        <div id="t8q3" class="tog">
+          <div class="sol">
+            <p><strong>Three base cases</strong> (recurrence uses 3 previous terms):</p>
+            <ul>
+              <li>\(h_0 = 1 \leq 1 = 3^0\). True.</li>
+              <li>\(h_1 = 2 \leq 3 = 3^1\). True.</li>
+              <li>\(h_2 = 3 \leq 9 = 3^2\). True.</li>
+            </ul>
+            <p><strong>Inductive step (strong):</strong> Assume \(h_j \leq 3^j\) for \(j = 0,1,\ldots,k\) where \(k \geq 2\). Then:
+            \[h_{k+1} = h_k + h_{k-1} + h_{k-2} \leq 3^k + 3^{k-1} + 3^{k-2} = 3^{k-2}(9+3+1) = 13 \cdot 3^{k-2}.\]
+            Since \(13 \leq 27 = 3^3\), we get \(h_{k+1} \leq 3^3 \cdot 3^{k-2} = 3^{k+1}\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q4. What is wrong with the following proof that \(2^n = 1\) for all \(n \in \mathbb{Z}^*\)?<br>
+        <em>Basis:</em> \(2^0 = 1\). <em>Inductive step:</em> Assume \(2^j = 1\) for \(j = 0,1,\ldots,k\). Then \(2^{k+1} = \dfrac{2^k \cdot 2^k}{2^{k-1}} = \dfrac{1 \cdot 1}{1} = 1\).</p>
+        <button class="togbtn" onclick="tog('t8q4')">Show solution ▾</button>
+        <div id="t8q4" class="tog">
+          <div class="sol">
+            <p><strong>Flaw:</strong> The inductive step substitutes \(2^{k-1} = 1\) (from the IH). But when \(k = 0\), this requires \(2^{-1} = 1\), which is false, and \(k = -1\) is not a non-negative integer covered by the IH.</p>
+            <p>The step fails for \(k = 0\) (the transition from \(n=0\) to \(n=1\)), so the chain is broken immediately. The algebraic manipulation requires \(k \geq 1\), meaning the step from \(2^0\) to \(2^1\) is never justified.</p>
+            <div class="warn" style="margin-top:6px">
+              <div class="lbl lbl-w">Moral</div>
+              <p>Always verify the inductive step is valid at the smallest value of \(k\). Here the IH covers \(j=0\) only, but the algebra silently uses \(j=-1\).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q5. For which positive integers \(n\) is \(2^n > n^2 + n\) true? Make an educated guess, then prove it by induction.</p>
+        <button class="togbtn" onclick="tog('t8q5')">Show solution ▾</button>
+        <div id="t8q5" class="tog">
+          <div class="sol">
+            <p><strong>Checking small values:</strong></p>
+            <ul>
+              <li>\(n=1\): \(2 > 2\)? No.</li>
+              <li>\(n=2\): \(4 > 6\)? No.</li>
+              <li>\(n=3\): \(8 > 12\)? No.</li>
+              <li>\(n=4\): \(16 > 20\)? No.</li>
+              <li>\(n=5\): \(32 > 30\)? Yes!</li>
+            </ul>
+            <p><strong>Conjecture:</strong> True for all \(n \geq 5\).</p>
+            <p><strong>Basis (\(n=5\)):</strong> \(32 > 30\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(2^k > k^2 + k\) for some \(k \geq 5\). Then:
+            \[2^{k+1} = 2 \cdot 2^k > 2(k^2+k) = 2k^2 + 2k.\]
+            We need to show \(2k^2 + 2k > (k+1)^2 + (k+1) = k^2 + 3k + 2\), i.e., \(k^2 - k - 2 > 0\), i.e., \((k-2)(k+1) > 0\).
+            For \(k \geq 5\): \(k-2 \geq 3 > 0\) and \(k+1 > 0\), so the product is positive. \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q6. Prove by induction that every positive integer can be written as a sum of distinct non-negative integer powers of 2.</p>
+        <button class="togbtn" onclick="tog('t8q6')">Show solution ▾</button>
+        <div id="t8q6" class="tog">
+          <div class="sol">
+            <p><strong>Strong induction.</strong> Let \(P(n)\): \(n\) is a sum of distinct powers of 2.</p>
+            <p><strong>Basis (\(n=1\)):</strong> \(1 = 2^0\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(P(m)\) for all \(1 \leq m \leq k\). Consider \(k+1\).</p>
+            <ul>
+              <li><strong>Case 1: \(k+1\) is even.</strong> Then \(\frac{k+1}{2}\) is a positive integer \(\leq k\). By IH, \(\frac{k+1}{2} = 2^{i_1}+\cdots+2^{i_r}\) (distinct powers). Then \(k+1 = 2^{i_1+1}+\cdots+2^{i_r+1}\), distinct powers (all \(\geq 1\)). \(\checkmark\)</li>
+              <li><strong>Case 2: \(k+1\) is odd.</strong> Then \(k = k+1-1\) is even, so \(k/2 \leq k\) and by IH \(k = 2^{j_1}+\cdots+2^{j_r}\) (distinct). Since \(k\) is even, all \(j_i \geq 1 > 0\). Thus \(k+1 = 2^0 + 2^{j_1}+\cdots+2^{j_r}\), distinct powers. \(\checkmark\)</li>
+            </ul>
+            <p>\(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q7. Prove by induction on \(n\): \(\forall n \in \mathbb{Z}_{\geq 8}\; (\exists x, y \in \mathbb{Z}_{\geq 0})\; (n = 3x + 5y)\).</p>
+        <button class="togbtn" onclick="tog('t8q7')">Show solution ▾</button>
+        <div id="t8q7" class="tog">
+          <div class="sol">
+            <p><strong>Base cases:</strong> \(8 = 3+5\), \(9 = 3\times3\), \(10 = 2\times5\). True for \(n=8,9,10\).</p>
+            <p><strong>Inductive step (strong, \(k \geq 10\)):</strong> Assume \(P(m)\) for all \(8 \leq m \leq k\). Then \(k+1 - 3 = k-2 \geq 8\). By IH, \(k-2 = 3x+5y\) for some \(x,y \geq 0\). Therefore \(k+1 = 3(x+1)+5y\). \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q8. Show by induction: \(F_{n+1}^2 - F_{n+1}F_n - F_n^2 = (-1)^n\) for every \(n \in \mathbb{Z}_{\geq 0}\) (Cassini-like identity).</p>
+        <button class="togbtn" onclick="tog('t8q8')">Show solution ▾</button>
+        <div id="t8q8" class="tog">
+          <div class="sol">
+            <p><strong>Basis (\(n=0\)):</strong> \(F_1^2 - F_1 F_0 - F_0^2 = 1 - 0 - 0 = 1 = (-1)^0\). True.</p>
+            <p><strong>Inductive step:</strong> Assume \(F_{k+1}^2 - F_{k+1}F_k - F_k^2 = (-1)^k\). Use \(F_{k+2} = F_{k+1}+F_k\):
+            \[F_{k+2}^2 - F_{k+2}F_{k+1} - F_{k+1}^2\]
+            \[= (F_{k+1}+F_k)^2 - (F_{k+1}+F_k)F_{k+1} - F_{k+1}^2\]
+            \[= F_{k+1}^2 + 2F_{k+1}F_k + F_k^2 - F_{k+1}^2 - F_k F_{k+1} - F_{k+1}^2\]
+            \[= F_{k+1}F_k + F_k^2 - F_{k+1}^2 = -(F_{k+1}^2 - F_{k+1}F_k - F_k^2) = -(-1)^k = (-1)^{k+1}.\]
+            \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q9. Define \(f(n,r)\) for \(n,r \in \mathbb{Z}^*\), \(r \leq n\) by \(f(n,n)=f(n,0)=1\) and \(f(n+1,r)=f(n,r-1)+f(n,r)\). (i) Find \(f(n,r)\) for \(n \leq 4\). (ii) Prove \(f(n,r) = \dfrac{n!}{r!(n-r)!}\).</p>
+        <button class="togbtn" onclick="tog('t8q9')">Show solution ▾</button>
+        <div id="t8q9" class="tog">
+          <div class="sol">
+            <p><strong>(i) Pascal's triangle:</strong></p>
+            <table class="ref" style="width:auto; margin-top:8px">
+              <tr><th>\(n \backslash r\)</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+              <tr><th style="text-align:center">0</th><td style="text-align:center">1</td><td></td><td></td><td></td><td></td></tr>
+              <tr><th style="text-align:center">1</th><td style="text-align:center">1</td><td style="text-align:center">1</td><td></td><td></td><td></td></tr>
+              <tr><th style="text-align:center">2</th><td style="text-align:center">1</td><td style="text-align:center">2</td><td style="text-align:center">1</td><td></td><td></td></tr>
+              <tr><th style="text-align:center">3</th><td style="text-align:center">1</td><td style="text-align:center">3</td><td style="text-align:center">3</td><td style="text-align:center">1</td><td></td></tr>
+              <tr><th style="text-align:center">4</th><td style="text-align:center">1</td><td style="text-align:center">4</td><td style="text-align:center">6</td><td style="text-align:center">4</td><td style="text-align:center">1</td></tr>
+            </table>
+            <p><strong>(ii) Proof by induction on \(n\).</strong></p>
+            <p><strong>Basis:</strong> \(f(n,0) = 1 = \tfrac{n!}{0!\,n!}\) and \(f(n,n)=1=\tfrac{n!}{n!\,0!}\). True for all \(n\).</p>
+            <p><strong>Inductive step:</strong> Assume \(f(n,r)=\tfrac{n!}{r!(n-r)!}\) for all valid \(r\). Then for \(1 \leq r \leq n\):
+            \[f(n+1,r) = f(n,r-1)+f(n,r) = \frac{n!}{(r-1)!(n-r+1)!}+\frac{n!}{r!(n-r)!}\]
+            \[= \frac{n!\,r}{r!(n-r+1)!}+\frac{n!\,(n-r+1)}{r!(n-r+1)!} = \frac{n!(r+n-r+1)}{r!(n-r+1)!} = \frac{(n+1)!}{r!(n+1-r)!}.\]
+            \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tq">
+        <p class="qs">Q10. Define set \(S\) recursively: (1) \(2 \in S\); (2) if \(x \in S\) then \(3x \in S\) and \(x^2 \in S\); (3) minimality clause. Which of \(0,\; 6,\; 15,\; 16,\; 36\) are in \(S\)? Which are not?</p>
+        <button class="togbtn" onclick="tog('t8q10')">Show solution ▾</button>
+        <div id="t8q10" class="tog">
+          <div class="sol">
+            <p><strong>Build \(S\) from 2:</strong></p>
+            <ul>
+              <li>\(2 \in S\) (basis).</li>
+              <li>\(3\times2 = 6 \in S\); \(2^2 = 4 \in S\).</li>
+              <li>From 4: \(3\times4=12\in S\); \(4^2=16\in S\).</li>
+              <li>From 6: \(3\times6=18\in S\); \(6^2=36\in S\).</li>
+            </ul>
+            <p><strong>Results:</strong></p>
+            <ul>
+              <li>\(0\): <strong>Not in \(S\)</strong>. Every element of \(S\) is \(\geq 2\) (operations \(\times3\) and \((\cdot)^2\) on positive integers \(\geq 2\) keep values \(\geq 6\) or \(\geq 4\)).</li>
+              <li>\(6\): <strong>In \(S\)</strong>. \(6 = 3\times2\).</li>
+              <li>\(15\): <strong>Not in \(S\)</strong>. \(15/3=5\), and 5 is not reachable (\(\sqrt{5}\) irrational, \(5/3\) not integer). By the minimality clause, 15 is excluded.</li>
+              <li>\(16\): <strong>In \(S\)</strong>. \(16 = 4^2 = (2^2)^2\).</li>
+              <li>\(36\): <strong>In \(S\)</strong>. \(36 = 6^2 = (3\times2)^2\).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="sec">
+      <h2>Interactive Tools</h2>
+
+      <div class="tool">
+        <h3>Tool 1 — Series sum verifier</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Choose a series and check the closed-form formula</p>
+        <div class="tool-row">
+          <label>Series Type</label>
+          <select id="ser-type" onchange="checkSerType()">
+            <option value="arith">Arithmetic: &Sigma; i (i=1 to n)</option>
+            <option value="geo">Geometric: &Sigma; r^i (i=0 to n)</option>
+            <option value="iarith">Weighted: &Sigma; i&middot;2^i (i=1 to n+1)</option>
+          </select>
+        </div>
+        <div class="tool-row" id="ser-geo-row" style="display:none">
+          <label>r =</label>
+          <input type="number" id="ser-r" value="2" step="0.5">
+        </div>
+        <div class="tool-row">
+          <label>n =</label>
+          <input type="number" id="ser-n" value="5" min="0" max="20">
+          <button class="go" onclick="runSeries()">Verify</button>
+        </div>
+        <div class="out" id="ser-res">Select parameters and click Verify.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 2 — Fibonacci explorer</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Verify F_n &gt; &alpha;^(n-2) for n &ge; 3 and observe ratio F_n / F_{n-1} &rarr; &alpha;</p>
+        <div class="tool-row">
+          <label>Show up to n =</label>
+          <input type="number" id="fib-n" value="10" min="1" max="20">
+          <button class="go" onclick="runFib()">Compute</button>
+        </div>
+        <div class="out" id="fib-res">Enter a value and click Compute.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 3 — Euclidean algorithm stepper</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Compute gcd(a, b) and verify Lame's bound</p>
+        <div class="tool-row">
+          <label>a =</label>
+          <input type="number" id="ea-a" value="1071" min="1">
+          <label>b =</label>
+          <input type="number" id="ea-b" value="462" min="1">
+          <button class="go" onclick="runEA()">Run</button>
+        </div>
+        <div class="out" id="ea-res">Enter a and b, then click Run.</div>
+      </div>
+
+      <div class="tool">
+        <h3>Tool 4 — Divisibility checker</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Verify 3 | n^3 + 11n and see the algebraic decomposition (Q2)</p>
+        <div class="tool-row">
+          <label>n =</label>
+          <input type="number" id="div-n" value="1" min="1" max="100">
+          <button class="go" onclick="runDiv()">Check</button>
+        </div>
+        <div class="out" id="div-res">Enter n and click Check.</div>
+      </div>
+
+    </section>
+
+    <section id="quiz" class="sec">
+      <h2>Quiz — 10 questions</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+      <div id="quiz-area"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+function init() {
+  if (!window.renderMathInElement) { setTimeout(init,80); return; }
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildQuiz();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+
+/* ---- TOOLS JS ---- */
+
+function checkSerType() {
+  var sel = document.getElementById('ser-type').value;
+  document.getElementById('ser-geo-row').style.display = (sel === 'geo') ? 'flex' : 'none';
+}
+
+function runSeries() {
+  var type = document.getElementById('ser-type').value;
+  var n = parseInt(document.getElementById('ser-n').value) || 5;
+  var r = parseFloat(document.getElementById('ser-r').value) || 2;
+  var lhs = 0, rhs = 0, desc = '';
+  if (type === 'arith') {
+    for (var i = 1; i <= n; i++) lhs += i;
+    rhs = n*(n+1)/2;
+    desc = 'LHS = \u03a3i (i=1..'+n+') = '+lhs+', RHS = '+n+'('+n+'+1)/2 = '+rhs;
+  } else if (type === 'geo') {
+    for (var i = 0; i <= n; i++) lhs += Math.pow(r,i);
+    lhs = Math.round(lhs*1000)/1000;
+    if (r === 1) { rhs = n+1; desc = 'r=1: sum = n+1 = '+(n+1)+' (formula undefined for r=1)'; }
+    else { rhs = Math.round((Math.pow(r,n+1)-1)/(r-1)*1000)/1000; desc = 'LHS = \u03a3r^i (i=0..'+n+') = '+lhs+', RHS = (r^(n+1)-1)/(r-1) = '+rhs; }
+  } else {
+    for (var i = 1; i <= n+1; i++) lhs += i*Math.pow(2,i);
+    rhs = n*Math.pow(2,n+2)+2;
+    desc = 'LHS = \u03a3i\u00b72^i (i=1..'+n+'+1) = '+lhs+', RHS = '+n+'\u00b72^'+(n+2)+'+2 = '+rhs;
+  }
+  var ok = Math.abs(lhs-rhs) < 0.001;
+  var tag = ok ? '<span class="badge badge-ok">MATCHES ✓</span>' : '<span class="badge badge-err">MISMATCH ✗</span>';
+  document.getElementById('ser-res').innerHTML = '<p style="margin:4px 0">'+desc+'</p><p style="margin:4px 0">Formula check: '+tag+'</p>';
+}
+
+function runFib() {
+  var maxn = parseInt(document.getElementById('fib-n').value) || 10;
+  if (maxn > 20) maxn = 20;
+  var alpha = (1+Math.sqrt(5))/2;
+  var F = [0, 1];
+  for (var i = 2; i <= maxn; i++) F.push(F[i-1]+F[i-2]);
+  var html = '<table class="ref" style="width:auto; margin-top:8px"><tr><th>n</th><th>F_n</th><th>F_n / F_{n-1}</th><th>\u03b1^(n-2)</th><th>F_n &gt; \u03b1^(n-2)?</th></tr>';
+  for (var i = 0; i <= maxn; i++) {
+    var ratio = (i >= 2) ? (Math.round(F[i]/F[i-1]*1000)/1000)+'' : '-';
+    var pow = (i >= 3) ? (Math.round(Math.pow(alpha,i-2)*1000)/1000)+'' : '-';
+    var ok = (i >= 3) ? (F[i] > Math.pow(alpha,i-2)) : null;
+    var cls = (ok === true) ? ' class="T"' : '';
+    html += '<tr><td style="text-align:center">'+i+'</td><td style="text-align:center">'+F[i]+'</td><td style="text-align:center">'+ratio+'</td><td style="text-align:center">'+pow+'</td><td'+cls+'>'+(ok===null?'-':ok?'\u2714':'\u2716')+'</td></tr>';
+  }
+  html += '</table><p style="font-size:11px;color:var(--color-text-secondary);margin-top:6px">\u03b1 = (1+\u221a5)/2 \u2248 '+Math.round(alpha*1000)/1000+'; \u03b1\u00b2 = '+(Math.round(alpha*alpha*1000)/1000)+' = 1+\u03b1</p>';
+  document.getElementById('fib-res').innerHTML = html;
+}
+
+function runEA() {
+  var a = parseInt(document.getElementById('ea-a').value) || 1071;
+  var b = parseInt(document.getElementById('ea-b').value) || 462;
+  if (a < b) { var t=a;a=b;b=t; }
+  var steps = [];
+  var x=a, y=b;
+  while (y !== 0) {
+    var q = Math.floor(x/y);
+    var rem = x - q*y;
+    steps.push({a:x,b:y,q:q,r:rem});
+    x=y; y=rem;
+  }
+  var digits = b.toString().length;
+  var bound = 5*digits;
+  var ok = steps.length <= bound;
+  var html = '<table class="ref" style="width:auto; margin-top:8px"><tr><th>Step</th><th>a</th><th>b</th><th>q</th><th>r = a mod b</th></tr>';
+  for (var i=0;i<steps.length;i++) {
+    var s=steps[i];
+    html+='<tr><td style="text-align:center">'+(i+1)+'</td><td style="text-align:center">'+s.a+'</td><td style="text-align:center">'+s.b+'</td><td style="text-align:center">'+s.q+'</td><td style="text-align:center">'+s.r+'</td></tr>';
+  }
+  html+='</table>';
+  html+='<p style="margin:8px 0 4px"><strong>gcd = '+x+'</strong></p>';
+  html+='<p style="margin:4px 0">Steps used: '+steps.length+'</p>';
+  var tag = ok ? '<span class="badge badge-ok">\u2264 bound ✓</span>' : '<span class="badge badge-err">\u003e bound ✗</span>';
+  html+='<p style="margin:4px 0">Digits in b='+b+': '+digits+' \u2192 Lame bound: 5\u00d7'+digits+' = '+bound+' '+tag+'</p>';
+  document.getElementById('ea-res').innerHTML = html;
+}
+
+function runDiv() {
+  var n = parseInt(document.getElementById('div-n').value) || 1;
+  var val = n*n*n + 11*n;
+  var div3 = val % 3 === 0;
+  var km1 = (n-1);
+  var decomp = '('+km1+')^3 + 11('+km1+') + 3('+km1+'&sup2; + '+km1+' + 4)';
+  var tag = div3 ? '<span class="badge badge-ok">Divisible by 3 ✓</span>' : '<span class="badge badge-err">NOT divisible ✗</span>';
+  document.getElementById('div-res').innerHTML =
+    '<p style="margin:4px 0">n = '+n+', n&sup3; + 11n = '+val+'</p>'+
+    '<p style="margin:4px 0">'+val+' mod 3 = '+(val%3)+' '+tag+'</p>'+
+    '<p style="margin:4px 0">Inductive decomposition: (n&sup3;+11n) = [(n-1)&sup3;+11(n-1)] + 3(n&sup2;-n+4)</p>'+
+    '<p style="margin:4px 0">(n-1)&sup3;+11(n-1) = '+(km1*km1*km1+11*km1)+', 3(n&sup2;-n+4) = '+(3*(n*n-n+4))+'</p>';
+}
+
+/* ---- QUIZ ---- */
+var QUIZ = [
+  {
+    q:'In the induction hypothesis for strong induction, what is assumed?',
+    opts:['Only \\(P(k)\\) is true','\\(P(1), P(2), \\ldots, P(k)\\) are all true','\\(P(k) \\Rightarrow P(k+1)\\)','\\(P(k+1)\\) is true'],
+    ans:1,
+    exp:'Strong induction assumes ALL of \\(P(1),\\ldots,P(k)\\) — not just the immediately preceding case. Weak induction assumes only \\(P(k)\\).'
+  },
+  {
+    q:'To prove \\(n \\lt 2^n\\), the inductive step writes \\(k+1 \\lt 2^k + 1 \\leq 2 \\cdot 2^k = 2^{k+1}\\). What justifies \\(1 \\leq 2^k\\)?',
+    opts:['The induction hypothesis \\(k \\lt 2^k\\)','Because \\(2^k \\geq 1\\) for all \\(k \\geq 0\\)','Because \\(k+1\\) is always odd','By the basis step only'],
+    ans:1,
+    exp:'\\(2^k \\geq 1\\) for all \\(k \\geq 0\\) is a separate elementary fact (not the IH). The IH gives \\(k \\lt 2^k\\); the step \\(1 \\leq 2^k\\) is independent.'
+  },
+  {
+    q:'Why does the Fibonacci proof of \\(F_n > \\alpha^{n-2}\\) require TWO base cases \\(P(3)\\) and \\(P(4)\\)?',
+    opts:['Because \\(\\alpha\\) is irrational','Because the recurrence \\(F_{n+1}=F_n+F_{n-1}\\) uses two previous terms','Because the formula fails for \\(n=1\\) and \\(n=2\\)','Because \\(\\alpha^2 \\neq \\alpha + 1\\)'],
+    ans:1,
+    exp:'The inductive step uses BOTH \\(P(k)\\) and \\(P(k-1)\\) (to get \\(F_k > \\alpha^{k-2}\\) and \\(F_{k-1} > \\alpha^{k-3}\\)). With only one base case, the first inductive step would need a case that has not been verified.'
+  },
+  {
+    q:'In the checkerboard tiling proof, what is placed at the centre of the \\(2^{k+1} \\times 2^{k+1}\\) board in the inductive step?',
+    opts:['Nothing — the IH tiles each quadrant independently','An L-tromino covering one corner square from each of the three intact quadrants','A \\(2\\times 2\\) block covering all four centre squares','The removed square is moved to the centre'],
+    ans:1,
+    exp:'The L-tromino at the centre gives each intact quadrant a "removed square" at its centre-facing corner, making four \\(2^k \\times 2^k\\) subproblems each with one missing square — matching the IH.'
+  },
+  {
+    q:'The sum \\(\\displaystyle\\sum_{i=0}^n r^i = \\dfrac{r^{n+1}-1}{r-1}\\) requires which condition on \\(r\\)?',
+    opts:['\\(r > 0\\)','\\(r\\) is an integer','\\(r \\neq 1\\)','\\(|r| < 1\\)'],
+    ans:2,
+    exp:'\\(r = 1\\) would make the denominator zero. When \\(r=1\\), the sum equals \\(n+1\\) and the formula is undefined. No condition on sign or magnitude is required.'
+  },
+  {
+    q:'Lame\'s theorem bounds the number of steps of the Euclidean algorithm for \\(\\gcd(a,b)\\), \\(a \\geq b\\), by:',
+    opts:['\\(5 \\times\\) (number of decimal digits in \\(a\\))','\\(5 \\times\\) (number of decimal digits in \\(b\\))','\\(\\lfloor \\log_2 b \\rfloor\\) steps','\\(b\\) steps in the worst case'],
+    ans:1,
+    exp:'Lame\'s theorem uses the number of digits in the smaller number \\(b\\). The bound comes from showing the remainders dominate Fibonacci numbers, and Fibonacci numbers grow as \\(\\alpha^n\\) with \\(\\log_{10}\\alpha > 1/5\\).'
+  },
+  {
+    q:'What is the actual flaw in the "proof" that \\(2^n = 1\\) for all \\(n \\in \\mathbb{Z}^*\\)?',
+    opts:['The basis step \\(2^0=1\\) is false','When \\(k=0\\), substituting \\(2^{k-1}=2^{-1}=1\\) is not covered by the IH','The algebra \\(2^{k+1}=2^k \\cdot 2^k / 2^{k-1}\\) is wrong','Strong induction should have been used instead'],
+    ans:1,
+    exp:'The IH covers \\(j=0,1,\\ldots,k\\). When \\(k=0\\), the formula needs \\(2^{k-1}=2^{-1}\\). But \\(j=-1\\) is not a non-negative integer, so the IH does not apply there. The step from \\(n=0\\) to \\(n=1\\) is invalid.'
+  },
+  {
+    q:'In proving \\(n^3+11n\\) is divisible by 3, the inductive step shows \\((k+1)^3+11(k+1) = (k^3+11k) + 3(k^2+k+4)\\). What finishes the proof?',
+    opts:['\\(3 \\mid k^2+k+4\\) for all \\(k\\)','\\(3\\mid k^3+11k\\) (IH) and \\(3 \\mid 3(k^2+k+4)\\), so \\(3\\) divides the sum','\\(k^2+k+4\\) is always a perfect square','The binomial theorem implies divisibility'],
+    ans:1,
+    exp:'We use two facts: (1) \\(3\\mid k^3+11k\\) from the IH; (2) \\(3\\mid 3(k^2+k+4)\\) trivially. Since both summands are divisible by 3, so is their sum. We do NOT need to check \\(3\\mid k^2+k+4\\) separately.'
+  },
+  {
+    q:'The recursive function \\(f(n,r)\\) with \\(f(n,0)=f(n,n)=1\\) and \\(f(n+1,r)=f(n,r-1)+f(n,r)\\) equals:',
+    opts:['\\(n^r / r!\\)','\\(n! / (r!(n-r)!)\\)','\\(2^n\\)','\\((n+r)!\\)'],
+    ans:1,
+    exp:'This is Pascal\'s recurrence. \\(f(n,r) = \\binom{n}{r} = \\frac{n!}{r!(n-r)!}\\). The proof is by induction: the algebra shows \\(\\binom{n}{r-1}+\\binom{n}{r}=\\binom{n+1}{r}\\).'
+  },
+  {
+    q:'Using rules \\(x \\mapsto 3x\\) and \\(x \\mapsto x^2\\) starting from 2, which number is NOT in \\(S\\)?',
+    opts:['4','6','15','36'],
+    ans:2,
+    exp:'\\(15/3=5\\). Is 5 reachable? \\(\\sqrt{5}\\) is irrational and \\(5/3\\) is not an integer, so 5 cannot be reached, and hence \\(15 \\notin S\\) by the minimality clause. \\(4=2^2\\), \\(6=3\\times2\\), \\(36=6^2\\) are all in \\(S\\).'
+  }
+];
+
+init();
+</script>
+</body>
+</html>

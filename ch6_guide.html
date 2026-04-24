@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CS1231 Chapter 6 — Graph Theory</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2 class="sr-only">CS1231 Chapter 6 Graph Theory — interactive study guide covering definitions, special graphs, matrix representations, connectedness and Euler circuits</h2>
+<div id="loading">Loading equations…</div>
+<div id="wr">
+  <nav id="nv">
+    <h1>Chapter 6</h1>
+    <button class="nb act" onclick="show('s1',this)">6.1 Graph Definitions</button>
+    <button class="nb" onclick="show('s2',this)">6.2 Terminology</button>
+    <button class="nb" onclick="show('s3',this)">6.3 Special Graphs</button>
+    <button class="nb" onclick="show('s4',this)">6.4 Representing Graphs</button>
+    <button class="nb" onclick="show('s5',this)">6.5 Connectedness</button>
+    <button class="nb" onclick="show('s6',this)">6.6 Euler Circuits</button>
+    <button class="nb" onclick="show('s7',this)">6.7 Quick Reference</button>
+    <button class="nb" onclick="show('s8',this)">Tutorial 11</button>
+    <button class="nb" onclick="show('s9',this)">Interactive Tools</button>
+    <button class="nb" onclick="show('s10',this)">Quiz</button>
+    <div id="sc">
+      <p>Quiz score</p>
+      <div id="scv">—</div>
+    </div>
+  </nav>
+  <main id="mn">
+
+    <!-- SECTION 1: DEFINITIONS -->
+    <section id="s1" class="sec on">
+      <h2>6.1 Graph Definitions</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Graph</div>
+        <p>A <b>graph</b> \(G = (V, E)\) consists of:</p>
+        <ul>
+          <li>\(V\), a nonempty finite set of <b>vertices</b>, and</li>
+          <li>\(E\), a set of <b>edges</b>.</li>
+        </ul>
+        <p>Each edge is associated with either one or two vertices called its <b>endpoints</b>. An edge with one endpoint is called a <b>loop</b>. Edges sharing the same two endpoints are called <b>multiple edges</b>.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Edge types</div>
+        <table class="ref">
+          <tr><th>Type</th><th>Endpoints</th><th>Notation</th></tr>
+          <tr><td>Regular edge</td><td>2 distinct vertices \(a\), \(b\)</td><td>Call it \(e\) or \(ab\)</td></tr>
+          <tr><td>Loop</td><td>1 vertex \(a\) (joins \(a\) to itself)</td><td>Loop at \(a\)</td></tr>
+          <tr><td>Multiple edges</td><td>Same pair \(a, b\) with multiplicity \(m\)</td><td>Edges \(e, f, \ldots\) of multiplicity \(m\)</td></tr>
+        </table>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Simple graph and multigraph</div>
+        <ul>
+          <li>A graph with <b>no loops and no multiple edges</b> is called <b>simple</b>.</li>
+          <li>A graph with <b>no loops but allowing multiple edges</b> is called a <b>multigraph</b>.</li>
+          <li>A general graph may have both loops and multiple edges.</li>
+        </ul>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Remark — notation in simple graphs</div>
+        <p>In a simple graph, \(ab\) and \(ba\) refer to the <em>same</em> edge. In a multigraph, if there are \(m\) edges joining \(a\) to \(b\), we say \(ab\) has multiplicity \(m\) and name the edges \(e, f, \ldots\)</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Digraph</div>
+        <p>A <b>directed graph (digraph)</b> \(G = (V, E)\) consists of \(V\) (vertices) and \(E\) (a set of <b>directed edges</b>). Each directed edge is associated with an ordered pair of vertices \((u, v)\): it <b>starts</b> from \(u\) and <b>ends</b> at \(v\), denoted \(\overrightarrow{uv}\).</p>
+      </div>
+
+      <h3>Graph models</h3>
+      <table class="ref">
+        <tr><th>Model</th><th>Vertices</th><th>Edges</th><th>Type</th></tr>
+        <tr><td>Acquaintanceship graph</td><td>People</td><td>\(ab\) if \(a\) and \(b\) know each other</td><td>Simple undirected</td></tr>
+        <tr><td>Influence graph</td><td>People</td><td>\(\overrightarrow{uv}\) if \(u\) can influence \(v\)</td><td>Digraph</td></tr>
+        <tr><td>Call graph</td><td>Telephones</td><td>\(\overrightarrow{ab}\) for each call from \(a\) to \(b\)</td><td>Directed multigraph</td></tr>
+        <tr><td>Web graph</td><td>Web pages</td><td>\(\overrightarrow{ab}\) if page \(a\) links to \(b\)</td><td>Digraph</td></tr>
+        <tr><td>Precedence graph</td><td>Statements</td><td>\(\overrightarrow{ab}\) if \(a\) must execute before \(b\)</td><td>Digraph</td></tr>
+      </table>
+    </section>
+
+    <!-- SECTION 2: TERMINOLOGY -->
+    <section id="s2" class="sec">
+      <h2>6.2 Terminology</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Adjacency, incidence, degree</div>
+        <p>Let \(G\) be an undirected graph.</p>
+        <ul>
+          <li>Vertices \(a, b\) are <b>adjacent</b> (or <b>neighbours</b>) if \(ab\) is an edge.</li>
+          <li>An edge \(e\) and vertex \(a\) are <b>incident</b> if \(e = ax\) for some vertex \(x\).</li>
+          <li>The <b>degree</b> of vertex \(u\), written \(\deg(u)\), is the number of edges incident with \(u\), with each loop counted as 2.</li>
+          <li>A vertex is <b>isolated</b> if its degree is 0.</li>
+        </ul>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — degree calculation</div>
+        <p>Graph \(J\) has vertices \(a(5), b(5), c(4), d(4), e(5), f(5), g(0)\). The numbers in parentheses are the degrees. Note \(g\) is isolated (\(\deg(g)=0\)). The loops at \(e\) and \(f\) each contribute 2 to their degree.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Handshaking Theorem</div>
+        <p>Let \(G = (V, E)\) be a graph. Then</p>
+        <p style="text-align:center">\[\sum_{v \in V} \deg(v) = 2|E|.\]</p>
+        <div class="proof"><b>Proof.</b> Every edge contributes 2 to the degree sum (one for each endpoint; loops contribute 2 to the single endpoint). So the degree sum equals twice the number of edges. \(\square\)</div>
+      </div>
+
+      <div class="cor">
+        <div class="lbl lbl-c">Corollary</div>
+        <p>In any graph, there is an <b>even number</b> of vertices with odd degree.</p>
+        <div class="proof"><b>Proof.</b> Split \(\displaystyle\sum_{v\in V}\deg(v) = \sum_{\text{odd}}\deg(v) + \sum_{\text{even}}\deg(v) = 2|E|\). The right side and \(\displaystyle\sum_{\text{even}}\deg(v)\) are both even, so \(\displaystyle\sum_{\text{odd}}\deg(v)\) is even. Since it is a sum of odd numbers that is even, the number of terms must be even. \(\square\)</div>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Common mistake</div>
+        <p>Do not confuse "number of vertices with odd degree is even" with "the total degree sum is odd". The theorem says the sum is always even. It is impossible for a graph to have an odd total degree sum.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SPECIAL GRAPHS -->
+    <section id="s3" class="sec">
+      <h2>6.3 Special Graphs</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Complete graph \(K_n\)</div>
+        <p>The <b>complete graph</b> on \(n\) vertices, denoted \(K_n\), is the simple graph where every pair of distinct vertices is adjacent.</p>
+        <p>\[|E(K_n)| = \binom{n}{2} = \frac{n(n-1)}{2}\]</p>
+        <p>Every vertex has degree \(n-1\). \(K_n\) is \((n-1)\)-regular.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Cycle \(C_n\)</div>
+        <p>The <b>cycle</b> \(C_n\), for \(n \geq 1\), has \(n\) vertices \(v_1, v_2, \ldots, v_n\) and \(n\) edges \(v_1v_2, v_2v_3, \ldots, v_{n-1}v_n, v_nv_1\). Every vertex has degree 2.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Wheel \(W_n\)</div>
+        <p>The <b>wheel</b> \(W_n\), for \(n \geq 3\), is obtained from \(C_n\) by adding one new hub vertex connected to every vertex of \(C_n\). The hub has degree \(n\); the rim vertices have degree 3.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — \(n\)-cube \(Q_n\)</div>
+        <p>The <b>\(n\)-dimensional hypercube</b> (or \(n\)-cube), denoted \(Q_n\), has:</p>
+        <ul>
+          <li>Vertices: all \(2^n\) bit strings of length \(n\).</li>
+          <li>Adjacency: two vertices are adjacent iff their bit strings differ in <b>exactly one</b> bit position.</li>
+        </ul>
+        <p>Every vertex in \(Q_n\) has degree \(n\), and \(|E(Q_n)| = n \cdot 2^{n-1}\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — \(Q_2\) and \(Q_3\)</div>
+        <p>\(Q_2\): vertices \(00, 01, 10, 11\). Edges: \(00\text{-}01\), \(00\text{-}10\), \(01\text{-}11\), \(10\text{-}11\). This is a 4-cycle \(C_4\).</p>
+        <p>\(Q_3\): 8 vertices (3-bit strings). Each vertex has degree 3. \(|E(Q_3)| = 3 \cdot 4 = 12\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Bipartite graph</div>
+        <p>A simple graph \(G = (V, E)\) is <b>bipartite</b> if \(V\) can be partitioned into two disjoint sets \(V_1, V_2\) such that every edge connects a vertex in \(V_1\) to one in \(V_2\). The pair \((V_1, V_2)\) is called a <b>bipartition</b> of \(V\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — bipartite iff no odd cycles</div>
+        <p>A graph is bipartite if and only if it contains no odd cycle.</p>
+        <div class="proof"><b>Proof sketch (\(\Rightarrow\)).</b> If \(G\) is bipartite with bipartition \((V_1,V_2)\), any cycle must alternate between \(V_1\) and \(V_2\). So its length is even. We omit the \((\Leftarrow)\) direction. \(\square\)</div>
+        <p style="margin-top:8px;font-size:11.5px">Consequence: \(C_n\) is bipartite iff \(n\) is even. \(K_n\) is bipartite iff \(n \leq 2\). \(W_n\) and \(K_n\) for \(n \geq 3\) all contain \(C_3\), so they are <em>not</em> bipartite.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Complete bipartite graph \(K_{m,n}\)</div>
+        <p>For \(m, n \in \mathbb{Z}^+\), the <b>complete bipartite graph</b> \(K_{m,n}\) has vertices \(v_1, \ldots, v_m, w_1, \ldots, w_n\) and edges \(v_iw_j\) for all \(1 \leq i \leq m\), \(1 \leq j \leq n\). It has \(|E(K_{m,n})| = mn\) edges.</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Subgraph</div>
+        <p>A graph \(H = (W, F)\) is a <b>subgraph</b> of \(G = (V, E)\) if \(W \subseteq V\) and \(F \subseteq E\).</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — subgraphs</div>
+        <p>A graph with vertices \(a, b\) and edges \(e\) (joining \(a\) to \(b\)), \(f\) (joining \(a\) to \(b\)), and \(g\) (loop at \(b\)) has 11 subgraphs total (all combinations of vertex and edge subsets satisfying the subgraph definition).</p>
+      </div>
+
+      <h3>Summary table — special graphs</h3>
+      <table class="ref">
+        <tr><th>Graph</th><th>Vertices</th><th>Edges</th><th>Every vertex degree</th><th>Bipartite?</th></tr>
+        <tr><td>\(K_n\)</td><td>\(n\)</td><td>\(\binom{n}{2}\)</td><td>\(n-1\)</td><td>Only if \(n \leq 2\)</td></tr>
+        <tr><td>\(C_n\)</td><td>\(n\)</td><td>\(n\)</td><td>2</td><td>Only if \(n\) even</td></tr>
+        <tr><td>\(W_n\)</td><td>\(n+1\)</td><td>\(2n\)</td><td>Hub: \(n\), rim: 3</td><td>No (contains \(C_3\))</td></tr>
+        <tr><td>\(Q_n\)</td><td>\(2^n\)</td><td>\(n \cdot 2^{n-1}\)</td><td>\(n\)</td><td>Yes (always)</td></tr>
+        <tr><td>\(K_{m,n}\)</td><td>\(m+n\)</td><td>\(mn\)</td><td>\(v_i\): \(n\); \(w_j\): \(m\)</td><td>Yes (by definition)</td></tr>
+      </table>
+    </section>
+
+    <!-- SECTION 4: REPRESENTING GRAPHS -->
+    <section id="s4" class="sec">
+      <h2>6.4 Representing Graphs</h2>
+
+      <h3>Adjacency list</h3>
+      <p>List each vertex and its adjacent vertices. For multigraphs, repeated vertices appear multiple times in the adjacency list.</p>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Adjacency matrix</div>
+        <p>Let \(G\) be a graph with \(V(G) = \{v_1, \ldots, v_n\}\). The <b>adjacency matrix</b> \(A = (a_{i,j})\) is the \(n \times n\) matrix where</p>
+        <p style="text-align:center">\[a_{i,j} = \text{number of edges joining } v_i \text{ and } v_j.\]</p>
+        <p>Properties: (1) \(A\) is always <b>symmetric</b> (\(a_{i,j} = a_{j,i}\)). (2) Any \(n \times n\) symmetric nonneg-integer matrix uniquely determines a graph on \(n\) vertices.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — adjacency matrix</div>
+        <p>Graph with vertices \(a, b, c\) and edges: \(ab\) (multiplicity 2), \(ac\) (multiplicity 2), \(bc\) (once), and loop at \(b\):</p>
+        <p>\[A = \begin{pmatrix} 0 & 2 & 2 \\ 2 & 1 & 1 \\ 2 & 1 & 0 \end{pmatrix}\]</p>
+        <p>Note the loop at \(b\) gives \(a_{2,2} = 1\) (one loop = 1 in adjacency matrix notation, contributes 2 to degree).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Incidence matrix</div>
+        <p>Let \(G = (V, E)\) be a multigraph with \(V = \{v_1, \ldots, v_n\}\) and \(E = \{e_1, \ldots, e_m\}\). The <b>incidence matrix</b> \(M = (m_{i,j})\) is the \(n \times m\) matrix where</p>
+        <p style="text-align:center">\[m_{i,j} = \begin{cases} 1 & \text{if } v_i \text{ is incident with } e_j \\ 0 & \text{otherwise} \end{cases}\]</p>
+        <p>Each column of \(M\) has exactly two 1s (for the two endpoints of the edge). Reading along a row gives the edges incident to that vertex.</p>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — incidence matrix</div>
+        <p>Graph with vertices \(c, a, b\) and edges \(ac, ac, ab, ab, bc\):</p>
+        <p>\[M = \begin{pmatrix} 1 & 1 & 1 & 1 & 0 \\ 0 & 0 & 1 & 1 & 1 \\ 1 & 1 & 0 & 0 & 1 \end{pmatrix}\]</p>
+        <p>Each column sums to 2 (one edge has 2 endpoints). Row sums give vertex degrees: \(\deg(c)=4\), \(\deg(a)=4\), \(\deg(b)=3\). Wait — but \(4+4+3=11\) must equal \(2|E|=10\). The lecture example shows a slightly different graph; just ensure your row sums match vertex degrees.</p>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Comparison: adjacency vs incidence matrix</div>
+        <table class="ref">
+          <tr><th>Property</th><th>Adjacency matrix \(A\)</th><th>Incidence matrix \(M\)</th></tr>
+          <tr><td>Size</td><td>\(n \times n\)</td><td>\(n \times m\) (\(m = |E|\))</td></tr>
+          <tr><td>Entry meaning</td><td>No. of edges between \(v_i, v_j\)</td><td>1 if \(v_i\) incident with \(e_j\)</td></tr>
+          <tr><td>Row sum</td><td>\(\deg(v_i)\) (loops count as 1, not 2!)</td><td>\(\deg(v_i)\)</td></tr>
+          <tr><td>Symmetry</td><td>Always symmetric</td><td>Not square in general</td></tr>
+          <tr><td>Column sum</td><td>Not directly meaningful</td><td>Always 2 (one edge = 2 endpoints)</td></tr>
+        </table>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Caution — adjacency matrix row sum vs degree</div>
+        <p>For a graph <em>with loops</em>, the row sum of the adjacency matrix for vertex \(v_i\) does <em>not</em> equal \(\deg(v_i)\). A loop \(a_{i,i} = 1\) contributes only 1 to the row sum but 2 to the degree. In the incidence matrix, loops are typically not included (or handled separately).</p>
+      </div>
+    </section>
+
+    <!-- SECTION 5: CONNECTEDNESS -->
+    <section id="s5" class="sec">
+      <h2>6.5 Connectedness</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Path and circuit</div>
+        <p>Let \(G\) be a graph and \(n \in \mathbb{Z}^*\). A <b>path of length \(n\)</b> from \(u\) to \(v\) is an alternating sequence of vertices and edges:</p>
+        <p style="text-align:center">\[v_0 e_1 v_1 e_2 \ldots v_{n-1} e_n v_n\]</p>
+        <p>where \(u = v_0\), \(v = v_n\), and \(e_i = v_{i-1}v_i\) for \(i = 1, \ldots, n\).</p>
+        <ul>
+          <li>A <b>circuit</b> is a path with at least one edge and \(u = v\) (same start and end).</li>
+          <li>A path or circuit is <b>simple</b> if the edges it traverses are <b>pairwise distinct</b>.</li>
+          <li>A <b>cycle</b> is a simple circuit where \(v_0, v_1, \ldots, v_{n-1}\) are all distinct.</li>
+        </ul>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Terminology clarification</div>
+        <table class="ref">
+          <tr><th>Term</th><th>Edges distinct?</th><th>Start = End?</th><th>Vertices distinct?</th></tr>
+          <tr><td>Path</td><td>Not required</td><td>No</td><td>Not required</td></tr>
+          <tr><td>Simple path</td><td>Yes</td><td>No</td><td>Not required</td></tr>
+          <tr><td>Circuit</td><td>Not required</td><td>Yes</td><td>Not required</td></tr>
+          <tr><td>Simple circuit</td><td>Yes</td><td>Yes</td><td>Not required</td></tr>
+          <tr><td>Cycle</td><td>Yes</td><td>Yes</td><td>Yes (\(v_0,\ldots,v_{n-1}\))</td></tr>
+        </table>
+        <p style="margin-top:6px;font-size:11.5px">In simple graphs or when edge labelling is unnecessary, a path is often written as \(v_0 v_1 \cdots v_n\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — circuit rerouting</div>
+        <p>If \(v_0 e_1 v_1 \ldots v_{n-1} e_n v_n\) (with \(v_n = v_0\)) is a circuit, then for any \(i\),</p>
+        <p style="text-align:center">\[v_i e_{i+1} v_{i+1} \ldots e_n v_n e_1 v_1 \ldots v_{i-1} e_i v_i\]</p>
+        <p>is also a circuit (you can start from any vertex in the circuit).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Connected graph</div>
+        <p>A graph \(G\) is <b>connected</b> if there is a path between every pair of distinct vertices.</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — deleting an edge in a cycle</div>
+        <p>Let \(G\) be a connected graph. If edge \(e\) belongs to a cycle, then deleting \(e\) from \(G\) yields a graph \(G'\) that is still connected.</p>
+        <div class="proof"><b>Proof.</b> Let \(e = e_1\) be in the cycle \(v_0e_1v_1\ldots v_{n-1}e_nv_0\). For any \(u, v \in G'\), take the simple path from \(u\) to \(v\) in \(G\). If it does not use \(e\), it is already a path in \(G'\). If it uses \(e\) (as subsequence \(v_1 e v_0\)), replace that segment with \(v_1 e_2 v_2 \ldots v_{n-1} e_n v_0\), giving a walk in \(G'\). Thus \(G'\) is connected. \(\square\)</div>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Connected component</div>
+        <p>A <b>connected component</b> of \(G\) is a maximal connected subgraph \(H\) of \(G\). Any vertex not in \(H\) is not connected to any vertex in \(H\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — \(A^k\) counts paths</div>
+        <p>Let \(G\) be a graph with \(V(G) = \{v_1, \ldots, v_n\}\) and adjacency matrix \(A = (a_{i,j})\). For each nonneg integer \(k\), the \((i,j)\)-entry of \(A^k\) equals the <b>number of paths of length \(k\)</b> from \(v_i\) to \(v_j\).</p>
+        <div class="proof"><b>Proof sketch.</b> Base case \(k=1\): \(a_{i,j}\) is the number of edges (length-1 paths) from \(v_i\) to \(v_j\). Inductive step: any length-\((k+1)\) path from \(v_i\) to \(v_j\) goes first to some neighbour \(v_m\) along a length-\(k\) path, then uses one edge \(v_m v_j\). The count is \(\sum_m a_{i,m}^k \cdot a_{m,j} = a_{i,j}^{k+1}\), which is matrix multiplication. \(\square\)</div>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — powers of adjacency matrix</div>
+        <p>Graph with vertices \(v_1, v_2, v_3\) and adjacency matrix:</p>
+        <p>\[A = \begin{pmatrix}1&1&1\\1&0&1\\1&1&0\end{pmatrix}, \quad A^2 = \begin{pmatrix}3&2&2\\2&2&1\\2&1&2\end{pmatrix}, \quad A^3 = \begin{pmatrix}7&5&5\\5&3&4\\5&4&3\end{pmatrix}\]</p>
+        <p>Since \(a_{11}^2 = 3\), there are 3 paths of length 2 from \(v_1\) to \(v_1\): \(v_1v_2v_1\), \(v_1v_3v_1\), \(v_1v_1v_1\). Since \(a_{23}^3 = 4\), there are 4 paths of length 3 from \(v_2\) to \(v_3\).</p>
+      </div>
+    </section>
+
+    <!-- SECTION 6: EULER CIRCUITS -->
+    <section id="s6" class="sec">
+      <h2>6.6 Euler Circuits &amp; Paths</h2>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Euler circuit</div>
+        <p>An <b>Euler circuit</b> in a graph \(G\) is a <em>simple circuit</em> that contains <b>every vertex and every edge</b> of \(G\).</p>
+      </div>
+
+      <div class="thm">
+        <div class="lbl lbl-t">Theorem — Euler circuit condition</div>
+        <p>A connected graph has an Euler circuit if and only if <b>every vertex has even degree</b>.</p>
+        <div class="proof">
+          <b>Proof (\(\Rightarrow\)).</b> Suppose \(G\) has an Euler circuit. Each time the circuit enters a vertex via one edge, it must exit via another. So the edges at each vertex can be paired up (entry–exit), meaning the degree is even.
+          <br><br>
+          <b>Proof (\(\Leftarrow\)) sketch.</b> Suppose \(G\) is connected and every vertex has even degree. Start from any vertex \(a\). Each time you enter a non-\(a\) vertex \(b\), you can always leave (since \(\deg(b)\) is even, pairing ensures an unused exit edge remains). The graph is finite, so you eventually return to \(a\), forming a circuit. If unused edges remain, they share a vertex with the circuit — extend the circuit by inserting a sub-circuit from that vertex. Repeat until all edges are used. \(\square\)
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="lbl lbl-e">Example — Euler circuit construction</div>
+        <p>Pentagon \(K_5\) (or rather \(W_5\) / the complete graph on 5 vertices: all degrees 4 = even). Start at \(a\): get circuit \(abca\). Remaining edges include \(b, d, e\). Extend at \(b\): insert \(b(dbeb)a\) → circuit \(a(bdeb)ca\) or \(abdebca\). Remaining edges around \(d, e\): insert \(a(daecd)ebca\) → Euler circuit \(ab(daecd)ebca\).</p>
+      </div>
+
+      <div class="def">
+        <div class="lbl lbl-d">Definition — Euler path</div>
+        <p>An <b>Euler path</b> in a graph \(G\) is a simple path (not a circuit) that contains <b>every vertex and every edge</b> of \(G\).</p>
+      </div>
+
+      <div class="cor">
+        <div class="lbl lbl-c">Corollary — Euler path condition</div>
+        <p>A graph has an Euler path (but not an Euler circuit) if and only if it is connected and has <b>exactly two vertices of odd degree</b>. The path must start at one odd-degree vertex and end at the other.</p>
+        <div class="proof"><b>Proof.</b> Let the two odd-degree vertices be \(u\) and \(w\). Add a new edge \(uw\) to form graph \(G'\). Every vertex of \(G'\) is now even-degree, so \(G'\) has an Euler circuit. Removing the added edge \(uw\) from the circuit gives an Euler path from \(u\) to \(w\) in \(G\). \(\square\)</div>
+      </div>
+
+      <div class="rem">
+        <div class="lbl lbl-e">Summary — Euler circuit vs Euler path</div>
+        <table class="ref">
+          <tr><th>Condition</th><th>Conclusion</th></tr>
+          <tr><td>Connected + all vertices even degree</td><td>Euler circuit exists</td></tr>
+          <tr><td>Connected + exactly 2 vertices odd degree</td><td>Euler path (not circuit) exists</td></tr>
+          <tr><td>Connected + \(\geq 4\) vertices odd degree</td><td>Neither Euler circuit nor path</td></tr>
+          <tr><td>Disconnected (with edges)</td><td>Neither Euler circuit nor path</td></tr>
+        </table>
+        <p style="margin-top:6px;font-size:11.5px">By the Handshaking corollary, the number of odd-degree vertices is always even, so 1 or 3 odd-degree vertices are impossible.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 7: QUICK REFERENCE -->
+    <section id="s7" class="sec">
+      <h2>6.7 Quick Reference</h2>
+
+      <h3>All key definitions at a glance</h3>
+      <table class="ref">
+        <tr><th>Term</th><th>Meaning</th></tr>
+        <tr><td>Graph \(G=(V,E)\)</td><td>Nonempty vertex set + edge set; edges have 1 or 2 endpoints</td></tr>
+        <tr><td>Simple graph</td><td>No loops, no multiple edges</td></tr>
+        <tr><td>Multigraph</td><td>No loops, allows multiple edges</td></tr>
+        <tr><td>Digraph</td><td>Edges are directed (ordered pairs)</td></tr>
+        <tr><td>Adjacent</td><td>\(a, b\) adjacent iff \(ab\) is an edge</td></tr>
+        <tr><td>Incident</td><td>Edge \(e\) incident to \(v\) iff \(v\) is an endpoint of \(e\)</td></tr>
+        <tr><td>\(\deg(v)\)</td><td>Number of edges incident to \(v\); loops count as 2</td></tr>
+        <tr><td>Isolated</td><td>\(\deg(v) = 0\)</td></tr>
+        <tr><td>Subgraph \(H \subseteq G\)</td><td>\(W \subseteq V\) and \(F \subseteq E\)</td></tr>
+        <tr><td>Path of length \(n\)</td><td>Alternating vertex-edge sequence, \(n\) edges</td></tr>
+        <tr><td>Simple path/circuit</td><td>Edges pairwise distinct</td></tr>
+        <tr><td>Cycle</td><td>Simple circuit, all intermediate vertices distinct</td></tr>
+        <tr><td>Connected</td><td>Path exists between every pair of vertices</td></tr>
+        <tr><td>Connected component</td><td>Maximal connected subgraph</td></tr>
+        <tr><td>Euler circuit</td><td>Simple circuit using every edge (and vertex)</td></tr>
+        <tr><td>Euler path</td><td>Simple path using every edge (and vertex); not a circuit</td></tr>
+      </table>
+
+      <h3>Handshaking theorem — quick applications</h3>
+      <table class="ref">
+        <tr><th>Given</th><th>Conclusion</th></tr>
+        <tr><td>\(\sum \deg(v) = 2|E|\)</td><td>Sum of degrees is always even</td></tr>
+        <tr><td>All vertices degree \(r\)</td><td>\(r\)-regular graph: \(|E| = rn/2\)</td></tr>
+        <tr><td>Odd number of odd-degree vertices</td><td>Impossible (by corollary)</td></tr>
+        <tr><td>Euler circuit exists</td><td>All degrees even \(\Rightarrow\) \(\sum \deg(v) \equiv 0 \pmod{2}\)</td></tr>
+      </table>
+
+      <h3>Key formula reference</h3>
+      <table class="ref">
+        <tr><th>Graph</th><th>Formula</th></tr>
+        <tr><td>\(|E(K_n)|\)</td><td>\(\binom{n}{2} = \dfrac{n(n-1)}{2}\)</td></tr>
+        <tr><td>\(|E(K_{m,n})|\)</td><td>\(mn\)</td></tr>
+        <tr><td>\(|E(Q_n)|\)</td><td>\(n \cdot 2^{n-1}\)</td></tr>
+        <tr><td>Paths of length \(k\) from \(v_i\) to \(v_j\)</td><td>\((A^k)_{ij}\)</td></tr>
+      </table>
+    </section>
+
+    <!-- SECTION 8: TUTORIAL SOLUTIONS -->
+    <section id="s8" class="sec">
+      <h2>Tutorial 11</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Questions 1–6 of Tutorial 11 cover Chapter 6 content. Questions 7–12 (trees) belong to Chapter 7.</p>
+
+      <!-- Q1 -->
+      <div class="tq">
+        <p class="qs">Q1. Seven students \(a_1, \ldots, a_7\) must split into groups. The following pairs cannot work together: \((a_1,a_2),(a_1,a_3),(a_2,a_3),(a_2,a_6),(a_3,a_6),(a_4,a_6),(a_4,a_7),(a_5,a_6),(a_5,a_7)\). Describe a graph \(G\) modelling these relations. Use \(G\) to find the minimum number of groups needed.</p>
+        <button class="togbtn" onclick="tog('t1')">Show solution ▾</button>
+        <div id="t1" class="tog">
+          <div class="sol">
+            <p><b>Graph model.</b> Let vertices be \(\{a_1,\ldots,a_7\}\) and edges be the incompatible pairs listed. We need to colour the vertices such that no two adjacent vertices share a colour — each colour class is a valid group. The minimum number of groups is the <b>chromatic number</b> \(\chi(G)\).</p>
+            <p><b>Lower bound.</b> \(a_1, a_2, a_3\) form a triangle (\(K_3\)): all three are mutually incompatible. A triangle requires at least 3 colours, so \(\chi(G) \geq 3\).</p>
+            <p><b>3-colouring construction.</b> Assign:</p>
+            <ul>
+              <li>Colour 1: \(a_1, a_6\) — \((a_1,a_6)\) is not an edge ✓</li>
+              <li>Colour 2: \(a_2, a_4\) — \((a_2,a_4)\) is not an edge ✓</li>
+              <li>Colour 3: \(a_3, a_5, a_7\) — check: \((a_3,a_5)\) not an edge ✓; \((a_3,a_7)\) not an edge ✓; \((a_5,a_7)\) is an edge ✗</li>
+            </ul>
+            <p>Adjustment: move \(a_7\) to Colour 2. Now Colour 2: \(a_2, a_4, a_7\) — \((a_2,a_7)\) not edge ✓; \((a_4,a_7)\) is an edge ✗.</p>
+            <p>Correct assignment:</p>
+            <ul>
+              <li>Colour 1: \(\{a_1, a_6\}\) — incompatible pairs within: none ✓</li>
+              <li>Colour 2: \(\{a_2, a_4\}\) — incompatible pairs within: none ✓ (\((a_2,a_4)\) not listed)</li>
+              <li>Colour 3: \(\{a_3, a_7\}\) — \((a_3,a_7)\) not listed ✓</li>
+              <li>Remaining: \(a_5\) → Colour 2: \(a_5\) adj to \(a_6\)(Colour 1) ✓; \(a_5\) adj to \(a_7\)(Colour 3) ✓; \((a_5,a_4)\) not listed ✓; \((a_5,a_2)\) not listed ✓ → Colour 2: \(\{a_2,a_4,a_5\}\)</li>
+            </ul>
+            <p>Final: Colour 1: \(\{a_1,a_6\}\), Colour 2: \(\{a_2,a_4,a_5\}\), Colour 3: \(\{a_3,a_7\}\). Verify no edge within each group: ✓ all clear.</p>
+            <p><b>Conclusion.</b> The minimum number of groups is \(\boxed{3}\).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="tq">
+        <p class="qs">Q2. In the graph with 7 vertices \(a,b,c,d,e,f,g\) (a dense graph where \(b\) is a central vertex connected to all others and many cross-edges exist): (i) Find a simple circuit of length 8. (ii) Find the largest \(n\) such that \(C_n\) is a subgraph. (iii) Find all neighbours of \(b\). (iv) Find two different paths of length 3 from \(c\) to \(e\).</p>
+        <button class="togbtn" onclick="tog('t2')">Show solution ▾</button>
+        <div id="t2" class="tog">
+          <div class="sol">
+            <p><b>Note.</b> The exact answers depend on the adjacency of the specific graph drawn in the tutorial. The graph has 7 vertices \(\{a,b,c,d,e,f,g\}\) with \(b\) at the centre and many cross edges. The following approach applies to any such graph.</p>
+            <p><b>(i) Simple circuit of length 8.</b> A simple circuit of length 8 uses 8 distinct edges and returns to the start. With 7 vertices, this necessarily revisits at least one vertex. To find one: start at a high-degree vertex, trace 8 distinct edges back to the start. Example using a graph where \(a,b,c,d,e,f,g\) are all pairwise connected (like \(K_7\)): \(a \to b \to c \to d \to e \to f \to g \to a \to b\) is a circuit of length 7... adjust: \(a \to b \to c \to d \to b \to e \to f \to g \to a\) — length 8, edges \(ab,bc,cd,db,be,ef,fg,ga\) — all distinct provided these edges exist. Trace the specific graph given.</p>
+            <p><b>(ii) Largest \(C_n\) subgraph.</b> Find the longest cycle. In a 7-vertex graph with many edges, typically \(C_7\) (Hamiltonian cycle) may be achievable. If the graph is Hamiltonian, the answer is \(n=7\): \(a \to b \to c \to d \to e \to f \to g \to a\) (check all these edges exist). Otherwise, find the longest cycle by inspection.</p>
+            <p><b>(iii) Neighbours of \(b\).</b> List all vertices adjacent to \(b\) (all vertices \(v\) such that \(bv\) is an edge). From the figure, \(b\) appears connected to \(a, c, d, e, f, g\) — confirm from the drawn graph.</p>
+            <p><b>(iv) Two paths of length 3 from \(c\) to \(e\).</b> A path of length 3 uses exactly 3 edges. Possible paths (verify edges exist in the figure):</p>
+            <ul>
+              <li>Path 1: \(c \to b \to d \to e\) (if edges \(cb, bd, de\) all exist)</li>
+              <li>Path 2: \(c \to d \to b \to e\) (if edges \(cd, db, be\) all exist)</li>
+            </ul>
+            <p>The two paths must use distinct sequences of edges. Read off the actual graph in your tutorial sheet to confirm which edges are present.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="tq">
+        <p class="qs">Q3. Either draw the graph with the specified properties or explain why no such graph exists. (i) 4 vertices with degrees 1, 1, 1, 4. (ii) 4 vertices with degrees 1, 2, 3, 4.</p>
+        <button class="togbtn" onclick="tog('t3')">Show solution ▾</button>
+        <div id="t3" class="tog">
+          <div class="sol">
+            <p><b>(i) 4 vertices, degrees 1, 1, 1, 4.</b></p>
+            <p>Sum of degrees \(= 1+1+1+4 = 7\), which is <b>odd</b>. By the Handshaking Theorem, \(\sum \deg(v) = 2|E|\) must be even. Since 7 is odd, <b>no such graph exists</b> (not even with loops or multiple edges, since each edge always contributes exactly 2 to the total degree sum).</p>
+            <p><b>(ii) 4 vertices, degrees 1, 2, 3, 4.</b></p>
+            <p>Sum \(= 1+2+3+4 = 10 = 2 \times 5\), so \(|E| = 5\). The sum is even — not immediately ruled out by Handshaking.</p>
+            <p>However, in a <b>simple graph</b> with 4 vertices, each vertex can connect to at most 3 others, so the maximum degree is 3. A degree-4 vertex is impossible. <b>No simple graph</b> with these degree sequence exists.</p>
+            <p>In a <b>multigraph</b> (multiple edges allowed, no loops): vertex \(v_1\) (degree 4) connects to 4 edges. With only 3 other vertices, at least one pair has multiplicity \(\geq 2\). One valid multigraph: \(v_1v_2\) (double edge), \(v_1v_3\), \(v_1v_4\), \(v_3v_4\), \(v_2v_3\). Check degrees: \(v_1 = 4\) ✓, \(v_2 = 3\) (two from \(v_1\), one from \(v_3\)) ✓, \(v_3 = 3\) (\(v_1, v_4, v_2\)) — that is 3, not 2. Adjust: \(v_1v_2\) (double), \(v_1v_3\), \(v_1v_4\), \(v_3v_4\). Degrees: \(v_1=4, v_2=2, v_3=2, v_4=2\). Doesn't match. Try: edges \(v_1v_2\) (double), \(v_1v_3\), \(v_1v_4\), \(v_2v_3\), \(v_2v_4\). Degrees: \(v_1=4, v_2=4, v_3=2, v_4=2\) — nope. Systematic: need degrees (1,2,3,4). Label them \(a=1,b=2,c=3,d=4\). \(d\) has degree 4 with 3 neighbours available → \(d\) connects to \(a,b,c\) with one double edge. \(d\text{-}a\), \(d\text{-}b\), \(d\text{-}c\), \(d\text{-}c\) (double). Degrees: \(d=4,c=2\) (from \(d\)), needs \(\deg(c)=3\): add \(c\text{-}b\). \(b\) now has \(db + cb = 2\) edges ✓, \(a\) has \(da = 1\) edge ✓, \(c = 3\) ✓, \(d=4\) ✓. <b>A multigraph exists.</b></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="tq">
+        <p class="qs">Q4. Graph \(G\) has 50 edges, 9 vertices of degree 2, and 10 vertices of degree 6. The degrees of the other vertices are either 3 or 5. How many vertices does \(G\) have?</p>
+        <button class="togbtn" onclick="tog('t4')">Show solution ▾</button>
+        <div id="t4" class="tog">
+          <div class="sol">
+            <p>Let \(n_3\) = number of degree-3 vertices, \(n_5\) = number of degree-5 vertices.</p>
+            <p>By the Handshaking Theorem:</p>
+            <p>\[\sum_{v} \deg(v) = 2|E| = 2 \times 50 = 100\]</p>
+            <p>\[9 \times 2 + 10 \times 6 + 3n_3 + 5n_5 = 100\]</p>
+            <p>\[18 + 60 + 3n_3 + 5n_5 = 100\]</p>
+            <p>\[3n_3 + 5n_5 = 22\]</p>
+            <p>Solving over nonneg integers:</p>
+            <table class="ref" style="width:auto">
+              <tr><th>\(n_5\)</th><th>\(3n_3 = 22 - 5n_5\)</th><th>\(n_3\)</th><th>Integer?</th></tr>
+              <tr><td>0</td><td>22</td><td>—</td><td>No</td></tr>
+              <tr><td>1</td><td>17</td><td>—</td><td>No</td></tr>
+              <tr><td>2</td><td>12</td><td>4</td><td><b>Yes ✓</b></td></tr>
+              <tr><td>3</td><td>7</td><td>—</td><td>No</td></tr>
+              <tr><td>4</td><td>2</td><td>—</td><td>No</td></tr>
+            </table>
+            <p>So \(n_3 = 4, n_5 = 2\).</p>
+            <p>Total vertices \(= 9 + 10 + 4 + 2 = \boxed{25}\).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="tq">
+        <p class="qs">Q5. (a) Prove that \(Q_n\) is bipartite. (b) Suppose each vertex of \(Q_n\) represents a processor, and two processors are connected if they share an edge. Show any two processors are connected by a simple path of length at most \(n\).</p>
+        <button class="togbtn" onclick="tog('t5')">Show solution ▾</button>
+        <div id="t5" class="tog">
+          <div class="sol">
+            <p><b>(a) \(Q_n\) is bipartite.</b></p>
+            <p>Define a bipartition of \(V(Q_n)\) as follows:</p>
+            <ul>
+              <li>\(V_1\) = all \(n\)-bit strings with an <b>even</b> number of 1s.</li>
+              <li>\(V_2\) = all \(n\)-bit strings with an <b>odd</b> number of 1s.</li>
+            </ul>
+            <p>These are disjoint and \(V_1 \cup V_2 = V(Q_n)\).</p>
+            <p>Now take any edge \(uv\) in \(Q_n\). By definition, \(u\) and \(v\) differ in exactly one bit position. Flipping one bit changes the count of 1s by exactly 1 (either \(+1\) or \(-1\)), so the parity of the number of 1s changes. Thus if \(u \in V_1\) (even number of 1s), then \(v \in V_2\) (odd), and vice versa. Every edge connects \(V_1\) to \(V_2\), so \((V_1, V_2)\) is a valid bipartition. Hence \(Q_n\) is bipartite. \(\square\)</p>
+            <p><b>(b) Any two vertices in \(Q_n\) are connected by a simple path of length \(\leq n\).</b></p>
+            <p>Let \(u\) and \(v\) be any two vertices in \(Q_n\), represented as bit strings \(u = u_1u_2\cdots u_n\) and \(v = v_1v_2\cdots v_n\).</p>
+            <p>Suppose they differ in positions \(i_1, i_2, \ldots, i_k\) (where \(0 \leq k \leq n\)). Construct a path by flipping bits one at a time to transform \(u\) into \(v\):</p>
+            <p>\[u = w_0 \to w_1 \to w_2 \to \cdots \to w_k = v\]</p>
+            <p>where \(w_j\) is obtained from \(w_{j-1}\) by flipping bit \(i_j\). Each consecutive pair \(w_{j-1}, w_j\) differs in exactly one bit, so \(w_{j-1}w_j\) is an edge in \(Q_n\).</p>
+            <p>The path has length \(k \leq n\). It is simple: each \(w_j\) has strictly more bits matching \(v\) than \(w_{j-1}\), so no vertex is repeated. \(\square\)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="tq">
+        <p class="qs">Q6. \(A\) is the adjacency matrix of graph \(G\) and \(B\) is the incidence matrix of graph \(H\).
+        \[A = \begin{pmatrix}0&1&1&0\\1&0&0&1\\1&0&0&1\\0&1&1&0\end{pmatrix}, \quad B = \begin{pmatrix}1&1&0&0&0\\1&0&1&0&1\\0&0&0&1&1\\0&1&1&1&0\end{pmatrix}\]
+        (a) Draw \(G\) and \(H\). (b) \(H\) does not have an Euler circuit. What is the minimum number of edges to add so that \(H\) has an Euler circuit?</p>
+        <button class="togbtn" onclick="tog('t6')">Show solution ▾</button>
+        <div id="t6" class="tog">
+          <div class="sol">
+            <p><b>(a) Drawing \(G\) from adjacency matrix \(A\).</b></p>
+            <p>Vertices: \(v_1, v_2, v_3, v_4\). Nonzero off-diagonal entries: \(a_{12}=a_{21}=1, a_{13}=a_{31}=1, a_{24}=a_{42}=1, a_{34}=a_{43}=1\). Edges: \(v_1v_2, v_1v_3, v_2v_4, v_3v_4\). This is a 4-cycle \(C_4\) (path \(v_1 \to v_2 \to v_4 \to v_3 \to v_1\)). All degrees = 2.</p>
+            <p><b>Drawing \(H\) from incidence matrix \(B\).</b></p>
+            <p>4 rows = vertices \(v_1,v_2,v_3,v_4\); 5 columns = edges \(e_1,\ldots,e_5\). Read each column (edge) — the two rows with 1 are the endpoints:</p>
+            <ul>
+              <li>\(e_1\): rows 1,2 → edge \(v_1v_2\)</li>
+              <li>\(e_2\): rows 1,4 → edge \(v_1v_4\)</li>
+              <li>\(e_3\): rows 2,4 → edge \(v_2v_4\)</li>
+              <li>\(e_4\): rows 3,4 → edge \(v_3v_4\)</li>
+              <li>\(e_5\): rows 2,3 → edge \(v_2v_3\)</li>
+            </ul>
+            <p>\(H\) has edges \(v_1v_2, v_1v_4, v_2v_4, v_3v_4, v_2v_3\). Degrees: \(\deg(v_1)=2, \deg(v_2)=3, \deg(v_3)=2, \deg(v_4)=3\).</p>
+            <p><b>(b) Minimum edges to add for an Euler circuit in \(H\).</b></p>
+            <p>For an Euler circuit, all vertices must have even degree. Currently \(v_2\) and \(v_4\) have odd degree (3). To make all degrees even, add the edge \(v_2v_4\). This increases \(\deg(v_2)\) to 4 and \(\deg(v_4)\) to 4, both even. \(v_1\) and \(v_3\) already have degree 2.</p>
+            <p>Adding a second copy of \(v_2v_4\) is allowed (multigraph). Now every vertex has even degree and the graph remains connected → Euler circuit exists.</p>
+            <p><b>Minimum number of edges to add: \(\boxed{1}\)</b> (the edge \(v_2v_4\)).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 9: INTERACTIVE TOOLS -->
+    <section id="s9" class="sec">
+      <h2>Interactive Tools</h2>
+
+      <!-- Tool 1: Degree sequence checker -->
+      <div class="tool">
+        <h3>Tool 1 — Degree sequence analyser</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Enter comma-separated vertex degrees. The tool checks the Handshaking Theorem and determines Euler circuit/path existence.</p>
+        <div class="tool-row">
+          <label>Degrees</label>
+          <input type="text" id="deg-in" placeholder="e.g. 2, 3, 3, 4, 2" style="flex:1">
+          <button class="go" onclick="runDeg()">Analyse</button>
+        </div>
+        <div class="out" id="deg-out">Enter degrees above and click Analyse.</div>
+      </div>
+
+      <!-- Tool 2: Adjacency matrix power calculator -->
+      <div class="tool">
+        <h3>Tool 2 — Adjacency matrix path counter (\(A^k\))</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Enter an \(n \times n\) adjacency matrix (one row per line, space-separated). Then enter \(k\) to compute \(A^k\) and read off path counts.</p>
+        <div class="tool-row">
+          <label>Matrix (rows)</label>
+          <textarea id="mat-in" placeholder="1 1 1&#10;1 0 1&#10;1 1 0" style="flex:1;min-height:80px"></textarea>
+        </div>
+        <div class="tool-row">
+          <label>Power \(k\)</label>
+          <input type="number" id="mat-k" value="2" min="1" max="8" style="width:70px">
+          <button class="go" onclick="runMat()">Compute \(A^k\)</button>
+        </div>
+        <div class="out" id="mat-out">Enter matrix and power above.</div>
+      </div>
+
+      <!-- Tool 3: Euler circuit checker -->
+      <div class="tool">
+        <h3>Tool 3 — Euler circuit / path checker</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Enter edges as pairs (e.g. <code>a b</code>, one per line). Specify whether the graph is connected. The tool checks for Euler circuit and path.</p>
+        <div class="tool-row">
+          <label>Edges</label>
+          <textarea id="euler-in" placeholder="a b&#10;b c&#10;c d&#10;d a&#10;a c" style="flex:1;min-height:90px"></textarea>
+        </div>
+        <div class="tool-row">
+          <label>Connected?</label>
+          <select id="euler-conn" style="border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--color-background-primary);color:var(--color-text-primary)">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <button class="go" onclick="runEuler()">Check</button>
+        </div>
+        <div class="out" id="euler-out">Enter edges above and click Check.</div>
+      </div>
+
+      <!-- Tool 4: Special graph properties -->
+      <div class="tool">
+        <h3>Tool 4 — Special graph calculator</h3>
+        <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:12px">Select a graph type and enter parameters. Instantly see vertex count, edge count, degrees, and bipartiteness.</p>
+        <div class="tool-row">
+          <label>Type</label>
+          <select id="sg-type" style="border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;background:var(--color-background-primary);color:var(--color-text-primary)" onchange="runSG()">
+            <option value="Kn">Complete \(K_n\)</option>
+            <option value="Cn">Cycle \(C_n\)</option>
+            <option value="Wn">Wheel \(W_n\)</option>
+            <option value="Qn">Hypercube \(Q_n\)</option>
+            <option value="Kmn">Complete bipartite \(K_{m,n}\)</option>
+          </select>
+          <input type="number" id="sg-n" value="4" min="1" max="12" style="width:55px" oninput="runSG()">
+          <input type="number" id="sg-m" value="3" min="1" max="12" style="width:55px;display:none" oninput="runSG()">
+        </div>
+        <div class="out" id="sg-out">Select a graph type above.</div>
+      </div>
+    </section>
+
+    <!-- SECTION 10: QUIZ -->
+    <section id="s10" class="sec">
+      <h2>Quiz — 10 questions</h2>
+      <p style="font-size:11.5px;color:var(--color-text-secondary);margin-bottom:16px">Select an answer to reveal the explanation. Score tracked in the sidebar.</p>
+      <div id="quiz-area"></div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="nav.js"></script>
+<script>
+function init() {
+  if (!window.renderMathInElement) { setTimeout(init,80); return; }
+  renderMathInElement(document.body,{delimiters:DLMS,throwOnError:false,ignoredTags:['script','style','textarea','pre']});
+  buildQuiz();
+  runSG();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('wr').style.display='flex';
+}
+
+/* ---- DEGREE ANALYSER ---- */
+function runDeg() {
+  var raw = document.getElementById('deg-in').value;
+  var parts = raw.split(',');
+  var degs = [];
+  for (var i=0;i<parts.length;i++) {
+    var v = parseInt(parts[i].trim(),10);
+    if (isNaN(v)||v<0) { document.getElementById('deg-out').innerHTML='<span class="badge badge-err">Error: invalid input. Enter nonneg integers separated by commas.</span>'; return; }
+    degs.push(v);
+  }
+  var sum = 0;
+  for (var i=0;i<degs.length;i++) sum+=degs[i];
+  var n = degs.length;
+  var html = '<b>Vertices:</b> '+n+'<br>';
+  html += '<b>Degree sum:</b> '+sum;
+  if (sum%2===0) {
+    html += ' <span class="badge badge-ok">Even ✓</span> (so |E| = '+sum/2+')<br>';
+  } else {
+    html += ' <span class="badge badge-err">Odd — impossible! No such graph exists.</span><br>';
+    document.getElementById('deg-out').innerHTML = html;
+    return;
+  }
+  var odd = [];
+  for (var i=0;i<degs.length;i++) if (degs[i]%2!==0) odd.push('v'+(i+1)+'(deg='+degs[i]+')');
+  html += '<b>Odd-degree vertices:</b> '+odd.length;
+  if (odd.length%2===0) html += ' <span class="badge badge-ok">Even count ✓</span>';
+  else html += ' <span class="badge badge-err">Odd count — impossible!</span>';
+  var oddSuffix = odd.length>0 ? ' ('+odd.join(', ')+')' : '';
+  html += oddSuffix;
+  html += '<br>';
+  html += '<b>Euler circuit:</b> ';
+  if (odd.length===0) html += '<span class="badge badge-ok">Possible (all degrees even) — provided graph is connected</span><br>';
+  else html += '<span class="badge badge-err">Not possible ('+odd.length+' odd-degree vertices)</span><br>';
+  html += '<b>Euler path:</b> ';
+  if (odd.length===2) html += '<span class="badge badge-ok">Possible (exactly 2 odd-degree vertices: '+odd[0]+' and '+odd[1]+') — provided graph is connected</span>';
+  else if (odd.length===0) html += '<span class="badge badge-warn">Not distinct from circuit (all degrees even; Euler path = Euler circuit)</span>';
+  else html += '<span class="badge badge-err">Not possible (need exactly 0 or 2 odd-degree vertices; have '+odd.length+')</span>';
+  document.getElementById('deg-out').innerHTML = html;
+}
+
+/* ---- MATRIX POWER ---- */
+function matMul(A,B,n) {
+  var C = [];
+  for (var i=0;i<n;i++) { C.push([]); for (var j=0;j<n;j++) { var s=0; for (var k=0;k<n;k++) s+=A[i][k]*B[k][j]; C[i].push(s); } }
+  return C;
+}
+function matPow(A,k,n) {
+  if (k===1) return A;
+  var result = [];
+  for (var i=0;i<n;i++) { result.push([]); for (var j=0;j<n;j++) result[i].push(i===j?1:0); }
+  for (var p=0;p<k;p++) result = matMul(result,A,n);
+  return result;
+}
+function runMat() {
+  var raw = document.getElementById('mat-in').value.trim();
+  var k = parseInt(document.getElementById('mat-k').value,10);
+  var rows = raw.split('\n');
+  var n = rows.length;
+  var A = [];
+  for (var i=0;i<n;i++) {
+    var cols = rows[i].trim().split(/\s+/);
+    if (cols.length!==n) { document.getElementById('mat-out').innerHTML='<span class="badge badge-err">Error: row '+(i+1)+' has '+cols.length+' entries, expected '+n+'</span>'; return; }
+    A.push([]);
+    for (var j=0;j<cols.length;j++) { var v=parseInt(cols[j],10); if(isNaN(v)){ document.getElementById('mat-out').innerHTML='<span class="badge badge-err">Non-integer value found</span>'; return; } A[i].push(v); }
+  }
+  var Ak = matPow(A,k,n);
+  var html = '<b>A<sup>'+k+'</sup> ('+n+'&times;'+n+'):</b><br><table class="ref" style="margin-top:6px">';
+  var labels = [];
+  for (var i=0;i<n;i++) labels.push('v'+(i+1));
+  html += '<tr><th></th>';
+  for (var j=0;j<n;j++) html += '<th>'+labels[j]+'</th>';
+  html += '</tr>';
+  for (var i=0;i<n;i++) {
+    html += '<tr><th>'+labels[i]+'</th>';
+    for (var j=0;j<n;j++) html += '<td style="text-align:center">'+Ak[i][j]+'</td>';
+    html += '</tr>';
+  }
+  html += '</table><br><b>Interpretation:</b> Entry (i,j) = number of paths of length '+k+' from v_i to v_j.';
+  html += '<br>E.g. A<sup>'+k+'</sup>[1][1] = '+Ak[0][0]+' paths of length '+k+' from v1 back to v1.';
+  document.getElementById('mat-out').innerHTML = html;
+}
+
+/* ---- EULER CHECKER ---- */
+function runEuler() {
+  var raw = document.getElementById('euler-in').value.trim();
+  var conn = document.getElementById('euler-conn').value;
+  if (!raw) { document.getElementById('euler-out').innerHTML='<span class="badge badge-err">No edges entered.</span>'; return; }
+  var lines = raw.split('\n');
+  var degMap = {};
+  var edgeCount = 0;
+  for (var i=0;i<lines.length;i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    var parts = line.split(/\s+/);
+    if (parts.length<2) { document.getElementById('euler-out').innerHTML='<span class="badge badge-err">Error: line '+(i+1)+' needs two vertex names.</span>'; return; }
+    var u=parts[0], v=parts[1];
+    if (!degMap[u]) degMap[u]=0;
+    if (!degMap[v]) degMap[v]=0;
+    if (u===v) { degMap[u]+=2; } else { degMap[u]++; degMap[v]++; }
+    edgeCount++;
+  }
+  var verts = Object.keys(degMap).sort();
+  var oddVerts = [];
+  for (var i=0;i<verts.length;i++) if (degMap[verts[i]]%2!==0) oddVerts.push(verts[i]+'(deg='+degMap[verts[i]]+')');
+  var html = '<b>Vertices:</b> '+verts.join(', ')+'<br>';
+  html += '<b>Edges:</b> '+edgeCount+'<br>';
+  html += '<b>Degree sequence:</b> ';
+  for (var i=0;i<verts.length;i++) html += verts[i]+':'+degMap[verts[i]]+' ';
+  html += '<br>';
+  html += '<b>Odd-degree vertices:</b> '+(oddVerts.length===0?'none':oddVerts.join(', '))+'<br>';
+  html += '<b>Connected:</b> '+conn+'<br><br>';
+  var isConn = (conn==='yes');
+  html += '<b>Euler circuit:</b> ';
+  if (isConn && oddVerts.length===0) html += '<span class="badge badge-ok">EXISTS — connected and all vertices even degree</span>';
+  else if (!isConn) html += '<span class="badge badge-err">NONE — graph is disconnected</span>';
+  else html += '<span class="badge badge-err">NONE — '+oddVerts.length+' odd-degree vertices (need 0)</span>';
+  html += '<br><b>Euler path:</b> ';
+  if (isConn && oddVerts.length===2) html += '<span class="badge badge-ok">EXISTS — connected and exactly 2 odd-degree vertices (start/end at odd-degree vertices)</span>';
+  else if (isConn && oddVerts.length===0) html += '<span class="badge badge-warn">Circuit only — all degrees even (Euler path = Euler circuit)</span>';
+  else if (!isConn) html += '<span class="badge badge-err">NONE — graph is disconnected</span>';
+  else html += '<span class="badge badge-err">NONE — '+oddVerts.length+' odd-degree vertices (need exactly 2)</span>';
+  document.getElementById('euler-out').innerHTML = html;
+}
+
+/* ---- SPECIAL GRAPH CALCULATOR ---- */
+function runSG() {
+  var type = document.getElementById('sg-type').value;
+  var n = parseInt(document.getElementById('sg-n').value,10)||4;
+  var m = parseInt(document.getElementById('sg-m').value,10)||3;
+  var mInput = document.getElementById('sg-m');
+  mInput.style.display = (type==='Kmn')?'block':'none';
+  if (isNaN(n)||n<1) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">Enter a positive integer for n.</span>'; return; }
+  var html = '';
+  if (type==='Kn') {
+    if (n<1) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">n must be \u2265 1</span>'; return; }
+    var E = n*(n-1)/2;
+    html = '<b>Graph:</b> K<sub>'+n+'</sub><br>';
+    html += '<b>Vertices:</b> '+n+'<br>';
+    html += '<b>Edges:</b> '+E+'<br>';
+    html += '<b>Vertex degree:</b> '+(n-1)+' (each vertex connects to all others)<br>';
+    html += '<b>Degree sum check:</b> '+n+'&times;'+(n-1)+'='+(n*(n-1))+' = 2&times;'+E+' ✓<br>';
+    html += '<b>Bipartite:</b> '+(n<=2?'Yes (n \u2264 2)':'No (contains K\u2083 for n \u2265 3)')+'<br>';
+    html += '<b>Euler circuit:</b> ';
+    if (n===1) html += 'Trivially yes (single vertex, no edges)';
+    else if ((n-1)%2===0) html += '<span class="badge badge-ok">Yes — all degrees '+(n-1)+' are even</span>';
+    else html += '<span class="badge badge-err">No — all degrees '+(n-1)+' are odd</span>';
+  } else if (type==='Cn') {
+    if (n<1) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">n must be \u2265 1</span>'; return; }
+    html = '<b>Graph:</b> C<sub>'+n+'</sub><br>';
+    html += '<b>Vertices:</b> '+n+'<br>';
+    html += '<b>Edges:</b> '+n+'<br>';
+    html += '<b>Vertex degree:</b> 2 (all vertices)<br>';
+    html += '<b>Bipartite:</b> '+(n%2===0?'Yes (n is even)':'No (n is odd, contains odd cycle)')+'<br>';
+    html += '<b>Euler circuit:</b> <span class="badge badge-ok">Always yes — all degrees 2 (even)</span>';
+  } else if (type==='Wn') {
+    if (n<3) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">W\u2099 requires n \u2265 3</span>'; return; }
+    var E = 2*n;
+    html = '<b>Graph:</b> W<sub>'+n+'</sub><br>';
+    html += '<b>Vertices:</b> '+(n+1)+' ('+n+' rim + 1 hub)<br>';
+    html += '<b>Edges:</b> '+E+'<br>';
+    html += '<b>Hub degree:</b> '+n+'<br>';
+    html += '<b>Rim vertex degree:</b> 3<br>';
+    html += '<b>Bipartite:</b> No (contains C\u2083)<br>';
+    html += '<b>Euler circuit:</b> ';
+    var hubEven = (n%2===0);
+    var rimEven = true;
+    if (hubEven && rimEven) html += '<span class="badge badge-ok">Yes — hub deg '+n+' (even), rim deg 3 (odd)...</span>';
+    if (!hubEven || !rimEven) {
+      html = '<b>Graph:</b> W<sub>'+n+'</sub><br>';
+      html += '<b>Vertices:</b> '+(n+1)+'<br>';
+      html += '<b>Edges:</b> '+E+'<br>';
+      html += '<b>Hub degree:</b> '+n+'; <b>Rim degree:</b> 3<br>';
+      html += '<b>Bipartite:</b> No<br>';
+      html += '<b>Euler circuit:</b> ';
+      if (n%2===0 && 3%2===0) html += '<span class="badge badge-ok">Yes</span>';
+      else {
+        var oddCount = (n%2!==0?1:0) + n*(3%2!==0?1:0);
+        html += '<span class="badge badge-err">No — odd-degree vertices: hub ('+(n%2!==0?'odd':'even')+'), all '+n+' rim vertices (degree 3 = odd)</span>';
+      }
+    }
+  } else if (type==='Qn') {
+    if (n<1||n>6) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">Enter n between 1 and 6 for Q\u2099</span>'; return; }
+    var verts = Math.pow(2,n);
+    var E = n*Math.pow(2,n-1);
+    html = '<b>Graph:</b> Q<sub>'+n+'</sub><br>';
+    html += '<b>Vertices:</b> '+verts+' (all '+n+'-bit strings)<br>';
+    html += '<b>Edges:</b> '+E+'<br>';
+    html += '<b>Vertex degree:</b> '+n+' (all vertices)<br>';
+    html += '<b>Bipartite:</b> Yes (bipartition by parity of number of 1-bits)<br>';
+    html += '<b>Euler circuit:</b> ';
+    if (n%2===0) html += '<span class="badge badge-ok">Yes — all degrees '+n+' are even</span>';
+    else html += '<span class="badge badge-err">No — all degrees '+n+' are odd</span>';
+  } else if (type==='Kmn') {
+    if (isNaN(m)||m<1||n<1) { document.getElementById('sg-out').innerHTML='<span class="badge badge-err">m and n must be \u2265 1</span>'; return; }
+    var E = m*n;
+    html = '<b>Graph:</b> K<sub>'+m+','+n+'</sub><br>';
+    html += '<b>Vertices:</b> '+(m+n)+' ('+m+' in V\u2081, '+n+' in V\u2082)<br>';
+    html += '<b>Edges:</b> '+E+'<br>';
+    html += '<b>V\u2081 vertex degree:</b> '+n+'<br>';
+    html += '<b>V\u2082 vertex degree:</b> '+m+'<br>';
+    html += '<b>Bipartite:</b> Yes (by definition)<br>';
+    html += '<b>Euler circuit:</b> ';
+    var v1even = (n%2===0), v2even = (m%2===0);
+    if (v1even && v2even) html += '<span class="badge badge-ok">Yes — all degrees even (V\u2081 deg '+n+', V\u2082 deg '+m+')</span>';
+    else {
+      var oddV = (!v1even?m:0)+(!v2even?n:0);
+      html += '<span class="badge badge-err">No — '+oddV+' odd-degree vertices</span>';
+    }
+    html += '<br><b>Euler path:</b> ';
+    var totalOdd = (!v1even?m:0)+(!v2even?n:0);
+    if (totalOdd===2) html += '<span class="badge badge-ok">Yes (exactly 2 odd-degree vertices)</span>';
+    else if (totalOdd===0) html += '<span class="badge badge-warn">Same as Euler circuit</span>';
+    else html += '<span class="badge badge-err">No ('+totalOdd+' odd-degree vertices)</span>';
+  }
+  document.getElementById('sg-out').innerHTML = html;
+}
+
+/* ---- QUIZ ---- */
+var QUIZ = [
+  {q:'Which of the following is a correct statement about the Handshaking Theorem?',
+   opts:['The sum of vertex degrees equals the number of edges','The sum of vertex degrees is always odd','The sum of vertex degrees equals twice the number of edges','Every vertex must have even degree'],
+   ans:2,
+   exp:'The Handshaking Theorem states \\(\\sum_{v\\in V}\\deg(v) = 2|E|\\). The sum equals TWICE the number of edges, since each edge contributes 1 to each of its two endpoints.'},
+  {q:'Graph \\(G\\) has 6 vertices all of degree 3. How many edges does \\(G\\) have?',
+   opts:['6','9','12','18'],
+   ans:1,
+   exp:'By Handshaking: \\(\\sum \\deg(v) = 6 \\times 3 = 18 = 2|E|\\), so \\(|E|=9\\).'},
+  {q:'A graph is bipartite if and only if:',
+   opts:['Every vertex has even degree','It contains no odd cycle','It has no loops or multiple edges','Every vertex has degree 2'],
+   ans:1,
+   exp:'Theorem: a graph is bipartite iff it contains no odd cycle. Even degree is needed for an Euler circuit, not bipartiteness. Having degree 2 would make every component a cycle, not every bipartite graph.'},
+  {q:'How many edges does \\(K_{3,4}\\) have?',
+   opts:['7','10','12','14'],
+   ans:2,
+   exp:'\\(|E(K_{m,n})| = mn = 3 \\times 4 = 12\\).'},
+  {q:'A connected graph has an Euler circuit if and only if:',
+   opts:['It has at least one edge','Every vertex has even degree','Exactly two vertices have odd degree','No vertex has degree greater than 2'],
+   ans:1,
+   exp:'Euler circuit condition: connected AND every vertex has even degree. Option C describes the condition for an Euler PATH (not circuit).'},
+  {q:'The \\((i,j)\\)-entry of \\(A^k\\) (where \\(A\\) is the adjacency matrix) equals:',
+   opts:['The degree of vertex \\(v_i\\) raised to the power \\(k\\)','The number of walks of length \\(k\\) from \\(v_i\\) to \\(v_j\\)','The number of simple paths of length \\(k\\) from \\(v_i\\) to \\(v_j\\)','1 if \\(v_i\\) and \\(v_j\\) are connected, 0 otherwise'],
+   ans:1,
+   exp:'\\((A^k)_{ij}\\) counts the number of PATHS (walks, allowing repeated vertices) of length exactly \\(k\\) from \\(v_i\\) to \\(v_j\\). It does not restrict to simple paths.'},
+  {q:'How many edges does \\(Q_4\\) have?',
+   opts:['16','24','32','64'],
+   ans:2,
+   exp:'\\(|E(Q_n)| = n \\cdot 2^{n-1} = 4 \\cdot 2^3 = 4 \\cdot 8 = 32\\).'},
+  {q:'A graph has exactly 4 vertices of odd degree. What can you conclude about Euler circuits and paths?',
+   opts:['An Euler circuit exists but not an Euler path','An Euler path exists but not an Euler circuit','Neither an Euler circuit nor an Euler path exists','Both an Euler circuit and an Euler path exist'],
+   ans:2,
+   exp:'Euler circuit requires 0 odd-degree vertices. Euler path requires exactly 2. With 4 odd-degree vertices, neither exists. Note: the number of odd-degree vertices is always even (by the Handshaking corollary), so 4 is a valid count.'},
+  {q:'\\(C_5\\) (the 5-cycle) is:',
+   opts:['Bipartite and has an Euler circuit','Not bipartite but has an Euler circuit','Bipartite but does not have an Euler circuit','Not bipartite and does not have an Euler circuit'],
+   ans:1,
+   exp:'\\(C_5\\) contains an odd cycle (itself — length 5), so it is NOT bipartite. However, every vertex has degree 2 (even) and the graph is connected, so it DOES have an Euler circuit.'},
+  {q:'What is the degree of every vertex in \\(K_5\\)?',
+   opts:['3','4','5','10'],
+   ans:1,
+   exp:'In \\(K_n\\), every vertex is adjacent to all \\(n-1\\) others. So in \\(K_5\\), every vertex has degree \\(5-1=4\\). Total edges \\(= \\binom{5}{2} = 10\\).'}
+];
+
+init();
+</script>
+</body>
+</html>
